@@ -10,10 +10,12 @@ function Home() {
 
         {/* LEFT CONTENT */}
         <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-            Empowering NGOs.<br />
-            <span className="text-cyan-300">Inspiring</span>{" "}
-            <span className="text-emerald-300">Volunteers.</span>
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            Empowering NGOs.
+          </h1>
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            <span className="text-cyan-400">Inspiring</span>{" "}
+            <span className="text-emerald-400">Volunteers.</span>
           </h1>
 
           <p className="text-violet-100/90 text-base md:text-lg max-w-md">
@@ -21,17 +23,17 @@ function Home() {
             Explore opportunities, share your skills, and support causes you care about.
           </p>
 
-          <div className="flex flex-wrap gap-4 pt-2">
+          <div className="flex flex-wrap gap-4 pt-4">
             <button
               onClick={() => navigate("/signup")}
-              className="px-7 py-3 rounded-full bg-cyan-400 text-slate-900 font-semibold shadow-md hover:bg-cyan-300 hover:-translate-y-0.5 hover:shadow-lg transition"
+              className="px-7 py-3 rounded-full bg-white text-black font-semibold shadow-md hover:bg-cyan-300 hover:-translate-y-0.5 hover:shadow-lg transition"
             >
               Join as Volunteer
             </button>
 
             <button
               onClick={() => navigate("/signup")}
-              className="px-7 py-3 rounded-full border border-white/70 text-white font-semibold hover:bg-white/10 transition"
+              className="px-7 py-3 rounded-full  bg-orange-500 text-white font-semibold hover:bg-white/10 transition"
             >
               Register NGO
             </button>
@@ -39,12 +41,12 @@ function Home() {
         </div>
 
         {/* RIGHT ILLUSTRATION / IMAGE */}
-        <div className="w-full md:w-1/2 flex justify-center">
-          <div className="w-full max-w-md rounded-3xl overflow-hidden bg-white/90 border border-white/40 shadow-2xl backdrop-blur-sm">
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-4xl rounded-3xl overflow-hidden">
             <img
-              src="/home.jpeg"  // from public/home.jpeg
-              alt="Volunteers Illustration"
-              className="w-full h-full object-cover"
+            src="/home.jpeg"
+            alt="Volunteers Illustration"
+            className="w-full h-auto object-cover"
             />
           </div>
         </div>

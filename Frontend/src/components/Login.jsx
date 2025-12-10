@@ -20,7 +20,7 @@ export default function SkillBridgeLogin() {
   <div className="w-full max-w-lg aspect-square">
     <div className="w-full h-full rounded-full shadow-2xl overflow-hidden bg-white">
       <img
-        src="/home.jpeg"   // or your correct image
+        src="/home.jpeg"  
         alt="Illustration"
         className="w-full h-full object-cover object-center"
       />
