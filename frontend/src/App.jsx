@@ -1,18 +1,39 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/login.jsx";
-import SignupNGO from "./pages/signup-NGO.jsx";
+
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import HowItWorks from "./components/HowItWorks";
+import Opportunities from "./components/Opportunities";
+import Testimonials from "./components/Testimonials";
+import Features from "./components/Features";
+import Footer from "./components/Footer";
+
+import Login from "./pages/login";
+import SignupNGO from "./pages/signup-NGO";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Default route -> Login page */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/home" />} />
 
-        {/* Login page */}
+        <Route
+          path="/home"
+          element={
+            <div>
+              <Header />
+              <Hero />
+              <HowItWorks />
+              <Opportunities />
+              <Testimonials />
+              <Features />
+              <Footer />
+            </div>
+          }
+        />
+
         <Route path="/login" element={<Login />} />
-
-        {/* Signup page */}
         <Route path="/signup" element={<SignupNGO />} />
       </Routes>
     </Router>

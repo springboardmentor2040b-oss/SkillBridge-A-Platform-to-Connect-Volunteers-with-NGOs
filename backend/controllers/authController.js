@@ -1,72 +1,64 @@
+import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-
-const createToken = (userId) => {
-  return jwt.sign({ user: { id: userId } }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
 
 export const signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { username, email, password, fullName, organization, location, description, website } = req.body;
 
-    // simple validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ msg: "Name, email and password are required" });
-    }
-    if (password.length < 6) {
-      return res.status(400).json({ msg: "Password must be at least 6 characters" });
-    }
+    // Email exists check
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already registered" });
 
-    let existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ msg: "User already exists with this email" });
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(password, salt);
-
-    const user = new User({ name, email, password: hashed, role });
-    await user.save();
-
-    const token = createToken(user._id);
-    res.status(201).json({
-      token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      fullName,
+      organization,
+      location,
+      description,
+      website
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Server error" });
+
+    await newUser.save();
+
+    res.json({ message: "Signup Successful" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ msg: "Email and password required" });
 
+    // Find user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
+    if (!user) return res.status(400).json({ message: "Invalid Email or Password" });
 
+    // Verify Password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json({ message: "Invalid Email or Password" });
 
-    const token = createToken(user._id);
+    // Generate Token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
     res.json({
+      message: "Login Successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+      user: {
+        email: user.email,
+        username: user.username
+      }
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Server error" });
-  }
-};
 
-export const getProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
-    if (!user) return res.status(404).json({ msg: "User not found" });
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Server error" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
