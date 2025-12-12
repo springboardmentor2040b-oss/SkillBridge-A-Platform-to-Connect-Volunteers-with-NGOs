@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 
 import Login from "./pages/login";
 import SignupNGO from "./pages/signup-NGO";
+import SignupVolunteer from "./pages/SignupVolunteer.jsx";
 
 function App() {
   return (
