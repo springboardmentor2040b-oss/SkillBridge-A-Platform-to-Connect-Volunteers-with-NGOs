@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* small helper to match the design shadow on buttons */
+.btn-shadow {
+  box-shadow: 0 8px 20px rgba(29,78,216,0.18);
+}
