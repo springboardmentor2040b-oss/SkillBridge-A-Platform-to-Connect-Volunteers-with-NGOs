@@ -1,5 +1,3 @@
-import { useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import illustration from "../assets/signup-illustration.png";
 import logo from "../assets/image.png";
@@ -7,57 +5,103 @@ import logo from "../assets/image.png";
 function SignupNGO() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    username: "",
-    email: "",
-    password: "",
-    fullName: "",
-    organization: "",
-    location: "",
-    description: "",
-    website: ""
-  });
+  const handleSignup = () => {
+    const email = document.getElementById("signupEmail").value;
 
-  const handleSignup = async () => {
-    try {
-      await axios.post("http://localhost:8000/api/auth/signup", form);
-      navigate("/login");
-    } catch (err) {
-      alert(err.response?.data?.message || "Signup failed");
-    }
+    // save email
+    localStorage.setItem("userEmail", email);
+
+    navigate("/home");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#E3F5F9] to-[#CBE7EF] px-6 relative">
+    <div className="min-h-screen flex items-center justify-center 
+                    bg-gradient-to-br from-[#E3F5F9] via-[#D8F0F4] to-[#CBE7EF] 
+                    px-6 relative">
 
-      <div className="absolute top-6 right-6 flex items-center">
-        <img src={logo} className="w-12" />
-        <span className="text-2xl font-bold text-[#183B56] ml-2">SkillBridge</span>
+      {/* Logo + Name Top Right */}
+      <div className="absolute top-6 right-6 flex items-center space-x-2">
+        <img src={logo} alt="SkillBridge Logo" className="w-12 h-auto drop-shadow-md" />
+        <span className="text-2xl font-bold" style={{ color: "#183B56" }}>
+          SkillBridge
+        </span>
       </div>
 
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl grid md:grid-cols-2 overflow-hidden">
+      <div className="w-full max-w-5xl bg-white shadow-xl rounded-2xl 
+                      grid grid-cols-1 md:grid-cols-2 overflow-hidden 
+                      border border-gray-200">
 
-        <div className="p-10 flex flex-col justify-center">
-          <h2 className="text-3xl font-semibold text-[#183B56]">Create Account</h2>
+        {/* Form Section */}
+        <div className="flex flex-col justify-center p-10">
 
-          {Object.keys(form).map((key) => (
-            <input
-              key={key}
-              type="text"
-              placeholder={key}
-              className="border border-[#6EC0CE] p-3 rounded-lg mb-3"
-              onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-            />
-          ))}
+          {/* TITLE */}
+          <h2 className="text-3xl font-semibold text-[#183B56] mb-2">
+            Create an Account
+          </h2>
 
+          {/* NEW PARAGRAPH ADDED */}
+          <p className="text-gray-500 mb-8">
+            Join SkillBridge to connect NGOs and volunteers.
+          </p>
+
+          {/* INPUTS */}
+          <input
+            type="text"
+            placeholder="Enter username"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <input
+            id="signupEmail"
+            type="email"
+            placeholder="Enter your email"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <input
+            type="password"
+            placeholder="Create a password"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <input
+            type="text"
+            placeholder="Full Name"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <select className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg">
+            <option>NGO / Organization</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Location (Optional)"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <input
+            type="text"
+            placeholder="Organization Description"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          <input
+            type="text"
+            placeholder="Website URL (optional)"
+            className="w-full mb-3 px-4 py-3 border border-[#6EC0CE] rounded-lg"
+          />
+
+          {/* BUTTON */}
           <button
             onClick={handleSignup}
-            className="bg-[#FF7A30] text-white py-3 rounded-lg shadow-md mt-3"
+            className="w-full bg-[#FF7A30] hover:bg-[#E86820] text-white py-3 rounded-lg mt-3 transition shadow-md"
           >
             Create Account
           </button>
 
-          <p className="text-sm mt-4 text-[#2D4A60]">
+          {/* BOTTOM TEXT (PROPER SPACING ADDED) */}
+          <p className="text-sm text-[#2D4A60] mt-4">
             Already have an account?{" "}
             <Link to="/login" className="text-[#6EC0CE] font-semibold">
               Login
@@ -65,8 +109,9 @@ function SignupNGO() {
           </p>
         </div>
 
-        <div className="hidden md:flex bg-[#E3F5F9] justify-center items-center p-6">
-          <img src={illustration} className="w-4/5" />
+        {/* Illustration Section */}
+        <div className="hidden md:flex items-center justify-center bg-[#E3F5F9] p-6">
+          <img src={illustration} alt="illustration" className="w-4/5 max-w-sm drop-shadow-lg" />
         </div>
       </div>
     </div>
