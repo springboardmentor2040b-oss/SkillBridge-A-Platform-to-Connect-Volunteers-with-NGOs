@@ -10,15 +10,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Error:", err));
 
-/* =========================
-   SIGNUP ROUTE
-========================= */
+
 app.post("/signup", async (req, res) => {
   try {
     const {
@@ -33,16 +31,16 @@ app.post("/signup", async (req, res) => {
       organizationUrl,
     } = req.body;
 
-    // Check existing user
+  
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash password
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    
     const user = await UserModel.create({
       username,
       email,
@@ -55,7 +53,7 @@ app.post("/signup", async (req, res) => {
       organizationUrl,
     });
 
-    // JWT token
+    
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -73,9 +71,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-/* =========================
-   LOGIN ROUTE
-========================= */
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -119,7 +115,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Server start
+
 app.listen(process.env.PORT || 4001, () => {
   console.log(
     `Server running on http://localhost:${process.env.PORT || 4001}`
