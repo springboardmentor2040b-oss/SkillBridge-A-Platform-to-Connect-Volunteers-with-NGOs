@@ -6,17 +6,16 @@ import Signup from './components/Signup'
 import About from './components/About'
 import Login from './components/Login'
 import Opportunities from "./components/Opportunities"
-<<<<<<< HEAD
+
 import Dashboard from './components/dashboard'
 import Posted_Opportunities from './components/postedopp'
 import Messages from './components/Messages'
 import Applications from './components/Application'
 
-=======
 import Dashboard from "./components/Dashboard"
 import Message from './components/Message'
 import Footer from './components/Footer'
->>>>>>> a45a26c (backend)
+
 function App() {
   //const [count, setCount] = useState(0)
   const location = useLocation();
@@ -25,7 +24,6 @@ function App() {
 
   return (
     <>
-<<<<<<< HEAD
       {showNavbarRoutes.includes(location.pathname) && <Navbar/>}
       <Routes>
         <Route path='/' element={<Home/>}/>
@@ -39,7 +37,6 @@ function App() {
         <Route path="/messages" element={<Messages/>}/>
         <Route path="/application" element={<Applications/>}/>
       </Routes>     
-=======
     <Navbar/>
     <Routes>
       <Route path='/' element={<Home/>}/>
@@ -56,7 +53,6 @@ function App() {
     </Routes>
      
      
->>>>>>> a45a26c (backend)
     </>
   )
 }
