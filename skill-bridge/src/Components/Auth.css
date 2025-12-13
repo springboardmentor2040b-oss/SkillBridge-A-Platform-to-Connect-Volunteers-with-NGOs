@@ -1,0 +1,149 @@
+/* ==================== RESET ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* ==================== BODY ==================== */
+body {
+  background: #f4f7fc;
+}
+
+/* ==================== CONTAINER ==================== */
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: flex-start;   /* align items at top */
+  padding: 80px 20px 20px 20px; /* push card down */
+}
+
+/* ==================== CARD ==================== */
+.auth-card {
+  width: 450px;            /* desktop width */
+  max-width: 95%;          /* responsive for smaller screens */
+  background: #ffffff;
+  padding: 50px;
+  border-radius: 18px;
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.4s ease;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== TITLE ==================== */
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #333;
+}
+
+/* ==================== INPUTS ==================== */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input-group input::placeholder {
+  color: #aaa;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #4a78ff;
+  box-shadow: 0 0 8px rgba(74, 120, 255, 0.4);
+}
+
+/* ==================== BUTTONS ==================== */
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  background: #4a78ff;
+  border: none;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.2s;
+}
+
+.auth-btn:hover {
+  background: #3a63d6;
+}
+
+/* ==================== REDIRECT TEXT ==================== */
+.redirect-text {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.switch-btn {
+  background: none;
+  border: none;
+  color: #4a78ff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.switch-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .auth-card {
+    width: 90%;
+    padding: 35px;
+  }
+
+  .input-group input,
+  .input-group select {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .auth-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
