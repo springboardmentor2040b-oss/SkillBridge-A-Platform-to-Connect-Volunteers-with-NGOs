@@ -1,15 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+=======
+import Footer from './Footer';
+>>>>>>> a45a26c (backend)
 
 function Home() {
   const navigate = useNavigate();
 
   return (
+<<<<<<< HEAD
     <>
       {/* HERO SECTION */}
       <section className="w-full h-fit lg:h-[650px] bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 text-white">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center gap-14">
+=======
+    <div>
+    <section className="w-full h-fit lg:h-[650px] bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 text-white">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center gap-14">
+>>>>>>> a45a26c (backend)
 
           {/* LEFT CONTENT */}
           <div className="w-full md:w-1/2 space-y-6">
@@ -100,6 +110,7 @@ function Home() {
           </div>
       </div>
     </section>
+<<<<<<< HEAD
 
 
       {/* FOOTER SECTION */}
@@ -144,6 +155,10 @@ function Home() {
         </div>
       </footer>
     </>
+=======
+    <Footer/>
+    </div>
+>>>>>>> a45a26c (backend)
   );
 }
 export default Home;
