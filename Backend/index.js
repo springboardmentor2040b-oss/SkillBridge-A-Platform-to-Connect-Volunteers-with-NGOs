@@ -9,7 +9,8 @@ const UserModel = require("./models/User");
 const app = express();
 app.use(express.json());
 app.use(cors());
-
+const userRoutes = require("./routes/userRoutes");
+app.use("/api", userRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
