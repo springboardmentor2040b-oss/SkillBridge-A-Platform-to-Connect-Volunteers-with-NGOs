@@ -11,7 +11,7 @@ export default function SkillBridgeSignup() {
     role: "",
     location: "",
     Bio: "",
-    organisationName: "",
+    organizationName: "",
     organizationUrl: "",
   });
 
@@ -28,7 +28,11 @@ export default function SkillBridgeSignup() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:4001/signup", formData);
+      const res = await axios.post(
+        "http://localhost:4001/signup",
+        formData
+      );
+
       alert("Account created successfully!");
       navigate("/login");
     } catch (err) {
@@ -37,21 +41,19 @@ export default function SkillBridgeSignup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-purple-700 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 
         {/* LEFT SECTION */}
-        <div className="hidden lg:flex flex-col items-center justify-center lg:sticky lg:top-8">
-          <h1 className="text-6xl font-bold mb-16 text-white">SkillBridge</h1>
-          <div className="w-full max-w-lg aspect-square">
-            <div className="w-full h-full rounded-full shadow-2xl overflow-hidden bg-gray-200">
-              <img
-                src="/Ellipse.jpg"
-                alt="SkillBridge Illustration"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
+        <div className="hidden lg:flex flex-col items-center justify-center">
+          {/* <h1 className="text-5xl font-bold mb-16 text-white">
+            SkillBridge
+          </h1> */}
+          {/* <img
+            src="/Ellipse.jpg"
+            alt="SkillBridge"
+            className=" rounded-full shadow-2xl"
+          /> */}
         </div>
 
         {/* RIGHT SECTION */}
@@ -63,49 +65,49 @@ export default function SkillBridgeSignup() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
 
+              {/* Full Name */}
               <input
                 name="fullName"
                 placeholder="Full Name / NGO Name"
                 value={formData.fullName}
                 onChange={handleChange}
-                required
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Username */}
               <input
                 name="username"
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
-                required
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Email */}
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                required
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Password */}
               <input
                 type="password"
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                required
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Role */}
               <select
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                required
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               >
                 <option value="">Select Role</option>
@@ -113,15 +115,14 @@ export default function SkillBridgeSignup() {
                 <option value="ngo">NGO</option>
               </select>
 
-              {/* NGO ONLY */}
+              {/* SHOW ONLY IF NGO */}
               {formData.role === "ngo" && (
                 <>
                   <input
-                    name="organisationName"
+                    name="organizationName"
                     placeholder="Organization Name"
-                    value={formData.organisationName}
+                    value={formData.organizationName}
                     onChange={handleChange}
-                    required
                     className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
                   />
 
@@ -135,19 +136,16 @@ export default function SkillBridgeSignup() {
                 </>
               )}
 
+              {/* Location */}
               <input
                 name="location"
-                placeholder={
-                  formData.role === "ngo"
-                    ? "Location (required for NGO)"
-                    : "Location (optional)"
-                }
+                placeholder="Location (optional)"
                 value={formData.location}
                 onChange={handleChange}
-                required={formData.role === "ngo"}
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Bio */}
               <input
                 name="Bio"
                 placeholder="Bio (optional)"
@@ -156,6 +154,7 @@ export default function SkillBridgeSignup() {
                 className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl"
               />
 
+              {/* Submit */}
               <button
                 type="submit"
                 className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-4 rounded-xl"
