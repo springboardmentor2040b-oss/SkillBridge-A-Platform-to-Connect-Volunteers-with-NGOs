@@ -25,7 +25,7 @@ router.patch("/profile", auth, async (req, res) => {
       "fullName",
       "skills",
       "location",
-      "Bio",
+      "bio",
       "organisationName",
       "organizationUrl",
     ];
