@@ -28,26 +28,26 @@ const UserSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      required: true,
       enum: ["volunteer", "ngo"],
+      required: true,
+    },
+
+    skills: {
+      type: [String],
+      default: [],
     },
 
     location: {
       type: String,
-      required: function () {
-        return this.role === "ngo";
-      },
     },
 
-    Bio: {
+    bio: {
       type: String,
     },
 
+    // NGO-only
     organisationName: {
       type: String,
-      required: function () {
-        return this.role === "ngo";
-      },
     },
 
     organizationUrl: {
@@ -57,6 +57,4 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const UserModel = mongoose.model("User", UserSchema);
-
-module.exports = UserModel;
+module.exports = mongoose.model("User", UserSchema);
