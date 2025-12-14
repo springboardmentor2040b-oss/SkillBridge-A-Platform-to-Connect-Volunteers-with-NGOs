@@ -23,12 +23,32 @@ export default function Profile() {
     setUser({ ...user, [e.target.name]: e.target.value });
 
   const saveProfile = async () => {
-    await axios.put("http://localhost:4001/api/profile", user, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  try {
+    const payload = {
+      fullName: user.fullName,
+      location: user.location,
+      bio: user.bio,
+      organisationName: user.organisationName,
+      organizationUrl: user.organizationUrl,
+    };
+
+    const res = await axios.patch(
+      "http://localhost:4001/api/profile",
+      payload,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    setUser(res.data);
     setEditMode(false);
-    alert("Profile updated");
-  };
+    alert("Profile updated successfully");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update profile");
+  }
+};
+
 
   if (!user) return <div className="p-10">Loading...</div>;
 
@@ -108,8 +128,8 @@ export default function Profile() {
               <div className="mt-6">
                 <Field
                   label="Bio"
-                  name="Bio"
-                  value={user.Bio || ""}
+                  name="bio"
+                  value={user.bio || ""}
                   onChange={handleChange}
                   disabled={!editMode}
                   textarea
