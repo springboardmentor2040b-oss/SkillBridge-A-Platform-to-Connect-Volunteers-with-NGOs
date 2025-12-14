@@ -1,147 +1,132 @@
-import React from 'react';
+import React from "react";
 
 export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700">
-      {/* NAVBAR */}
-      <nav className="bg-white shadow-sm px-8 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <span className="text-2xl font-bold text-black">SkillBride</span>
-        
+          {/* SIDEBAR */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-2xl">
+              <h2 className="text-xl sm:text-2xl font-bold text-black">
+                Hope For All Foundation
+              </h2>
+              <p className="text-gray-600 text-sm mb-6">NGO</p>
 
-          {/* Navigation Links */}
-          <div className="flex items-center gap-12">
-            <a href="./" className="text-gray-700 hover:text-black font-medium">
-              Dashboard
-            </a>
-            <a href="./postedopp" className="text-gray-700 hover:text-black font-medium">
-              Opportunities
-            </a>
-            <a href="./Application" className="text-gray-700 hover:text-black font-medium">
-              Application
-            </a>
-            <a href="./Messages" className="text-gray-700 hover:text-black font-medium">
-              Messages
-            </a>
-          </div>
-
-          {/* Right Side */}
-          <div className="flex items-center gap-4">
-            <button className="bg-orange-500 text-white font-semibold px-6 py-2 rounded-full">
-              NGO
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* MAIN CONTENT */}
-      <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          
-          {/* LEFT SIDEBAR */}
-          <div className="col-span-3">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              {/* Organization Header */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-black mb-1">Hope For All Foundation</h2>
-                <p className="text-gray-600 text-sm">Ngo</p>
-              </div>
-
-              {/* Menu Items */}
               <div className="space-y-2">
-                <button className="w-full flex items-center gap-3 px-4 py-3 bg-blue-100 rounded-xl text-left font-medium">
+                <button className="w-full px-4 py-3 rounded-xl font-medium bg-blue-100
+                  transition-all duration-300 hover:bg-blue-200 hover:shadow-md hover:-translate-y-0.5">
                   Dashboard
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 rounded-xl text-left font-medium text-gray-700">
-                 Opportunities
+                <button className="w-full px-4 py-3 rounded-xl text-gray-700
+                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5">
+                  Opportunities
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 rounded-xl text-left font-medium text-gray-700">
+                <button className="w-full px-4 py-3 rounded-xl text-gray-700
+                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5">
                   Applications
                 </button>
 
-                <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 rounded-xl text-left font-medium text-gray-700">
+                <button className="w-full px-4 py-3 rounded-xl text-gray-700
+                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5">
                   Messages
                 </button>
-              </div>
-
-              {/* Organization Info */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="font-bold text-black text-sm mb-2">ORGANIZATION INFO</h3>
               </div>
             </div>
           </div>
 
-          {/* RIGHT CONTENT */}
-          <div className="col-span-9 space-y-6">
-            
-            {/* OVERVIEW CARDS */}
-            <div className="bg-white rounded-3xl shadow-lg p-8">
-              <h3 className="text-xl font-bold text-black mb-6">Overview</h3>
-              
-              <div className="grid grid-cols-4 gap-4">
-                <div className="bg-blue-50 rounded-2xl p-6 text-center">
-                  <div className="text-4xl font-bold text-black mb-2">0</div>
+          {/* MAIN CONTENT */}
+          <div className="lg:col-span-9 space-y-6">
+
+            {/* OVERVIEW */}
+            <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
+              transition-all duration-300 hover:shadow-2xl">
+              <h3 className="text-lg sm:text-xl font-bold mb-6">
+                Overview
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+                {/* CARD */}
+                <div className="bg-blue-50 rounded-2xl p-6 text-center cursor-pointer
+                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]">
+                  <div className="text-4xl font-bold text-black mb-2">2</div>
                   <div className="text-sm text-gray-600">Active Opportunities</div>
                 </div>
 
-                <div className="bg-green-50 rounded-2xl p-6 text-center">
-                  <div className="text-4xl font-bold text-black mb-2">0</div>
-                  <div className="text-sm text-gray-600">Application</div>
+                <div className="bg-green-50 rounded-2xl p-6 text-center cursor-pointer
+                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]">
+                  <div className="text-4xl font-bold text-black mb-2">3</div>
+                  <div className="text-sm text-gray-600">Applications</div>
                 </div>
 
-                <div className="bg-purple-50 rounded-2xl p-6 text-center">
-                  <div className="text-4xl font-bold text-black mb-2">0</div>
+                <div className="bg-purple-50 rounded-2xl p-6 text-center cursor-pointer
+                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]">
+                  <div className="text-4xl font-bold text-black mb-2">1</div>
                   <div className="text-sm text-gray-600">Active Volunteers</div>
                 </div>
 
-                <div className="bg-yellow-50 rounded-2xl p-6 text-center">
+                <div className="bg-yellow-50 rounded-2xl p-6 text-center cursor-pointer
+                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]">
                   <div className="text-4xl font-bold text-black mb-2">0</div>
-                  <div className="text-sm text-gray-600">Pending Application</div>
+                  <div className="text-sm text-gray-600">Pending Applications</div>
                 </div>
+
               </div>
             </div>
 
             {/* RECENT APPLICATIONS */}
-            <div className="bg-white rounded-3xl shadow-lg p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-black">Recent Applications</h3>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-xl">
+            <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
+              transition-all duration-300 hover:shadow-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h3 className="text-lg sm:text-xl font-bold">
+                  Recent Applications
+                </h3>
+
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold
+                  px-6 py-2 rounded-xl transition-all duration-300
+                  hover:shadow-lg hover:shadow-orange-400/40 hover:-translate-y-0.5">
                   View All
                 </button>
               </div>
 
-              {/* Application Card */}
-              <div className="border-2 border-gray-200 rounded-2xl p-6">
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <p className="text-sm text-gray-700">
-                    No recent application  </p>
-                </div>
+              <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50">
+                <p className="text-sm text-gray-700 text-center">
+                  No recent applications
+                </p>
               </div>
             </div>
 
-            {/* BOTTOM ROW */}
-            <div className="grid grid-cols-2 gap-6">
-              
-              {/* QUICK ACTIONS */}
-              <div className="bg-white rounded-3xl shadow-lg p-8">
-                <h3 className="text-xl font-bold text-black mb-6">Quick Actions</h3>
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">
+            {/* BOTTOM ACTIONS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
+                transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <h3 className="text-lg sm:text-xl font-bold mb-6">
+                  Quick Actions
+                </h3>
+
+                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold
+                  py-4 rounded-2xl transition-all duration-300
+                  hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-1 active:scale-95">
                   Create New Opportunity
                 </button>
               </div>
 
-              {/* VIEW MESSAGES */}
-              <div className="bg-white rounded-3xl shadow-lg p-8 flex flex-col items-center justify-center">
-                <h3 className="text-xl font-bold text-black">View Messages</h3>
+              <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
+                transition-all duration-300 hover:shadow-2xl hover:-translate-y-1
+                flex items-center justify-center cursor-pointer">
+                <h3 className="text-lg sm:text-xl font-bold">
+                  View Messages
+                </h3>
               </div>
 
             </div>
 
           </div>
-
         </div>
       </div>
     </div>
