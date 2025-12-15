@@ -46,14 +46,14 @@ export default function SkillBridgeSignup() {
 
         {/* LEFT SECTION */}
         <div className="hidden lg:flex flex-col items-center justify-center">
-          {/* <h1 className="text-5xl font-bold mb-16 text-white">
+          { <h1 className="text-5xl font-bold mb-16 text-white">
             SkillBridge
-          </h1> */}
-          {/* <img
+          </h1> }
+          { <img
             src="/Ellipse.jpg"
             alt="SkillBridge"
             className=" rounded-full shadow-2xl"
-          /> */}
+          /> }
         </div>
 
         {/* RIGHT SECTION */}
