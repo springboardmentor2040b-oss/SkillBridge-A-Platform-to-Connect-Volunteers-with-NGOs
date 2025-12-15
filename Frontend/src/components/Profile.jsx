@@ -62,14 +62,14 @@ export default function Profile() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* LEFT PROFILE CARD */}
         <div className="bg-white rounded-xl shadow p-6 text-center">
-          <div className="w-24 h-24 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-600">
+          <div className="w-24 h-24 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-white-600">
             {user.fullName[0]}
           </div>
 
           <h2 className="mt-4 text-xl font-semibold">{user.fullName}</h2>
           <p className="text-gray-500">{user.email}</p>
 
-          <span className="inline-block mt-3 px-4 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-full">
+          <span className="inline-block mt-3 px-4 py-1 text-sm bg-orange-100 text-orange-700 rounded-full">
             {user.role}
           </span>
         </div>
@@ -175,7 +175,7 @@ export default function Profile() {
                 ) : (
                   <button
                     onClick={() => setEditMode(true)}
-                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+                    className="px-6 py-2 bg-orange-600 text-white rounded-lg"
                   >
                     Edit Profile
                   </button>
