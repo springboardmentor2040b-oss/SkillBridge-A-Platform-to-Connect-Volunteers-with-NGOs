@@ -17,7 +17,7 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Error:", err));
 
-
+// signup
 app.post("/signup", async (req, res) => {
   try {
     const {
@@ -72,7 +72,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-
+// login
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

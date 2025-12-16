@@ -1,9 +1,5 @@
 
 import { Routes, Route } from "react-router-dom";
-
-
-
-
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -24,7 +20,7 @@ import Profile from "./components/Profile";
 function App() {
   return (
     <>
-      {/* Navbar ALWAYS visible */}
+     
       <Navbar />
 
       <Routes>
@@ -42,7 +38,6 @@ function App() {
       </Routes>
 
       {/* Footer ONLY for public pages */}
-      <Footer />
     </>
   );
 }
