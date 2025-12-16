@@ -20,7 +20,9 @@ export default function Dashboard() {
                   Dashboard
                 </button>
 
-                <button className="w-full px-4 py-3 rounded-xl text-gray-700
+                <button 
+                  onClick={() => window.location.href = '/ngo-opportunities'}
+                  className="w-full px-4 py-3 rounded-xl text-gray-700
                   transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5">
                   Opportunities
                 </button>
@@ -109,10 +111,12 @@ export default function Dashboard() {
                   Quick Actions
                 </h3>
 
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold
-                  py-4 rounded-2xl transition-all duration-300
-                  hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-1 active:scale-95">
-                  Create New Opportunity
+                <button 
+                onClick={() => window.location.href = '/create-opportunity'}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold
+                      py-4 rounded-2xl transition-all duration-300
+                      hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-1 active:scale-95">
+                        Create New Opportunity
                 </button>
               </div>
 
