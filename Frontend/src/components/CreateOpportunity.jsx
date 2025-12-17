@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { ArrowLeft, Plus, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, X } from 'lucide-react';
 
 export default function CreateOpportunity() {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -11,6 +14,22 @@ export default function CreateOpportunity() {
   });
   const [skills, setSkills] = useState([]);
   const [currentSkill, setCurrentSkill] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const predefinedSkills = [
+    'Html',
+    'CSS',
+    'UI/UX Design',
+    'Graphic Design',
+    'Content Writing',
+    'JavaScript',
+    'Data Analysis',
+    'Project Management',
+    'Video Editing',
+    'Photography',
+    'Social Media Management',
+    'ReactJS'
+  ];
 
   const handleChange = (e) => {
     setFormData({
@@ -19,9 +38,10 @@ export default function CreateOpportunity() {
     });
   };
 
-  const addSkill = () => {
-    if (currentSkill.trim() && !skills.includes(currentSkill.trim())) {
-      setSkills([...skills, currentSkill.trim()]);
+  const addSkill = (skillName = null) => {
+    const skillToAdd = skillName || currentSkill.trim();
+    if (skillToAdd && !skills.includes(skillToAdd)) {
+      setSkills([...skills, skillToAdd]);
       setCurrentSkill('');
     }
   };
@@ -30,53 +50,67 @@ export default function CreateOpportunity() {
     setSkills(skills.filter(skill => skill !== skillToRemove));
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!formData.title || !formData.description) {
-    alert("Please fill in all required fields");
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-      "http://localhost:4001/api/opportunities",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          requiredSkills: skills,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert("Opportunity created successfully!");
-      window.location.href = "/opportunities";
+  const togglePredefinedSkill = (skill) => {
+    if (skills.includes(skill)) {
+      removeSkill(skill);
     } else {
-      alert(data.message || "Failed to create opportunity");
+      addSkill(skill);
     }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("An error occurred. Please try again.");
-  }
-};
-
- 
-
-  const handleBack = () => {
-    window.history.back();
   };
 
-  console.log(formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.description) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You must be logged in to create an opportunity");
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:4001/api/opportunities",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            skills: skills, // Changed from requiredSkills to skills to match EditOpportunity
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Opportunity created successfully!");
+        navigate("/opportunities"); // Using React Router navigate instead of window.location
+      } else {
+        alert(data.message || "Failed to create opportunity");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBack = () => {
+    navigate('/opportunities');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -97,12 +131,12 @@ export default function CreateOpportunity() {
       {/* Form */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-2xl shadow-sm p-8">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* Title */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Title
+                Title *
               </label>
               <input
                 type="text"
@@ -110,6 +144,7 @@ export default function CreateOpportunity() {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g. Website Redesign"
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
@@ -117,7 +152,7 @@ export default function CreateOpportunity() {
             {/* Description */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Description
+                Description *
               </label>
               <textarea
                 name="description"
@@ -125,6 +160,7 @@ export default function CreateOpportunity() {
                 onChange={handleChange}
                 placeholder="Provide details about the opportunity"
                 rows={5}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
               />
             </div>
@@ -134,47 +170,76 @@ export default function CreateOpportunity() {
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Required Skills
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={currentSkill}
-                  onChange={(e) => setCurrentSkill(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      addSkill();
-                    }
-                  }}
-                  placeholder="e.g. Web Development"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-                <button
-                  type="button"
-                  onClick={addSkill}
-                  className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
-                >
-                  Add
-                </button>
-              </div>
               
-              {/* Skills Tags */}
-              {skills.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {skills.map((skill, index) => (
-                    <span
+              {/* Predefined Skills */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-2">Quick select:</p>
+                <div className="flex flex-wrap gap-2">
+                  {predefinedSkills.map((skill, index) => (
+                    <button
                       key={index}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                      type="button"
+                      onClick={() => togglePredefinedSkill(skill)}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                        skills.includes(skill)
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
                     >
                       {skill}
-                      <button
-                        type="button"
-                        onClick={() => removeSkill(skill)}
-                        className="hover:text-blue-900 transition"
-                      >
-                        <X size={16} />
-                      </button>
-                    </span>
+                    </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Custom Skill Input */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Or add custom skill:</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={currentSkill}
+                    onChange={(e) => setCurrentSkill(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addSkill();
+                      }
+                    }}
+                    placeholder="e.g. Python Programming"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => addSkill()}
+                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              
+              {/* Selected Skills Tags */}
+              {skills.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2 mt-4">Selected skills:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeSkill(skill)}
+                          className="hover:text-blue-900 transition"
+                        >
+                          <X size={16} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -233,18 +298,19 @@ export default function CreateOpportunity() {
                 type="button"
                 onClick={handleBack}
                 className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
-                type="button"
-                onClick={handleSubmit}
-                className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl"
+                type="submit"
+                className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
               >
-                Create
+                {isSubmitting ? 'Creating...' : 'Create Opportunity'}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
