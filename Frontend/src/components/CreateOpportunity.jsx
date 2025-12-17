@@ -31,42 +31,52 @@ export default function CreateOpportunity() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.title || !formData.description) {
-      alert('Please fill in all required fields');
-      return;
-    }
+  e.preventDefault();
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4001/api/opportunities', {
-        method: 'POST',
+  if (!formData.title || !formData.description) {
+    alert("Please fill in all required fields");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:4001/api/opportunities",
+      {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...formData,
-          requiredSkills: skills
-        })
-      });
-
-      if (response.ok) {
-        alert('Opportunity created successfully!');
-        window.location.href = '/opportunities';
-      } else {
-        alert('Failed to create opportunity');
+          requiredSkills: skills,
+        }),
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Opportunity created successfully!");
+      window.location.href = "/opportunities";
+    } else {
+      alert(data.message || "Failed to create opportunity");
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+};
+
+ 
 
   const handleBack = () => {
     window.history.back();
   };
+
+  console.log(formData);
 
   return (
     <div className="min-h-screen bg-gray-50">

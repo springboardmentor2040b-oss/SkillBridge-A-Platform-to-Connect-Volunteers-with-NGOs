@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-<<<<<<< HEAD
 export default function SkillBridgeLogin() {
   const navigate = useNavigate();
 
@@ -10,24 +9,11 @@ export default function SkillBridgeLogin() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Validators
+  // -------- VALIDATION --------
   const validateEmail = (value) => {
     if (!value.trim()) return "Email is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
       return "Enter a valid email";
-=======
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-
-  // ---------------- VALIDATION ----------------
-  const validateEmail = (value) => {
-    if (!value.trim()) return "Email is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-      return "Invalid email address";
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
     return "";
   };
 
@@ -37,22 +23,7 @@ export default function Login() {
     return "";
   };
 
-<<<<<<< HEAD
-=======
-  // ---------------- HANDLERS ----------------
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
-  };
-
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
+  // -------- SUBMIT --------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,15 +36,11 @@ export default function Login() {
     }
 
     try {
-      const res = await axios.post("http://localhost:4001/login", {
+      const res = await axios.post("http://localhost:4001/api/login", {
         email,
         password,
       });
 
-<<<<<<< HEAD
-=======
-      // Save auth data
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
@@ -84,10 +51,9 @@ export default function Login() {
     }
   };
 
-  // ---------------- UI ----------------
+  // -------- UI --------
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4">
-<<<<<<< HEAD
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
         {/* LEFT SECTION */}
@@ -107,62 +73,22 @@ export default function Login() {
           <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
             <h2 className="text-3xl font-bold mb-3">Sign in</h2>
             <p className="text-gray-600 mb-8">Enter your details</p>
-=======
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-        {/* LEFT IMAGE */}
-        <div className="hidden lg:flex flex-col items-center justify-center">
-          <h1 className="text-5xl font-bold mb-16 text-white">SkillBridge</h1>
-          <div className="w-full max-w-lg aspect-square">
-            <div className="w-full h-full rounded-full shadow-2xl overflow-hidden bg-white">
-              <img
-                src="/home.jpeg"
-                alt="Illustration"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT FORM */}
-        <div className="flex items-center justify-center">
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
-            <h2 className="text-3xl font-bold text-slate-900 mb-3">
-              Sign in to SkillBridge
-            </h2>
-            <p className="text-gray-600 text-sm mb-8">
-              Enter your credentials to continue
-            </p>
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
 
             <form onSubmit={handleSubmit}>
               {/* Email */}
               <div className="mb-5">
-<<<<<<< HEAD
                 <label className="block font-semibold mb-2 text-sm">
-=======
-                <label className="block text-sm font-semibold mb-2">
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                   Email
                 </label>
                 <input
                   type="email"
                   value={email}
-<<<<<<< HEAD
                   onChange={(e) => setEmail(e.target.value)}
                   className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-=======
-                  onChange={handleEmailChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                     errors.email
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-purple-500"
                   }`}
-<<<<<<< HEAD
-=======
-                  placeholder="Enter your email"
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                 />
                 {errors.email && (
                   <p className="text-red-500 text-xs mt-1">
@@ -173,31 +99,18 @@ export default function Login() {
 
               {/* Password */}
               <div className="mb-6">
-<<<<<<< HEAD
                 <label className="block font-semibold mb-2 text-sm">
-=======
-                <label className="block text-sm font-semibold mb-2">
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                   Password
                 </label>
                 <input
                   type="password"
                   value={password}
-<<<<<<< HEAD
                   onChange={(e) => setPassword(e.target.value)}
                   className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-=======
-                  onChange={handlePasswordChange}
-                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                     errors.password
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-purple-500"
                   }`}
-<<<<<<< HEAD
-=======
-                  placeholder="Enter your password"
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
                 />
                 {errors.password && (
                   <p className="text-red-500 text-xs mt-1">
@@ -208,11 +121,7 @@ export default function Login() {
 
               <button
                 type="submit"
-<<<<<<< HEAD
                 className="w-full bg-purple-700 hover:bg-purple-600 text-white font-semibold py-3 rounded-xl transition"
-=======
-                className="w-full bg-purple-700 hover:bg-purple-600 text-white font-semibold py-3 rounded-xl shadow-lg transition"
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
               >
                 Login
               </button>

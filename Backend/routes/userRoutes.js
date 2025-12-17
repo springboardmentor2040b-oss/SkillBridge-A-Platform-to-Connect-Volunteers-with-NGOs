@@ -4,9 +4,7 @@ const User = require("../models/User");
 const auth = require("../middleware/Auth");
 const bcrypt = require("bcryptjs");
 
-/**
- * GET LOGGED-IN USER PROFILE
- */
+
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -16,9 +14,7 @@ router.get("/profile", auth, async (req, res) => {
   }
 });
 
-/**
- * PATCH PROFILE (PARTIAL UPDATE)
- */
+
 router.patch("/profile", auth, async (req, res) => {
   try {
     const allowedFields = [
@@ -50,9 +46,7 @@ router.patch("/profile", auth, async (req, res) => {
   }
 });
 
-/**
- * CHANGE PASSWORD
- */
+
 router.put("/change-password", auth, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 

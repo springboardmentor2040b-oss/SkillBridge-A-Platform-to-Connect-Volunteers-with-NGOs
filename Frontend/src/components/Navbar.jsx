@@ -3,7 +3,6 @@ import { IoMenu } from "react-icons/io5";
 import { useState } from "react";
 
 function Navbar() {
-<<<<<<< HEAD
   const navigate = useNavigate();
 
   const [showMobile, setShowMobile] = useState(false);
@@ -12,7 +11,6 @@ function Navbar() {
   const toggleMobile = () => setShowMobile(!showMobile);
   const toggleProfile = () => setShowProfile(!showProfile);
 
-  // Auth check
   const isLoggedIn = !!localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -23,7 +21,6 @@ function Navbar() {
 
   return (
     <nav className="w-full h-14 flex items-center justify-between bg-white px-4 lg:px-8 shadow-md relative">
-
       {/* LOGO */}
       <Link to="/" className="text-lg font-bold text-black">
         SkillBridge
@@ -58,19 +55,14 @@ function Navbar() {
               onClick={toggleProfile}
               className="flex items-center gap-2 font-semibold"
             >
-              {/* PROFILE BUTTON */}
-<button
-  onClick={toggleProfile}
-  className="flex items-center gap-2 font-semibold"
->
-  <div className="w-9 h-9 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold">
-    {(user?.fullName || user?.username || "U").charAt(0).toUpperCase()}
-  </div>
-  <span className="hidden sm:block">
-    {user?.fullName || "Profile"}
-  </span>
-</button>
-
+              <div className="w-9 h-9 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold">
+                {(user?.fullName || user?.username || "U")
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+              <span className="hidden sm:block">
+                {user?.fullName || "Profile"}
+              </span>
             </button>
 
             {/* PROFILE DROPDOWN */}
@@ -131,7 +123,10 @@ function Navbar() {
               <Link to="/profile" onClick={toggleMobile}>My Profile</Link>
               <Link to="/help" onClick={toggleMobile}>Help</Link>
               <Link to="/community" onClick={toggleMobile}>Community</Link>
-              <button onClick={handleLogout} className="text-left text-red-400">
+              <button
+                onClick={handleLogout}
+                className="text-left text-red-400"
+              >
                 Logout
               </button>
             </>
@@ -139,56 +134,6 @@ function Navbar() {
         </div>
       )}
     </nav>
-=======
-  const [show, setShow] = useState(false);
-
-  function toggle() {
-    setShow(!show);
-  }
-
-  return (
-    <div className="w-full h-14 flex items-center justify-between text-white px-8 bg-slate-900 relative">
-      {/* Logo */}
-      <div className="text-white">
-        <Link to="/" className="text-lg font-bold">SkillBridge</Link>
-      </div>
-
-      {/* Desktop Links */}
-      <div className="hidden lg:flex gap-8">
-        <Link to="/home" className="font-semibold">Home</Link>
-        <Link to="/about" className="font-semibold">About</Link>
-        <Link to="/opportunities" className="font-semibold">Opportunities</Link>
-        <Link to="/dashboard" className="font-semibold">Dashboard</Link>
-
-      </div>
-
-      {/* Desktop Auth */}
-      <div className="hidden lg:flex items-center gap-8">
-        <Link to="/login" className="font-semibold">Login</Link>
-        <Link to="/signup" className="bg-purple-900 rounded-lg px-3 py-1 font-semibold">
-          Sign up
-        </Link>
-      </div>
-
-      {/* Mobile Menu Button */}
-      <div className="flex lg:hidden">
-        <IoMenu className="text-2xl cursor-pointer" onClick={toggle} />
-      </div>
-
-      {/* Mobile Dropdown Menu */}
-      {show && (
-        <div className="h-96 w-full px-5 absolute left-0 top-14 bg-gray-900 flex flex-col text-white gap-6 pt-6 lg:hidden">
-          <Link to="/home" className="font-semibold">Home</Link>
-          <Link to="/about" className="font-semibold">About</Link>
-          <Link to="/opportunities" className="font-semibold">Opportunities</Link>
-          <Link to="/login" className="font-semibold">Login</Link>
-          <Link to="/signup" className="bg-purple-900 rounded-lg px-3 py-1 font-semibold">
-            Sign up
-          </Link>
-        </div>
-      )}
-    </div>
->>>>>>> 69353cff15f7cdc6050289f05633c99f1b829e78
   );
 }
 

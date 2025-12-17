@@ -29,7 +29,7 @@ export default function SkillBridgeSignup() {
 
     try {
       const res = await axios.post(
-        "http://localhost:4001/signup",
+        "http://localhost:4001/api/signup",
         formData
       );
 

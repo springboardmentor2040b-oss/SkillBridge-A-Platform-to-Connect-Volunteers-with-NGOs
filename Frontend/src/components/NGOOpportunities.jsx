@@ -1,8 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Plus } from 'lucide-react';
 
 export default function NGOOpportunities() {
+  const [opportunities, setOpportunities] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:4001/api/opportunities')
+      .then((res) => setOpportunities(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const filteredOpportunities = opportunities.filter((opp) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "open") return opp.status === "Open";
+    if (activeTab === "closed") return opp.status === "Closed";
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,7 +57,7 @@ export default function NGOOpportunities() {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  All (3)
+                  All({opportunities.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('open')}
@@ -51,7 +67,7 @@ export default function NGOOpportunities() {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  Open (3)
+                  Open ({opportunities.filter(opp => opp.status === "Open").length})
                 </button>
                 <button
                   onClick={() => setActiveTab('closed')}
@@ -61,7 +77,7 @@ export default function NGOOpportunities() {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  Closed (0)
+                  Closed ({opportunities.filter(opp => opp.status === "Closed").length})
                 </button>
               </div>
 
@@ -74,11 +90,62 @@ export default function NGOOpportunities() {
             </div>
           </div>
 
-          {/* Opportunities List - Empty State */}
+          {/* Opportunities List */}
           <div className="p-6">
             <div className="space-y-4">
-              {/* Opportunity cards will go here */}
-              
+              {filteredOpportunities.length === 0 ? (
+                <p className="text-center text-gray-500 py-4">No opportunities found.</p>
+              ) : (
+                filteredOpportunities.map((opp) => (
+                  <div key={opp._id} className="p-4 bg-gray-50 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-800">{opp.title}</h3>
+                    <p className="text-gray-600">{opp.description}</p>
+                    {/* Show skills */}
+                    {opp.skills && opp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {opp.skills.map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs font-medium bg-green-100 text-green-700 rounded-full px-3 py-1"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="text-xs font-medium bg-orange-100 text-orange-700 rounded-full px-3 py-1">
+                        {opp.status}
+                      </span>
+                      <span className="text-xs font-medium bg-blue-100 text-blue-700 rounded-full px-3 py-1">
+                        {new Date(opp.createdAt).toLocaleDateString()}
+                      </span>
+                      <button
+                        onClick={async () => {
+                          if (window.confirm("Delete this opportunity?")) {
+                            try {
+                              await axios.delete(
+                                `http://localhost:4001/api/opportunities/${opp._id}`,
+                                {
+                                  headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                  },
+                                }
+                              );
+                              setOpportunities((prev) => prev.filter((o) => o._id !== opp._id));
+                            } catch (err) {
+                              alert("Delete failed");
+                            }
+                          }
+                        }}
+                        className="ml-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
