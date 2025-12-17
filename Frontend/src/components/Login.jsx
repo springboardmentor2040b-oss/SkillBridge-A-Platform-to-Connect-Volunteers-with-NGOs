@@ -9,11 +9,7 @@ export default function SkillBridgeLogin() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-<<<<<<< HEAD
-  // ---------------- VALIDATION ----------------
-=======
   // -------- VALIDATION --------
->>>>>>> branch1
   const validateEmail = (value) => {
     if (!value.trim()) return "Email is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
@@ -27,11 +23,7 @@ export default function SkillBridgeLogin() {
     return "";
   };
 
-<<<<<<< HEAD
-  // ---------------- SUBMIT ----------------
-=======
   // -------- SUBMIT --------
->>>>>>> branch1
   const handleSubmit = async (e) => {
     e.preventDefault();
 
