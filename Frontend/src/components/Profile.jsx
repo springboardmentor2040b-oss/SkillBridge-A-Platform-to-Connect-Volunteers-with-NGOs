@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
-
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("details");
   const [editMode, setEditMode] = useState(false);
@@ -11,44 +10,45 @@ export default function Profile() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    // Fixed: Changed from /api/profile to /api/users/profile
     axios
-      .get("http://localhost:4001/api/profile", {
+      .get("http://localhost:4001/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUser(res.data))
       .catch(() => alert("Failed to load profile"));
-  }, []);
+  }, [token]);
 
   const handleChange = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });
 
   const saveProfile = async () => {
-  try {
-    const payload = {
-      fullName: user.fullName,
-      location: user.location,
-      bio: user.bio,
-      organisationName: user.organisationName,
-      organizationUrl: user.organizationUrl,
-    };
+    try {
+      const payload = {
+        fullName: user.fullName,
+        location: user.location,
+        bio: user.bio,
+        organisationName: user.organisationName,
+        organizationUrl: user.organizationUrl,
+      };
 
-    const res = await axios.patch(
-      "http://localhost:4001/api/profile",
-      payload,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+      // Fixed: Changed from /api/profile to /api/users/profile
+      const res = await axios.patch(
+        "http://localhost:4001/api/users/profile",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    setUser(res.data);
-    setEditMode(false);
-    alert("Profile updated successfully");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update profile");
-  }
-};
-
+      setUser(res.data);
+      setEditMode(false);
+      alert("Profile updated successfully");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile");
+    }
+  };
 
   if (!user) return <div className="p-10">Loading...</div>;
 
@@ -62,7 +62,7 @@ export default function Profile() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* LEFT PROFILE CARD */}
         <div className="bg-white rounded-xl shadow p-6 text-center">
-          <div className="w-24 h-24 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-white-600">
+          <div className="w-24 h-24 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-600">
             {user.fullName[0]}
           </div>
 
@@ -226,8 +226,9 @@ function ChangePassword() {
 
   const submit = async () => {
     try {
+      // Fixed: Changed from /api/change-password to /api/users/change-password
       await axios.put(
-        "http://localhost:4001/api/change-password",
+        "http://localhost:4001/api/users/change-password",
         data,
         {
           headers: {
@@ -244,7 +245,6 @@ function ChangePassword() {
 
   return (
     <div className="max-w-md space-y-5">
-
       {/* CURRENT PASSWORD */}
       <div>
         <label className="text-sm font-medium text-gray-600">

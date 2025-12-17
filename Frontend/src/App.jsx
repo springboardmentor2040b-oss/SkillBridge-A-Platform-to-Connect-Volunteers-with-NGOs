@@ -8,6 +8,7 @@ import Login from "./components/Login";
 
 import NGOOpportunities from "./components/NGOOpportunities";
 import CreateOpportunity from "./components/CreateOpportunity";
+import EditOpportunity from "./components/EditOpportunity";
 
 import Dashboard from "./components/Dashboard";
 import PostedOpportunities from "./components/postedopp";
@@ -36,6 +37,7 @@ function App() {
           element={<Navigate to="/create-opportunity" replace />}
         />
         <Route path="/create-opportunity" element={<CreateOpportunity />} />
+        <Route path="/edit-opportunity/:id" element={<EditOpportunity />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/postedopp" element={<PostedOpportunities />} />
