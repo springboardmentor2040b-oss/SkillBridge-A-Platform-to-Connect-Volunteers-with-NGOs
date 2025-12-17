@@ -9,7 +9,11 @@ export default function SkillBridgeLogin() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+<<<<<<< HEAD
   // ---------------- VALIDATION ----------------
+=======
+  // -------- VALIDATION --------
+>>>>>>> branch1
   const validateEmail = (value) => {
     if (!value.trim()) return "Email is required";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
@@ -23,7 +27,11 @@ export default function SkillBridgeLogin() {
     return "";
   };
 
+<<<<<<< HEAD
   // ---------------- SUBMIT ----------------
+=======
+  // -------- SUBMIT --------
+>>>>>>> branch1
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -36,7 +44,7 @@ export default function SkillBridgeLogin() {
     }
 
     try {
-      const res = await axios.post("http://localhost:4001/login", {
+      const res = await axios.post("http://localhost:4001/api/login", {
         email,
         password,
       });
@@ -51,7 +59,7 @@ export default function SkillBridgeLogin() {
     }
   };
 
-  // ---------------- UI ----------------
+  // -------- UI --------
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">

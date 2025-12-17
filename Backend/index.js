@@ -4,21 +4,24 @@ const cors = require("cors");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 const UserModel = require("./models/User");
+const opportunityRoutes = require("./routes/opportunityRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
+
+
 app.use(express.json());
 app.use(cors());
-const userRoutes = require("./routes/userRoutes");
-app.use("/api", userRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Error:", err));
+  .then(() => console.log(" MongoDB Connected"))
+  .catch((err) => console.error(" MongoDB Error:", err));
 
-// signup
-app.post("/signup", async (req, res) => {
+
+app.post("/api/signup", async (req, res) => {
   try {
     const {
       username,
@@ -32,16 +35,16 @@ app.post("/signup", async (req, res) => {
       organizationUrl,
     } = req.body;
 
-  
+    // Check existing user
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    
+    // Create user
     const user = await UserModel.create({
       username,
       email,
@@ -54,7 +57,7 @@ app.post("/signup", async (req, res) => {
       organizationUrl,
     });
 
-    
+    // Generate token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -68,12 +71,12 @@ app.post("/signup", async (req, res) => {
     });
   } catch (err) {
     console.error("Signup Error:", err);
-    res.status(500).json({ message: err.message || "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// login
-app.post("/login", async (req, res) => {
+// Login
+app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -117,8 +120,11 @@ app.post("/login", async (req, res) => {
 });
 
 
-app.listen(process.env.PORT || 4001, () => {
-  console.log(
-    `Server running on http://localhost:${process.env.PORT || 4001}`
-  );
+app.use("/api/opportunities", opportunityRoutes);
+app.use("/api/users", userRoutes);
+
+
+const PORT = process.env.PORT || 4001;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

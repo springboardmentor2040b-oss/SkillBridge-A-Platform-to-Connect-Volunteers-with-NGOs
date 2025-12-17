@@ -21,7 +21,6 @@ function Navbar() {
 
   return (
     <nav className="w-full h-14 flex items-center justify-between bg-white px-4 lg:px-8 shadow-md relative">
-
       {/* LOGO */}
       <Link to="/" className="text-lg font-bold text-black">
         SkillBridge
