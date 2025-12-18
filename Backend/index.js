@@ -29,8 +29,9 @@ app.post("/api/signup", async (req, res) => {
       fullName,
       role,
       location,
-      Bio,
-      organisationName,
+      bio,
+      skills,
+      organizationName,
       organizationUrl,
     } = req.body;
 
@@ -43,18 +44,29 @@ app.post("/api/signup", async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
-    const user = await UserModel.create({
+    // Prepare user data
+    const userData = {
       username,
       email,
       password: hashedPassword,
       fullName,
       role,
       location,
-      Bio,
-      organisationName,
-      organizationUrl,
-    });
+      bio,
+    };
+
+    // Add role-specific fields
+    if (role === "volunteer" && skills) {
+      userData.skills = Array.isArray(skills) ? skills : [];
+    }
+
+    if (role === "ngo") {
+      userData.organizationName = organizationName || "";
+      userData.organizationUrl = organizationUrl || "";
+    }
+
+    // Create user
+    const user = await UserModel.create(userData);
 
     // Generate token
     const token = jwt.sign(
@@ -70,7 +82,7 @@ app.post("/api/signup", async (req, res) => {
     });
   } catch (err) {
     console.error("Signup Error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 

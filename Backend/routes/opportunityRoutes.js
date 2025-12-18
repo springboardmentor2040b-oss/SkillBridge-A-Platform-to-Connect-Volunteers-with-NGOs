@@ -30,7 +30,7 @@ router.post("/", auth, async (req, res) => {
 // Get all opportunities
 router.get("/", async (req, res) => {
   try {
-    const opportunities = await Opportunity.find().populate('ngo', 'organisationName fullName');
+    const opportunities = await Opportunity.find().populate('ngo', 'organizationName fullName');
     res.json(opportunities);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 // Get a single opportunity by ID
 router.get("/:id", async (req, res) => {
   try {
-    const opportunity = await Opportunity.findById(req.params.id).populate('ngo', 'organisationName fullName email');
+    const opportunity = await Opportunity.findById(req.params.id).populate('ngo', 'organizationName fullName email');
     
     if (!opportunity) {
       return res.status(404).json({ message: "Opportunity not found" });

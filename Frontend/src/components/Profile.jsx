@@ -10,7 +10,6 @@ export default function Profile() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // Fixed: Changed from /api/profile to /api/users/profile
     axios
       .get("http://localhost:4001/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
@@ -28,11 +27,23 @@ export default function Profile() {
         fullName: user.fullName,
         location: user.location,
         bio: user.bio,
-        organisationName: user.organisationName,
-        organizationUrl: user.organizationUrl,
       };
 
-      // Fixed: Changed from /api/profile to /api/users/profile
+      // Add role-specific fields
+      if (user.role === "ngo") {
+        payload.organizationName = user.organizationName;
+        payload.organizationUrl = user.organizationUrl;
+      }
+
+      if (user.role === "volunteer") {
+        // Convert comma-separated string to array
+        payload.skills = user.skills 
+          ? (typeof user.skills === 'string' 
+              ? user.skills.split(',').map(s => s.trim()) 
+              : user.skills)
+          : [];
+      }
+
       const res = await axios.patch(
         "http://localhost:4001/api/users/profile",
         payload,
@@ -136,12 +147,31 @@ export default function Profile() {
                 />
               </div>
 
+              {/* VOLUNTEER SPECIFIC FIELDS */}
+              {user.role === "volunteer" && (
+                <div className="mt-6">
+                  <Field
+                    label="Skills (comma-separated)"
+                    name="skills"
+                    value={
+                      Array.isArray(user.skills)
+                        ? user.skills.join(", ")
+                        : user.skills || ""
+                    }
+                    onChange={handleChange}
+                    disabled={!editMode}
+                    placeholder="e.g., Teaching, Coding, Event Management"
+                  />
+                </div>
+              )}
+
+              {/* NGO SPECIFIC FIELDS */}
               {user.role === "ngo" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                   <Field
                     label="Organization Name"
-                    name="organisationName"
-                    value={user.organisationName || ""}
+                    name="organizationName"
+                    value={user.organizationName || ""}
                     onChange={handleChange}
                     disabled={!editMode}
                   />
@@ -193,19 +223,21 @@ export default function Profile() {
 }
 
 /* FIELD COMPONENT */
-function Field({ label, textarea, readOnly, ...props }) {
+function Field({ label, textarea, readOnly, placeholder, ...props }) {
   return (
     <div>
       <label className="text-sm font-medium text-gray-600">{label}</label>
       {textarea ? (
         <textarea
           {...props}
+          placeholder={placeholder}
           disabled={readOnly || props.disabled}
           className="w-full mt-1 border rounded-lg px-3 py-2"
         />
       ) : (
         <input
           {...props}
+          placeholder={placeholder}
           disabled={readOnly || props.disabled}
           className="w-full mt-1 border rounded-lg px-3 py-2"
         />
@@ -226,7 +258,6 @@ function ChangePassword() {
 
   const submit = async () => {
     try {
-      // Fixed: Changed from /api/change-password to /api/users/change-password
       await axios.put(
         "http://localhost:4001/api/users/change-password",
         data,

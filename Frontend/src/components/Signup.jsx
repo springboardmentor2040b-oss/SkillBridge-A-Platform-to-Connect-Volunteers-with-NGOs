@@ -10,7 +10,7 @@ export default function SkillBridgeSignup() {
     fullName: "",
     role: "",
     location: "",
-    Bio: "",
+    bio: "",
     organizationName: "",
     organizationUrl: "",
     skills: "",
@@ -107,10 +107,15 @@ export default function SkillBridgeSignup() {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:4001/api/signup",
-        formData
-      );
+  const payload = {
+    ...formData,
+    skills: formData.skills ? formData.skills.split(',').map(s => s.trim()) : [],
+  };
+
+  const res = await axios.post(
+    "http://localhost:4001/api/signup",
+    payload
+  );
 
       alert("Account created successfully!");
       navigate("/login");
@@ -315,9 +320,9 @@ export default function SkillBridgeSignup() {
               {/* Bio */}
               <div>
                 <textarea
-                  name="Bio"
+                  name="bio"
                   placeholder="Bio (optional)"
-                  value={formData.Bio}
+                  value={formData.bio}
                   onChange={handleChange}
                   rows="3"
                   className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"

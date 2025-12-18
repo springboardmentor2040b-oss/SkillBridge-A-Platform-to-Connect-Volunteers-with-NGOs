@@ -46,7 +46,7 @@ const UserSchema = new mongoose.Schema(
     },
 
     // NGO-only
-    organisationName: {
+    organizationName: {
       type: String,
     },
 
