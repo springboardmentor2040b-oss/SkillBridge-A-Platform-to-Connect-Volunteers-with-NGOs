@@ -45,7 +45,7 @@ export default function SkillBridgeLogin() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful!");
-      navigate("/home");
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
     }
@@ -54,14 +54,14 @@ export default function SkillBridgeLogin() {
   // -------- UI --------
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         {/* LEFT SECTION */}
         <div className="hidden lg:flex flex-col items-center justify-center">
-          <h1 className="text-5xl font-bold mb-10 text-white">SkillBridge</h1>
-          <div className="w-72 h-72 rounded-full overflow-hidden bg-white shadow-2xl">
+          <h1 className="text-6xl font-bold mb-12 text-white">SkillBridge</h1>
+          <div className="w-[28rem] h-[28rem] rounded-full overflow-hidden bg-white shadow-2xl">
             <img
-              src="/home.jpeg"
+              src="/Ellipse.jpg"
               alt="Illustration"
               className="w-full h-full object-cover"
             />
