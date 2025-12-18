@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
+import HowWorks from "./HowWorks";
 
 function Home() {
   const navigate = useNavigate();
@@ -91,8 +92,7 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
+      <HowWorks/>
       <Footer />
     </>
   );

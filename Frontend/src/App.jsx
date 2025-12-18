@@ -15,6 +15,7 @@ import Messages from "./components/Messages";
 import Applications from "./components/Application";
 import Profile from "./components/Profile";
 
+
 function App() {
   return (
     <>
@@ -29,8 +30,8 @@ function App() {
         <Route path="/about" element={<About />} />
 
         <Route path="/opportunities" element={<NGOOpportunities />} />
-
-        {/* Redirect old path to new path */}
+        
+      
         <Route
           path="/createOpportunity"
           element={<Navigate to="/create-opportunity" replace />}
