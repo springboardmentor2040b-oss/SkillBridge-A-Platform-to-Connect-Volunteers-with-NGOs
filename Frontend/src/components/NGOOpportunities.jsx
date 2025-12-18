@@ -38,6 +38,11 @@ export default function NGOOpportunities() {
     if (activeTab === "all") return true;
     if (activeTab === "open") return opp.status === "Open";
     if (activeTab === "closed") return opp.status === "Closed";
+    if (activeTab === "yours") {
+      return currentUserRole === 'ngo' && 
+             opp.ngo && 
+             opp.ngo._id === currentUserId;
+    }
     return true;
   });
 
@@ -81,6 +86,11 @@ export default function NGOOpportunities() {
     }
   };
 
+  // Count for "Your Opportunities" tab
+  const yourOpportunitiesCount = currentUserRole === 'ngo' 
+    ? opportunities.filter(opp => opp.ngo && opp.ngo._id === currentUserId).length 
+    : 0;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -111,10 +121,10 @@ export default function NGOOpportunities() {
           <div className="border-b px-6 py-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               {/* Tabs */}
-              <div className="flex gap-6">
+              <div className="flex gap-6 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab('all')}
-                  className={`pb-1 font-medium transition-colors ${
+                  className={`pb-1 font-medium transition-colors whitespace-nowrap ${
                     activeTab === 'all'
                       ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
@@ -124,7 +134,7 @@ export default function NGOOpportunities() {
                 </button>
                 <button
                   onClick={() => setActiveTab('open')}
-                  className={`pb-1 font-medium transition-colors ${
+                  className={`pb-1 font-medium transition-colors whitespace-nowrap ${
                     activeTab === 'open'
                       ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
@@ -134,7 +144,7 @@ export default function NGOOpportunities() {
                 </button>
                 <button
                   onClick={() => setActiveTab('closed')}
-                  className={`pb-1 font-medium transition-colors ${
+                  className={`pb-1 font-medium transition-colors whitespace-nowrap ${
                     activeTab === 'closed'
                       ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
@@ -142,6 +152,18 @@ export default function NGOOpportunities() {
                 >
                   Closed ({opportunities.filter(opp => opp.status === "Closed").length})
                 </button>
+                {currentUserRole === 'ngo' && (
+                  <button
+                    onClick={() => setActiveTab('yours')}
+                    className={`pb-1 font-medium transition-colors whitespace-nowrap ${
+                      activeTab === 'yours'
+                        ? 'text-gray-900 border-b-2 border-orange-500'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Your Opportunities ({yourOpportunitiesCount})
+                  </button>
+                )}
               </div>
 
               {/* Filter Dropdown */}
@@ -153,6 +175,9 @@ export default function NGOOpportunities() {
                 <option value="all">All Opportunities</option>
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
+                {currentUserRole === 'ngo' && (
+                  <option value="yours">Your Opportunities</option>
+                )}
               </select>
             </div>
           </div>
@@ -163,7 +188,12 @@ export default function NGOOpportunities() {
               {filteredOpportunities.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-gray-500 text-lg">No opportunities found.</p>
-                  <p className="text-gray-400 text-sm mt-2">Check back later for new opportunities!</p>
+                  <p className="text-gray-400 text-sm mt-2">
+                    {activeTab === 'yours' 
+                      ? "You haven't created any opportunities yet. Click 'Create New Opportunity' to get started!"
+                      : "Check back later for new opportunities!"
+                    }
+                  </p>
                 </div>
               ) : (
                 filteredOpportunities.map((opp) => (
@@ -387,7 +417,6 @@ export default function NGOOpportunities() {
                 <button
                   onClick={() => {
                     closeModal();
-                    // Navigate to apply page or trigger apply action
                     navigate(`/apply/${selectedOpportunity._id}`);
                   }}
                   className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition shadow-lg"
