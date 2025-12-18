@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, MapPin, Clock, ChevronRight } from 'lucide-react';
+import { Plus, MapPin, Clock, ChevronRight, X, Calendar, User } from 'lucide-react';
 
 export default function NGOOpportunities() {
   const navigate = useNavigate();
   const [opportunities, setOpportunities] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
-  const [ngoName, setNgoName] = useState('');
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserRole, setCurrentUserRole] = useState(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // Fetch opportunities
@@ -16,7 +19,7 @@ export default function NGOOpportunities() {
       .then((res) => setOpportunities(res.data))
       .catch((err) => console.error(err));
 
-    // Fetch NGO name from token (using existing /profile endpoint)
+    // Fetch current user info
     const token = localStorage.getItem('token');
     if (token) {
       axios
@@ -24,7 +27,8 @@ export default function NGOOpportunities() {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then((res) => {
-          setNgoName(res.data.organisationName || res.data.fullName);
+          setCurrentUserId(res.data._id);
+          setCurrentUserRole(res.data.role);
         })
         .catch((err) => console.error(err));
     }
@@ -36,6 +40,23 @@ export default function NGOOpportunities() {
     if (activeTab === "closed") return opp.status === "Closed";
     return true;
   });
+
+  // Check if current user can edit this opportunity
+  const canEdit = (opportunity) => {
+    return currentUserRole === 'ngo' && 
+           opportunity.ngo && 
+           opportunity.ngo._id === currentUserId;
+  };
+
+  const handleViewDetails = (opp) => {
+    setSelectedOpportunity(opp);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedOpportunity(null);
+  };
 
   const handleEdit = (id) => {
     navigate(`/edit-opportunity/${id}`);
@@ -67,16 +88,18 @@ export default function NGOOpportunities() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Your Opportunities</h1>
-              <p className="text-gray-600 mt-1">Manage your volunteering opportunities</p>
+              <h1 className="text-3xl font-bold text-gray-900">All Opportunities</h1>
+              <p className="text-gray-600 mt-1">Browse volunteering opportunities from all NGOs</p>
             </div>
-            <button 
-              onClick={() => navigate('/create-opportunity')}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              <Plus size={20} />
-              Create New Opportunity
-            </button>
+            {currentUserRole === 'ngo' && (
+              <button 
+                onClick={() => navigate('/create-opportunity')}
+                className="flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                <Plus size={20} />
+                Create New Opportunity
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -93,7 +116,7 @@ export default function NGOOpportunities() {
                   onClick={() => setActiveTab('all')}
                   className={`pb-1 font-medium transition-colors ${
                     activeTab === 'all'
-                      ? 'text-gray-900 border-b-2 border-blue-500'
+                      ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -103,7 +126,7 @@ export default function NGOOpportunities() {
                   onClick={() => setActiveTab('open')}
                   className={`pb-1 font-medium transition-colors ${
                     activeTab === 'open'
-                      ? 'text-gray-900 border-b-2 border-blue-500'
+                      ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -113,7 +136,7 @@ export default function NGOOpportunities() {
                   onClick={() => setActiveTab('closed')}
                   className={`pb-1 font-medium transition-colors ${
                     activeTab === 'closed'
-                      ? 'text-gray-900 border-b-2 border-blue-500'
+                      ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -125,7 +148,7 @@ export default function NGOOpportunities() {
               <select 
                 value={activeTab}
                 onChange={(e) => setActiveTab(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white cursor-pointer"
               >
                 <option value="all">All Opportunities</option>
                 <option value="open">Open</option>
@@ -140,7 +163,7 @@ export default function NGOOpportunities() {
               {filteredOpportunities.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-gray-500 text-lg">No opportunities found.</p>
-                  <p className="text-gray-400 text-sm mt-2">Create your first opportunity to get started!</p>
+                  <p className="text-gray-400 text-sm mt-2">Check back later for new opportunities!</p>
                 </div>
               ) : (
                 filteredOpportunities.map((opp) => (
@@ -157,7 +180,7 @@ export default function NGOOpportunities() {
                               {opp.title}
                             </h3>
                             <p className="text-sm text-gray-500">
-                              {ngoName || 'NGO'} · {new Date(opp.createdAt).toLocaleDateString()}
+                              {opp.ngo?.organisationName || opp.ngo?.fullName || 'NGO'} · {new Date(opp.createdAt).toLocaleDateString()}
                             </p>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -165,7 +188,7 @@ export default function NGOOpportunities() {
                               ? 'bg-green-100 text-green-700' 
                               : opp.status === 'Closed'
                               ? 'bg-gray-100 text-gray-700'
-                              : 'bg-blue-100 text-blue-700'
+                              : 'bg-orange-100 text-orange-700'
                           }`}>
                             {opp.status}
                           </span>
@@ -181,7 +204,7 @@ export default function NGOOpportunities() {
                             {opp.skills.map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                                className="px-3 py-1 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium"
                               >
                                 {skill}
                               </span>
@@ -205,31 +228,33 @@ export default function NGOOpportunities() {
                           )}
                         </div>
 
-                        {/* View Details Link */}
+                        {/* View Details Button */}
                         <button 
-                          onClick={() => navigate(`/opportunity/${opp._id}`)}
-                          className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium mt-4 text-sm"
+                          onClick={() => handleViewDetails(opp)}
+                          className="flex items-center gap-1 text-orange-600 hover:text-orange-700 font-medium mt-4 text-sm"
                         >
                           View details
                           <ChevronRight size={16} />
                         </button>
                       </div>
 
-                      {/* Right Actions */}
-                      <div className="flex lg:flex-col gap-2">
-                        <button
-                          onClick={() => handleEdit(opp._id)}
-                          className="px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(opp._id)}
-                          className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      {/* Right Actions - Only show if user can edit */}
+                      {canEdit(opp) && (
+                        <div className="flex lg:flex-col gap-2">
+                          <button
+                            onClick={() => handleEdit(opp._id)}
+                            className="px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(opp._id)}
+                            className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -238,6 +263,142 @@ export default function NGOOpportunities() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && selectedOpportunity && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Opportunity Details</h2>
+              <button
+                onClick={closeModal}
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="px-6 py-6 space-y-6">
+              {/* Title and Status */}
+              <div>
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {selectedOpportunity.title}
+                  </h3>
+                  <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${
+                    selectedOpportunity.status === 'Open' 
+                      ? 'bg-green-100 text-green-700' 
+                      : selectedOpportunity.status === 'Closed'
+                      ? 'bg-gray-100 text-gray-700'
+                      : 'bg-orange-100 text-orange-700'
+                  }`}>
+                    {selectedOpportunity.status}
+                  </span>
+                </div>
+                
+                {/* NGO Info */}
+                <div className="flex items-center gap-2 text-gray-600 mb-4">
+                  <User size={18} />
+                  <span className="font-medium">
+                    {selectedOpportunity.ngo?.organisationName || selectedOpportunity.ngo?.fullName || 'NGO'}
+                  </span>
+                  <span className="text-gray-400">·</span>
+                  <Calendar size={18} />
+                  <span>Posted on {new Date(selectedOpportunity.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">Description</h4>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                  {selectedOpportunity.description}
+                </p>
+              </div>
+
+              {/* Required Skills */}
+              {selectedOpportunity.skills && selectedOpportunity.skills.length > 0 && (
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Required Skills</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedOpportunity.skills.map((skill, idx) => (
+                      <span
+                        key={idx}
+                        className="px-4 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium border border-orange-200"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Additional Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Duration */}
+                {selectedOpportunity.duration && (
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock size={20} className="text-orange-500" />
+                      <h4 className="font-semibold text-gray-900">Duration</h4>
+                    </div>
+                    <p className="text-gray-700">{selectedOpportunity.duration}</p>
+                  </div>
+                )}
+
+                {/* Location */}
+                {selectedOpportunity.location && (
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MapPin size={20} className="text-orange-500" />
+                      <h4 className="font-semibold text-gray-900">Location</h4>
+                    </div>
+                    <p className="text-gray-700">{selectedOpportunity.location}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Contact Information */}
+              {selectedOpportunity.ngo?.email && (
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">Contact Information</h4>
+                  <p className="text-gray-700">
+                    For more information, contact: <span className="font-medium">{selectedOpportunity.ngo.email}</span>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t px-6 py-4 flex justify-end gap-3">
+              <button
+                onClick={closeModal}
+                className="px-6 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition"
+              >
+                Close
+              </button>
+              {currentUserRole === 'volunteer' && selectedOpportunity.status === 'Open' && (
+                <button
+                  onClick={() => {
+                    closeModal();
+                    // Navigate to apply page or trigger apply action
+                    navigate(`/apply/${selectedOpportunity._id}`);
+                  }}
+                  className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition shadow-lg"
+                >
+                  Apply Now
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -145,7 +145,7 @@ export default function CreateOpportunity() {
                 onChange={handleChange}
                 placeholder="e.g. Website Redesign"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               />
             </div>
 
@@ -161,7 +161,7 @@ export default function CreateOpportunity() {
                 placeholder="Provide details about the opportunity"
                 rows={5}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
               />
             </div>
 
@@ -182,7 +182,7 @@ export default function CreateOpportunity() {
                       onClick={() => togglePredefinedSkill(skill)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                         skills.includes(skill)
-                          ? 'bg-blue-500 text-white'
+                          ? 'bg-orange-500 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
@@ -207,12 +207,12 @@ export default function CreateOpportunity() {
                       }
                     }}
                     placeholder="e.g. Python Programming"
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   />
                   <button
                     type="button"
                     onClick={() => addSkill()}
-                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
+                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
                   >
                     Add
                   </button>
@@ -227,13 +227,13 @@ export default function CreateOpportunity() {
                     {skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium"
                       >
                         {skill}
                         <button
                           type="button"
                           onClick={() => removeSkill(skill)}
-                          className="hover:text-blue-900 transition"
+                          className="hover:text-orange-900 transition"
                         >
                           <X size={16} />
                         </button>
@@ -256,7 +256,7 @@ export default function CreateOpportunity() {
                   value={formData.duration}
                   onChange={handleChange}
                   placeholder="e.g. 2-3 weeks, Ongoing"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
 
@@ -270,27 +270,29 @@ export default function CreateOpportunity() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="e.g. New York, NY, Remote"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
             </div>
 
             {/* Status */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Status
-              </label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-white cursor-pointer"
-              >
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
-                <option value="In Progress">In Progress</option>
-              </select>
-            </div>
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Status
+  </label>
+  <select
+    name="status"
+    value={formData.status}
+    onChange={handleChange}
+    disabled
+    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition appearance-none bg-white cursor-not-allowed opacity-60"
+  >
+    <option value="Open">Open</option>
+    <option value="Closed">Closed</option>
+    <option value="In Progress">In Progress</option>
+  </select>
+  <p className="text-xs text-gray-500 mt-1">New opportunities are always created as Open</p>
+</div>
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-4 pt-4">
@@ -304,7 +306,7 @@ export default function CreateOpportunity() {
               </button>
               <button
                 type="submit"
-                className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Creating...' : 'Create Opportunity'}

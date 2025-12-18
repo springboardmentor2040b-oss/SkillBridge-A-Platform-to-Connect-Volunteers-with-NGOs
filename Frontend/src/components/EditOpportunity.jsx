@@ -147,7 +147,7 @@ export default function EditOpportunity() {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g. Website Redesign"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               />
             </div>
 
@@ -162,7 +162,7 @@ export default function EditOpportunity() {
                 onChange={handleChange}
                 placeholder="Provide details about the opportunity"
                 rows={5}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
               />
             </div>
 
@@ -183,12 +183,12 @@ export default function EditOpportunity() {
                     }
                   }}
                   placeholder="e.g. Web Development"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
                 <button
                   type="button"
                   onClick={addSkill}
-                  className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
+                  className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition flex items-center gap-2"
                 >
                   Add
                 </button>
@@ -200,13 +200,13 @@ export default function EditOpportunity() {
                   {skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium"
                     >
                       {skill}
                       <button
                         type="button"
                         onClick={() => removeSkill(skill)}
-                        className="hover:text-blue-900 transition"
+                        className="hover:text-orange-900 transition"
                       >
                         <X size={16} />
                       </button>
@@ -228,7 +228,7 @@ export default function EditOpportunity() {
                   value={formData.duration}
                   onChange={handleChange}
                   placeholder="e.g. 2-3 weeks, Ongoing"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
 
@@ -242,7 +242,7 @@ export default function EditOpportunity() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="e.g. New York, NY, Remote"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
             </div>
@@ -256,7 +256,7 @@ export default function EditOpportunity() {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-white cursor-pointer"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition appearance-none bg-white cursor-pointer"
               >
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
@@ -276,7 +276,7 @@ export default function EditOpportunity() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl"
+                className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl"
               >
                 Update Opportunity
               </button>
