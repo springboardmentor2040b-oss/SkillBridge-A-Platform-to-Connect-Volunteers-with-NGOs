@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
-
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("details");
   const [editMode, setEditMode] = useState(false);
@@ -12,43 +11,55 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4001/api/profile", {
+      .get("http://localhost:4001/api/users/profile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUser(res.data))
       .catch(() => alert("Failed to load profile"));
-  }, []);
+  }, [token]);
 
   const handleChange = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });
 
   const saveProfile = async () => {
-  try {
-    const payload = {
-      fullName: user.fullName,
-      location: user.location,
-      bio: user.bio,
-      organisationName: user.organisationName,
-      organizationUrl: user.organizationUrl,
-    };
+    try {
+      const payload = {
+        fullName: user.fullName,
+        location: user.location,
+        bio: user.bio,
+      };
 
-    const res = await axios.patch(
-      "http://localhost:4001/api/profile",
-      payload,
-      {
-        headers: { Authorization: `Bearer ${token}` },
+      // Add role-specific fields
+      if (user.role === "ngo") {
+        payload.organizationName = user.organizationName;
+        payload.organizationUrl = user.organizationUrl;
       }
-    );
 
-    setUser(res.data);
-    setEditMode(false);
-    alert("Profile updated successfully");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update profile");
-  }
-};
+      if (user.role === "volunteer") {
+        // Convert comma-separated string to array
+        payload.skills = user.skills 
+          ? (typeof user.skills === 'string' 
+              ? user.skills.split(',').map(s => s.trim()) 
+              : user.skills)
+          : [];
+      }
 
+      const res = await axios.patch(
+        "http://localhost:4001/api/users/profile",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setUser(res.data);
+      setEditMode(false);
+      alert("Profile updated successfully");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile");
+    }
+  };
 
   if (!user) return <div className="p-10">Loading...</div>;
 
@@ -62,7 +73,7 @@ export default function Profile() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* LEFT PROFILE CARD */}
         <div className="bg-white rounded-xl shadow p-6 text-center">
-          <div className="w-24 h-24 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-white-600">
+          <div className="w-24 h-24 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-600">
             {user.fullName[0]}
           </div>
 
@@ -136,12 +147,31 @@ export default function Profile() {
                 />
               </div>
 
+              {/* VOLUNTEER SPECIFIC FIELDS */}
+              {user.role === "volunteer" && (
+                <div className="mt-6">
+                  <Field
+                    label="Skills (comma-separated)"
+                    name="skills"
+                    value={
+                      Array.isArray(user.skills)
+                        ? user.skills.join(", ")
+                        : user.skills || ""
+                    }
+                    onChange={handleChange}
+                    disabled={!editMode}
+                    placeholder="e.g., Teaching, Coding, Event Management"
+                  />
+                </div>
+              )}
+
+              {/* NGO SPECIFIC FIELDS */}
               {user.role === "ngo" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                   <Field
                     label="Organization Name"
-                    name="organisationName"
-                    value={user.organisationName || ""}
+                    name="organizationName"
+                    value={user.organizationName || ""}
                     onChange={handleChange}
                     disabled={!editMode}
                   />
@@ -193,19 +223,21 @@ export default function Profile() {
 }
 
 /* FIELD COMPONENT */
-function Field({ label, textarea, readOnly, ...props }) {
+function Field({ label, textarea, readOnly, placeholder, ...props }) {
   return (
     <div>
       <label className="text-sm font-medium text-gray-600">{label}</label>
       {textarea ? (
         <textarea
           {...props}
+          placeholder={placeholder}
           disabled={readOnly || props.disabled}
           className="w-full mt-1 border rounded-lg px-3 py-2"
         />
       ) : (
         <input
           {...props}
+          placeholder={placeholder}
           disabled={readOnly || props.disabled}
           className="w-full mt-1 border rounded-lg px-3 py-2"
         />
@@ -227,7 +259,7 @@ function ChangePassword() {
   const submit = async () => {
     try {
       await axios.put(
-        "http://localhost:4001/api/change-password",
+        "http://localhost:4001/api/users/change-password",
         data,
         {
           headers: {
@@ -244,7 +276,6 @@ function ChangePassword() {
 
   return (
     <div className="max-w-md space-y-5">
-
       {/* CURRENT PASSWORD */}
       <div>
         <label className="text-sm font-medium text-gray-600">

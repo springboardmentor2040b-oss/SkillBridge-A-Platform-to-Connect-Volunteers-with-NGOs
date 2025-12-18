@@ -22,7 +22,7 @@ router.patch("/profile", auth, async (req, res) => {
       "skills",
       "location",
       "bio",
-      "organisationName",
+      "organizationName",
       "organizationUrl",
     ];
 
