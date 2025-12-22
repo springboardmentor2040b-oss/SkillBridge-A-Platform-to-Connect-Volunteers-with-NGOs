@@ -7,6 +7,7 @@ import About from "./components/About";
 import Login from "./components/Login";
 
 import NGOOpportunities from "./components/NGOOpportunities";
+import VolunteerOpportunities from "./components/VolunteerOpportunities";
 import CreateOpportunity from "./components/CreateOpportunity";
 import EditOpportunity from "./components/EditOpportunity";
 
@@ -30,9 +31,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
 
-        <Route path="/opportunities" element={<NGOOpportunities />} />
+        {/* Main opportunities page - shows VolunteerOpportunities */}
+        <Route path="/opportunities" element={<VolunteerOpportunities />} />
         
-      
+        {/* NGO-specific opportunities management */}
+        <Route path="/ngo-opportunities" element={<NGOOpportunities />} />
+        
         <Route
           path="/createOpportunity"
           element={<Navigate to="/create-opportunity" replace />}

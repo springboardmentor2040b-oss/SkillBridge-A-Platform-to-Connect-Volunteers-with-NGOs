@@ -45,7 +45,19 @@ export default function SkillBridgeLogin() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful!");
-      navigate("/dashboard");
+
+    
+
+const userRole = res.data.user.role;
+
+if (userRole === 'volunteer') {
+  navigate('/opportunities'); // Volunteer opportunities page (VolunteerOpportunities)
+} else if (userRole === 'ngo') {
+  navigate('/ngo-opportunities'); // NGO opportunities management page (NGOOpportunities)
+} else {
+  navigate('/dashboard'); // Default fallback
+}
+
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
     }
