@@ -12,7 +12,6 @@ import CreateOpportunity from "./components/CreateOpportunity";
 import EditOpportunity from "./components/EditOpportunity";
 
 import Dashboard from "./components/Dashboard";
-import PostedOpportunities from "./components/postedopp";
 import Messages from "./components/Messages";
 import Applications from "./components/Application";
 import Profile from "./components/Profile";
@@ -45,7 +44,6 @@ function App() {
         <Route path="/edit-opportunity/:id" element={<EditOpportunity />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/postedopp" element={<PostedOpportunities />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/application" element={<Applications />} />
         <Route path="/profile" element={<Profile />} />

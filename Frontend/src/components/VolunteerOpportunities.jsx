@@ -119,10 +119,10 @@ export default function VolunteerOpportunities() {
           <p className="text-gray-600 mb-6">Find opportunities that match your skills and interests</p>
         </div>
 
-        {/* Filter Section */}
+{/* Filter Section */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* Skills Search */}
+            {/* Skills Search with Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Skills
@@ -134,6 +134,24 @@ export default function VolunteerOpportunities() {
                 onChange={(e) => setSearchSkills(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
+              {/* Skill Tags below input */}
+              {availableSkills.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                  {availableSkills.map((skill, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSkillTagClick(skill)}
+                      className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                        selectedSkillTags.includes(skill)
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Location Search */}
@@ -167,28 +185,6 @@ export default function VolunteerOpportunities() {
               </select>
             </div>
           </div>
-
-          {/* Skill Tags */}
-          {availableSkills.length > 0 && (
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-2">
-                {availableSkills.slice(0, 10).map((skill, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSkillTagClick(skill)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                      selectedSkillTags.includes(skill)
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {skill}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Reset Filters Button */}
           <div className="flex justify-end">
             <button
@@ -359,22 +355,27 @@ export default function VolunteerOpportunities() {
                 </p>
               </div>
 
-              {/* Required Skills */}
-              {selectedOpportunity.skills && selectedOpportunity.skills.length > 0 && (
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-3">Required Skills</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedOpportunity.skills.map((skill, idx) => (
-                      <span
-                        key={idx}
-                        className="px-4 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium border border-orange-200"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+             {/* Skill Tags */}
+          {availableSkills.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Quick select skills:</p>
+              <div className="flex flex-wrap gap-2">
+                {availableSkills.slice(0, 8).map((skill, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSkillTagClick(skill)}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      selectedSkillTags.includes(skill)
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {skill}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
               {/* Additional Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
