@@ -136,7 +136,7 @@ const NgoProfile = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] lg:overflow-hidden bg-[#E9F5F8] overflow-y-auto">
+    <div className="min-h-screen bg-[#E9F5F8] overflow-y-auto">
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-6">
         {/* HEADER */}
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[340px_1fr] gap-4 items-start mb-4">

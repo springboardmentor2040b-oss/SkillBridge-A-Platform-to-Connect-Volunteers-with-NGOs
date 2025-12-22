@@ -4,10 +4,9 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import opportunityRoutes from "./routes/opportunityRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
+
 console.log("🔥 SERVER.JS FILE IS RUNNING");
-
-
-
 
 dotenv.config();
 connectDB();
@@ -21,6 +20,7 @@ app.get("/api/opportunities/test", (req, res) => {
 });
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/applications", applicationRoutes);
 
 app.get("/", (req, res) => {
   res.send("SkillBridge Backend Running");

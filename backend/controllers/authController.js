@@ -2,52 +2,75 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+/* ========================= SIGNUP ========================= */
 export const signup = async (req, res) => {
   try {
-    const { username, email, password, fullName,role, skills, organizationDescription} = req.body;
+    const {
+      username,
+      email,
+      password,
+      fullName,
+      role,
+      skills,
+      organizationDescription,
+    } = req.body;
 
-    // Email exists check
+    // ✅ Role validation
+    if (!role || !["Volunteer", "NGO", "volunteer", "ngo"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    const normalizedRole = role.toLowerCase();
+
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: "Email already registered" });
+    if (existing) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
+    const user = new User({
       username,
       email,
       password: hashedPassword,
       fullName,
-      role,
-      skills: role === "Volunteer" ? skills : "",
-      organizationDescription: role === "NGO" ? organizationDescription : "",
+      role: normalizedRole,
+      skills: normalizedRole === "volunteer" ? skills : [],
+      organizationDescription:
+        normalizedRole === "ngo" ? organizationDescription : "",
     });
 
-    await newUser.save();
-
-    res.json({ message: "Signup Successful" });
-
+    await user.save();
+    res.status(201).json({ message: "Signup Successful" });
   } catch (error) {
-    console.error("SIGNUP ERROR:", error); 
+    console.error("SIGNUP ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-
+/* ========================= LOGIN ========================= */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid Email or Password" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Email or Password" });
+    }
 
-    // Verify Password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid Email or Password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid Email or Password" });
+    }
 
-    // Generate Token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.json({
       message: "Login Successful",
@@ -55,77 +78,60 @@ export const login = async (req, res) => {
       user: {
         email: user.email,
         username: user.username,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
-
   } catch (error) {
+    console.error("LOGIN ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
- // GET logged-in user profile
- export const getProfile = async (req, res) => {
+
+/* ========================= GET PROFILE ========================= */
+export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch profile" });
   }
 };
 
-
-// UPDATE profile
+/* ========================= UPDATE PROFILE ========================= */
 export const updateProfile = async (req, res) => {
-try {
-    const userId = req.user.id; // from JWT
+  try {
     const updates = req.body;
-
-    // Prevent password update here
     delete updates.password;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updates,
-      { new: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
+      new: true,
+    }).select("-password");
 
     res.status(200).json(updatedUser);
   } catch (error) {
-  console.error(error);
-  res.status(500).json({ message: error.message });
-}
-
+    res.status(500).json({ message: error.message });
+  }
 };
 
+/* ========================= CHANGE PASSWORD ========================= */
 export const changePassword = async (req, res) => {
   try {
-    const userId = req.user.id;
     const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(
-      currentPassword,
-      user.password
-    );
-
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Current password is incorrect" });
+      return res.status(400).json({ message: "Current password is incorrect" });
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedNewPassword;
-
+    user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
     res.status(200).json({ message: "Password updated successfully" });
@@ -133,4 +139,3 @@ export const changePassword = async (req, res) => {
     res.status(500).json({ message: "Password update failed" });
   }
 };
-

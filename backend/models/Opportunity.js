@@ -4,18 +4,27 @@ const opportunitySchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    skillsRequired: { type: String },
-    duration: { type: String },
-    location: { type: String },
+    skillsRequired: String,
+    duration: String,
+    location: String,
+
     status: {
       type: String,
       enum: ["Open", "Closed", "In Progress"],
       default: "Open",
     },
+
+    // 🔑 SNAPSHOT NGO NAME (STATIC OR DYNAMIC)
+    ngoName: {
+      type: String,
+      default: "Community Support Organization",
+    },
+
+    // 🔑 PRESENT ONLY FOR NGO-CREATED OPPORTUNITIES
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }

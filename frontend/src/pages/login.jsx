@@ -33,13 +33,14 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(user));
 
       // Navigate based on role
-      if (user.role === "NGO") {
-        navigate("/profile/ngo");
-      } else if (user.role === "Volunteer") {
-        navigate("/profile/volunteer");
+      if (user.role === "ngo") {
+        navigate("/ngo/dashboard");
+      } else if (user.role === "volunteer") {
+        navigate("/volunteer/dashboard");
       } else {
-        navigate("/dashboard");
+        navigate("/");
       }
+      
     } catch (error) {
       console.error("LOGIN ERROR:", error.response?.data);
       alert(error.response?.data?.message || "Login failed");
@@ -47,7 +48,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E9F5F8] flex items-center justify-center px-4 sm:px-8 lg:px-10">
+    <div className="h-screen bg-[#E9F5F8] flex items-center justify-center px-4 sm:px-8 lg:px-10 overflow-hidden">
 
       {/* Top Logo */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-10 flex items-center gap-3">

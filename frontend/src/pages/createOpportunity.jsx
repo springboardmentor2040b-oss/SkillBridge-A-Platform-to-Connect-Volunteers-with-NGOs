@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import CustomDropdown from "../components/CustomDropdown";
 
 const CreateOpportunity = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [skills, setSkills] = useState([]);
-
+  const navigate = useNavigate();
   const [duration, setDuration] = useState("");
   const [location, setLocation] = useState("");
   const [status, setStatus] = useState("Open");
@@ -67,9 +68,7 @@ const CreateOpportunity = () => {
     }
   };
 
-  const handleCancel = () => {
-    console.log("Form cancelled");
-  };
+  const handleCancel = () => navigate("/opportunities");
 
   return (
     /* 🔑 FIX: make page scrollable */

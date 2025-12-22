@@ -1,17 +1,23 @@
 import express from "express";
-import { createOpportunity } from "../controllers/opportunityController.js";
+import {
+  createOpportunity,
+  getOpportunities,
+  getOpportunityById,
+  updateOpportunity,
+  deleteOpportunity,
+} from "../controllers/opportunityController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import ngoOnly from "../middleware/ngoOnly.js";
-console.log("🔥 OPPORTUNITY ROUTES FILE LOADED");
 
 const router = express.Router();
 
-// NGO creates opportunity
-router.post(
-  "/",
-  authMiddleware,
-  ngoOnly,
-  createOpportunity
-);
+/* PUBLIC */
+router.get("/", getOpportunities);
+router.get("/:id", getOpportunityById);
+
+/* NGO ONLY */
+router.post("/", authMiddleware, ngoOnly, createOpportunity);
+router.put("/:id", authMiddleware, ngoOnly, updateOpportunity);
+router.delete("/:id", authMiddleware, ngoOnly, deleteOpportunity);
 
 export default router;

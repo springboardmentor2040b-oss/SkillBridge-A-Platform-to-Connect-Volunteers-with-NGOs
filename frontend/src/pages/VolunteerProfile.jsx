@@ -152,7 +152,7 @@ const VolunteerProfile = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] lg:overflow-hidden bg-[#E9F5F8] overflow-y-auto">
+    <div className="min-h-screen bg-[#E9F5F8] overflow-y-auto">
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-6">
         {/* BACK BUTTON */}
         <div className="mt-2 sm:mt-4 mb-4">

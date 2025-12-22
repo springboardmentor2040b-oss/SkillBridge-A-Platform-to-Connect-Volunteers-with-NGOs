@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import logo from "../../assets/logo.svg";
 import bellIcon from "../../assets/bell.svg";
+const role = user?.role;
 
 const AppNavbar = () => {
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ const AppNavbar = () => {
           <nav className="flex flex-col">
             <button
               onClick={() => {
-                navigate("/dashboard");
+                navigate(role === "ngo" ? "/ngo/dashboard" : "/volunteer/dashboard");
                 setMobileMenuOpen(false);
               }}
               className="text-left px-4 sm:px-8 py-2.5 sm:py-3 text-[#0f172a] font-medium hover:bg-[#6ab8c5] transition text-sm sm:text-base"
@@ -107,7 +108,8 @@ const AppNavbar = () => {
             </button>
             <button
               onClick={() => {
-                navigate("/opportunities");
+                navigate(role === "ngo" ? "/opportunities" : "/volunteer/opportunities");
+
                 setMobileMenuOpen(false);
               }}
               className="text-left px-4 sm:px-8 py-2.5 sm:py-3 text-[#0f172a] font-medium hover:bg-[#6ab8c5] transition text-sm sm:text-base"
@@ -116,7 +118,8 @@ const AppNavbar = () => {
             </button>
             <button
               onClick={() => {
-                navigate("/applications");
+                navigate(role === "ngo" ? "/applications" : "/volunteer/applications");
+
                 setMobileMenuOpen(false);
               }}
               className="text-left px-4 sm:px-8 py-2.5 sm:py-3 text-[#0f172a] font-medium hover:bg-[#6ab8c5] transition text-sm sm:text-base"
@@ -125,7 +128,8 @@ const AppNavbar = () => {
             </button>
             <button
               onClick={() => {
-                navigate("/messages");
+                navigate(role === "ngo" ? "/messages" : "/volunteer/messages");
+
                 setMobileMenuOpen(false);
               }}
               className="text-left px-4 sm:px-8 py-2.5 sm:py-3 text-[#0f172a] font-medium hover:bg-[#6ab8c5] transition text-sm sm:text-base"

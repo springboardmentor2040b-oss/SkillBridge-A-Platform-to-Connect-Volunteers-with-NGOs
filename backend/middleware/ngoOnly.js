@@ -14,7 +14,7 @@ const ngoOnly = (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  if (req.user.role !== "NGO") {
+  if (req.user.role !== "ngo") {
     return res.status(403).json({
       message: "Access denied. Only NGOs can create opportunities.",
     });

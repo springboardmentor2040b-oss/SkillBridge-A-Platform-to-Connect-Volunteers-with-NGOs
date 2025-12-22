@@ -48,7 +48,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E9F5F8] flex items-center justify-center px-4 sm:px-8 lg:px-10">
+    <div className="h-screen bg-[#E9F5F8] flex items-center justify-center px-4 sm:px-8 lg:px-10 overflow-hidden">
       {/* Top Logo */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-10 flex items-center gap-3">
         <img src={logo} alt="SkillBridge" className="h-12 sm:h-14 w-auto" />
