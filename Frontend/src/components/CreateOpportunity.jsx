@@ -115,16 +115,16 @@ export default function CreateOpportunity() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-gray-900 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition"
+            className="flex items-center gap-2 text-slate-100 hover:text-slate-300 mb-4 transition"
           >
             <ArrowLeft size={20} />
             <span className="font-medium">Back</span>
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Opportunity</h1>
+          <h1 className="text-3xl font-bold text-slate-100">Create New Opportunity</h1>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function CreateOpportunity() {
                 onChange={handleChange}
                 placeholder="e.g. Website Redesign"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
               />
             </div>
 
@@ -161,7 +161,7 @@ export default function CreateOpportunity() {
                 placeholder="Provide details about the opportunity"
                 rows={5}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
+                className="w-full px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition resize-none"
               />
             </div>
 
@@ -183,7 +183,7 @@ export default function CreateOpportunity() {
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                         skills.includes(skill)
                           ? 'bg-orange-500 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-white border border-gray-400 text-gray-70 hover:bg-gray-200'
                       }`}
                     >
                       {skill}
@@ -207,7 +207,7 @@ export default function CreateOpportunity() {
                       }
                     }}
                     placeholder="e.g. Python Programming"
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                    className="flex-1 px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   />
                   <button
                     type="button"
@@ -256,7 +256,7 @@ export default function CreateOpportunity() {
                   value={formData.duration}
                   onChange={handleChange}
                   placeholder="e.g. 2-3 weeks, Ongoing"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
 
@@ -270,7 +270,7 @@ export default function CreateOpportunity() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="e.g. New York, NY, Remote"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                 />
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function CreateOpportunity() {
     value={formData.status}
     onChange={handleChange}
     disabled
-    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition appearance-none bg-white cursor-not-allowed opacity-60"
+    className="w-full px-4 py-3 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition appearance-none bg-white cursor-not-allowed opacity-60"
   >
     <option value="Open">Open</option>
     <option value="Closed">Closed</option>
@@ -299,7 +299,7 @@ export default function CreateOpportunity() {
               <button
                 type="button"
                 onClick={handleBack}
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition"
+                className="px-8 py-3 border-2 border-gray-400 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition"
                 disabled={isSubmitting}
               >
                 Cancel

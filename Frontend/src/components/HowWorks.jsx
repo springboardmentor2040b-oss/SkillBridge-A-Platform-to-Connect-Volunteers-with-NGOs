@@ -2,7 +2,7 @@ import React from 'react'
 
 const HowWorks = () => {
   return (
-    <div className='w-full max-h-fit md:h-[500px] my-6 m border-2 bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700  '>
+    <div className='w-full max-h-fit md:h-[500px] my-6  border-2 bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700  '>
     {/* heading */}
     <div className='pb-10'> 
         <h1 className=' text-3xl lg:text-4xl font-serif font-bold text-center pt-10 text-white  '>How It Works</h1>

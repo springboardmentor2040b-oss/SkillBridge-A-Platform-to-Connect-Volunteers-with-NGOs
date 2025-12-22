@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, MapPin, Clock, ChevronRight, X, Calendar, User } from 'lucide-react';
+import { Plus, MapPin, Clock, ChevronRight, X, Calendar, User, Search, RotateCcw } from 'lucide-react';
 
 export default function NGOOpportunities() {
   const navigate = useNavigate();
@@ -11,6 +11,17 @@ export default function NGOOpportunities() {
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  // Filter states
+  const [skillSearch, setSkillSearch] = useState('');
+  const [locationSearch, setLocationSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedSkillTags, setSelectedSkillTags] = useState([]);
+  const [selectedLocationTags, setSelectedLocationTags] = useState([]);
+
+  // Get all unique skills and locations from opportunities
+  const allSkills = [...new Set(opportunities.flatMap(opp => opp.skills || []))];
+  const allLocations = [...new Set(opportunities.map(opp => opp.location).filter(Boolean))];
 
   useEffect(() => {
     // Fetch opportunities
@@ -35,18 +46,37 @@ export default function NGOOpportunities() {
   }, []);
 
   const filteredOpportunities = opportunities.filter((opp) => {
-    if (activeTab === "all") return true;
-    if (activeTab === "open") return opp.status === "Open";
-    if (activeTab === "closed") return opp.status === "Closed";
-    if (activeTab === "yours") {
-      return currentUserRole === 'ngo' && 
-             opp.ngo && 
-             opp.ngo._id === currentUserId;
+    // Tab filter
+    if (activeTab === "open") {
+      if (opp.status !== "Open") return false;
+    } else if (activeTab === "closed") {
+      if (opp.status !== "Closed") return false;
+    } else if (activeTab === "yours") {
+      if (!(currentUserRole === 'ngo' && opp.ngo && opp.ngo._id === currentUserId)) return false;
     }
+
+    // Status filter
+    if (statusFilter !== 'all' && opp.status !== statusFilter) return false;
+
+    // Skills filter
+    if (selectedSkillTags.length > 0) {
+      const hasMatchingSkill = selectedSkillTags.some(skill => 
+        opp.skills?.some(oppSkill => oppSkill.toLowerCase().includes(skill.toLowerCase()))
+      );
+      if (!hasMatchingSkill) return false;
+    }
+
+    // Location filter
+    if (selectedLocationTags.length > 0) {
+      const hasMatchingLocation = selectedLocationTags.some(loc => 
+        opp.location?.toLowerCase().includes(loc.toLowerCase())
+      );
+      if (!hasMatchingLocation) return false;
+    }
+
     return true;
   });
 
-  // Check if current user can edit this opportunity
   const canEdit = (opportunity) => {
     return currentUserRole === 'ngo' && 
            opportunity.ngo && 
@@ -86,20 +116,62 @@ export default function NGOOpportunities() {
     }
   };
 
-  // Count for "Your Opportunities" tab
+  const addSkillTag = (skill) => {
+    if (skill && !selectedSkillTags.includes(skill)) {
+      setSelectedSkillTags([...selectedSkillTags, skill]);
+      setSkillSearch('');
+    }
+  };
+
+  const removeSkillTag = (skill) => {
+    setSelectedSkillTags(selectedSkillTags.filter(s => s !== skill));
+  };
+
+  const addLocationTag = (location) => {
+    if (location && !selectedLocationTags.includes(location)) {
+      setSelectedLocationTags([...selectedLocationTags, location]);
+      setLocationSearch('');
+    }
+  };
+
+  const removeLocationTag = (location) => {
+    setSelectedLocationTags(selectedLocationTags.filter(l => l !== location));
+  };
+
+  const resetFilters = () => {
+    setSkillSearch('');
+    setLocationSearch('');
+    setStatusFilter('all');
+    setSelectedSkillTags([]);
+    setSelectedLocationTags([]);
+  };
+
+  const hasActiveFilters = selectedSkillTags.length > 0 || selectedLocationTags.length > 0 || statusFilter !== 'all';
+
   const yourOpportunitiesCount = currentUserRole === 'ngo' 
     ? opportunities.filter(opp => opp.ngo && opp.ngo._id === currentUserId).length 
     : 0;
 
+  // Filtered skill and location suggestions
+  const filteredSkillSuggestions = allSkills.filter(skill => 
+    skill.toLowerCase().includes(skillSearch.toLowerCase()) && 
+    !selectedSkillTags.includes(skill)
+  ).slice(0, 5);
+
+  const filteredLocationSuggestions = allLocations.filter(location => 
+    location.toLowerCase().includes(locationSearch.toLowerCase()) && 
+    !selectedLocationTags.includes(location)
+  ).slice(0, 5);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-gray-900  border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">All Opportunities</h1>
-              <p className="text-gray-600 mt-1">Browse volunteering opportunities from all NGOs</p>
+              <h1 className="text-3xl font-bold text-white">Opportunities</h1>
+              <p className="text-gray-500 pt-2 mt-1">Find opportunities that match your skills and interests</p>
             </div>
             {currentUserRole === 'ngo' && (
               <button 
@@ -116,70 +188,207 @@ export default function NGOOpportunities() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl shadow-sm">
+        <div className="bg-white border-[2px] border-gray-400 rounded-2xl shadow-sm">
           {/* Tabs */}
           <div className="border-b px-6 py-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Tabs */}
-              <div className="flex gap-6 overflow-x-auto">
+            <div className="flex gap-6 overflow-x-auto">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`pb-1 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'all'
+                    ? 'text-gray-900 border-b-2 border-orange-500'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                All ({opportunities.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('open')}
+                className={`pb-1 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'open'
+                    ? 'text-gray-900 border-b-2 border-orange-500'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Open ({opportunities.filter(opp => opp.status === "Open").length})
+              </button>
+              <button
+                onClick={() => setActiveTab('closed')}
+                className={`pb-1 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'closed'
+                    ? 'text-gray-900 border-b-2 border-orange-500'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Closed ({opportunities.filter(opp => opp.status === "Closed").length})
+              </button>
+              {currentUserRole === 'ngo' && (
                 <button
-                  onClick={() => setActiveTab('all')}
+                  onClick={() => setActiveTab('yours')}
                   className={`pb-1 font-medium transition-colors whitespace-nowrap ${
-                    activeTab === 'all'
+                    activeTab === 'yours'
                       ? 'text-gray-900 border-b-2 border-orange-500'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  All ({opportunities.length})
+                  Your Opportunities ({yourOpportunitiesCount})
                 </button>
-                <button
-                  onClick={() => setActiveTab('open')}
-                  className={`pb-1 font-medium transition-colors whitespace-nowrap ${
-                    activeTab === 'open'
-                      ? 'text-gray-900 border-b-2 border-orange-500'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  Open ({opportunities.filter(opp => opp.status === "Open").length})
-                </button>
-                <button
-                  onClick={() => setActiveTab('closed')}
-                  className={`pb-1 font-medium transition-colors whitespace-nowrap ${
-                    activeTab === 'closed'
-                      ? 'text-gray-900 border-b-2 border-orange-500'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  Closed ({opportunities.filter(opp => opp.status === "Closed").length})
-                </button>
-                {currentUserRole === 'ngo' && (
-                  <button
-                    onClick={() => setActiveTab('yours')}
-                    className={`pb-1 font-medium transition-colors whitespace-nowrap ${
-                      activeTab === 'yours'
-                        ? 'text-gray-900 border-b-2 border-orange-500'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Your Opportunities ({yourOpportunitiesCount})
-                  </button>
+              )}
+            </div>
+          </div>
+
+          {/* Filters Section */}
+          <div className="border-b px-6 py-6 bg-gray-50">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Skills Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Skills
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search skills..."
+                    value={skillSearch}
+                    onChange={(e) => setSkillSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                  {skillSearch && filteredSkillSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+                      {filteredSkillSuggestions.map((skill, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => addSkillTag(skill)}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
+                        >
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {/* Skill Tags */}
+                {selectedSkillTags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {selectedSkillTags.map((skill, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-orange-500 rounded-full text-sm"
+                      >
+                        {skill}
+                        <button onClick={() => removeSkillTag(skill)}>
+                          <X size={14} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                 )}
+                {/* Quick Select Common Skills */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {['Web Development', 'Translation', 'Marketing'].map((skill) => (
+                    !selectedSkillTags.includes(skill) && allSkills.includes(skill) && (
+                      <button
+                        key={skill}
+                        onClick={() => addSkillTag(skill)}
+                        className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
+                      >
+                        {skill}
+                      </button>
+                    )
+                  ))}
+                </div>
               </div>
 
-              {/* Filter Dropdown */}
-              <select 
-                value={activeTab}
-                onChange={(e) => setActiveTab(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white cursor-pointer"
-              >
-                <option value="all">All Opportunities</option>
-                <option value="open">Open</option>
-                <option value="closed">Closed</option>
-                {currentUserRole === 'ngo' && (
-                  <option value="yours">Your Opportunities</option>
+              {/* Location Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search locations..."
+                    value={locationSearch}
+                    onChange={(e) => setLocationSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  />
+                  {locationSearch && filteredLocationSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+                      {filteredLocationSuggestions.map((location, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => addLocationTag(location)}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
+                        >
+                          {location}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {/* Location Tags */}
+                {selectedLocationTags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {selectedLocationTags.map((location, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm"
+                      >
+                        {location}
+                        <button onClick={() => removeLocationTag(location)}>
+                          <X size={14} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                 )}
-              </select>
+                {/* Quick Select Common Locations */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {['Delhi', 'Remote', 'Kolkata'].map((location) => (
+                    !selectedLocationTags.includes(location) && allLocations.includes(location) && (
+                      <button
+                        key={location}
+                        onClick={() => addLocationTag(location)}
+                        className="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
+                      >
+                        {location}
+                      </button>
+                    )
+                  ))}
+                </div>
+              </div>
+
+              {/* Status Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="all">All</option>
+                  <option value="Open">Open</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
             </div>
+
+            {/* Reset Filters Button */}
+            {hasActiveFilters && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={resetFilters}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                >
+                  <RotateCcw size={16} />
+                  Reset Filters
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Opportunities List */}
@@ -189,9 +398,11 @@ export default function NGOOpportunities() {
                 <div className="text-center py-12">
                   <p className="text-gray-500 text-lg">No opportunities found.</p>
                   <p className="text-gray-400 text-sm mt-2">
-                    {activeTab === 'yours' 
-                      ? "You haven't created any opportunities yet. Click 'Create New Opportunity' to get started!"
-                      : "Check back later for new opportunities!"
+                    {hasActiveFilters 
+                      ? "Try adjusting your filters to see more opportunities."
+                      : activeTab === 'yours' 
+                        ? "You haven't created any opportunities yet. Click 'Create New Opportunity' to get started!"
+                        : "Check back later for new opportunities!"
                     }
                   </p>
                 </div>
@@ -199,23 +410,23 @@ export default function NGOOpportunities() {
                 filteredOpportunities.map((opp) => (
                   <div 
                     key={opp._id} 
-                    className="border border-gray-200 rounded-xl p-6 bg-white hover:shadow-md transition-shadow"
+                    className="border border-orange-500 rounded-xl p-6 bg-white   hover:shadow-xl transition-shadow"
                   >
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                       {/* Left Content */}
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-1">
+                            <h3 className="text-2xl font-bold te mb-1">
                               {opp.title}
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-md text-gray-900">
                               {opp.ngo?.organisationName || opp.ngo?.fullName || 'NGO'} · {new Date(opp.createdAt).toLocaleDateString()}
                             </p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          <span className={`px-3 mt-1 py-1 rounded-full text-xs font-semibold ${
                             opp.status === 'Open' 
-                              ? 'bg-green-100 text-green-700' 
+                              ? 'border border-gray-600 bg-purple-100 text-purple-700' 
                               : opp.status === 'Closed'
                               ? 'bg-gray-100 text-gray-700'
                               : 'bg-orange-100 text-orange-700'
@@ -230,11 +441,11 @@ export default function NGOOpportunities() {
 
                         {/* Skills */}
                         {opp.skills && opp.skills.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
+                          <div className="flex flex-wrap gap-3 mb-3">
                             {opp.skills.map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="px-3 py-1 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium"
+                                className="px-4 py-1 border border-gray-900 rounded-lg text-sm font-medium"
                               >
                                 {skill}
                               </span>
@@ -279,7 +490,7 @@ export default function NGOOpportunities() {
                           </button>
                           <button
                             onClick={() => handleDelete(opp._id)}
-                            className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition"
+                            className="px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-red-600 transition"
                           >
                             Delete
                           </button>

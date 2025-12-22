@@ -45,7 +45,7 @@ function Navbar() {
   return (
     <nav className="w-full h-14 flex items-center justify-between bg-white px-4 lg:px-8 shadow-md relative">
       {/* LOGO */}
-      <Link to="/" className="text-lg font-bold text-black">
+      <Link to="/" className="text-lg font-bold text-orange-500">
         SkillBridge
       </Link>
 
@@ -55,6 +55,8 @@ function Navbar() {
         {isHomePage ? (
           <>
             <Link to="/home" className="font-semibold hover:text-orange-500 transition">Home</Link>
+            <Link to="/opportunities" className="font-semibold hover:text-orange-500 transition">Opportunities</Link>
+            <Link to="/dashboard" className="font-semibold hover:text-orange-500 transition">Dashboard</Link>
             <Link to="/about" className="font-semibold hover:text-orange-500 transition">About</Link>
           </>
         ) : isDashboardArea ? (
