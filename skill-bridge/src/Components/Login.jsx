@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 
 const Login = () => {
@@ -23,12 +23,12 @@ const Login = () => {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("fullName", data.user?.fullName || "");
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/dashboard");
       } else {
         setError(data.message || "Login failed");
       }
-    } catch {
+    } catch (err) {
       setError("Server error");
     }
   };
@@ -37,12 +37,36 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="email" placeholder="Email" required value={email}
-            onChange={(e) => setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" required value={password}
-            onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit" className="auth-btn">Login</button>
+
+        {/* 🔹 class added ONLY for vertical layout */}
+        <form onSubmit={handleSubmit} className="login-form">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <p className="signup-prompt">
+            Don't have an account?{" "}
+            <Link to="/signup" className="signup-link">
+              Sign Up
+            </Link>
+          </p>
+
+          <button type="submit" className="auth-btn">
+            Login
+          </button>
+
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
       </div>

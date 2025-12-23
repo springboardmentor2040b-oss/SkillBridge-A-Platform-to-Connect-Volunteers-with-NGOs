@@ -1,50 +1,54 @@
-import React from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import NavBar from "./Components/NavBar";
 import Hero from "./Components/Hero";
 import Signup from "./Components/Signup";
 import Login from "./Components/Login";
 import Dashboard from "./Components/Dashboard";
+import AccountSettings from "./Components/Accountsettings";
+import CreateOpportunity from "./Components/CreateOpportunity";
+import Opportunities from "./Components/Opportunities";
+import ApplyOpportunity from "./Components/ApplyOpportunity"; // ✅ ADD
 
 function App() {
-  const token = localStorage.getItem("token");
-  const fullName = localStorage.getItem("fullName");
-  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user"))
+  );
 
   return (
     <>
-      <NavBar />
+      <NavBar user={currentUser} />
 
       <Routes>
+        <Route path="/" element={<Hero />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Dashboard */}
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Create Opportunity */}
         <Route
-          path="/"
-          element={
-            <Hero
-              goSignup={() => navigate("/signup")}
-              goLogin={() => navigate("/login")}
-            />
-          }
+          path="/create-opportunity"
+          element={<CreateOpportunity />}
+        />
+
+        {/* View Opportunities */}
+        <Route
+          path="/opportunities"
+          element={<Opportunities />}
+        />
+
+        {/* ✅ APPLY OPPORTUNITY PAGE */}
+        <Route
+          path="/apply/:id"
+          element={<ApplyOpportunity />}
         />
 
         <Route
-          path="/login"
-          element={token ? <Navigate to="/dashboard" /> : <Login />}
+          path="/account-settings"
+          element={<AccountSettings onUserUpdate={setCurrentUser} />}
         />
-
-        <Route
-          path="/signup"
-          element={token ? <Navigate to="/dashboard" /> : <Signup />}
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            token ? <Dashboard fullName={fullName} /> : <Navigate to="/login" />
-          }
-        />
-
-        {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );

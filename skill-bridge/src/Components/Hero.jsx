@@ -1,11 +1,28 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Hero.css";
+import "./Footer.css";
 import img from "../assets/s.jpg";
-import { FaUsers, FaBuilding, FaClock, FaHeart } from "react-icons/fa";
+import {
+  FaUsers,
+  FaBuilding,
+  FaClock,
+  FaHeart,
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 
-const Hero = ({ goSignup, goLogin }) => {
+const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <>
+      {/* HERO SECTION */}
       <section className="hero">
         <div className="floating-circle circle1"></div>
         <div className="floating-circle circle2"></div>
@@ -21,10 +38,17 @@ const Hero = ({ goSignup, goLogin }) => {
             </p>
 
             <div className="hero-buttons animate-slide-delay2">
-              <button type="button" className="btn-primary" onClick={goSignup}>
+              <button
+                className="btn-primary"
+                onClick={() => navigate("/signup")}
+              >
                 Get Started 🚀
               </button>
-              <button type="button" className="btn-secondary" onClick={goLogin}>
+
+              <button
+                className="btn-secondary"
+                onClick={() => navigate("/login")}
+              >
                 Login
               </button>
             </div>
@@ -36,6 +60,7 @@ const Hero = ({ goSignup, goLogin }) => {
         </div>
       </section>
 
+      {/* STATS SECTION */}
       <section className="stats-section">
         <div className="stat-card">
           <FaUsers size={28} />
@@ -58,6 +83,59 @@ const Hero = ({ goSignup, goLogin }) => {
           <p>Projects Completed</p>
         </div>
       </section>
+
+      {/* FOOTER SECTION */}
+      <footer className="footer">
+        <div className="footer-container">
+          <div className="footer-box glass">
+            <h2>
+              Skill<span>Bridge</span>
+            </h2>
+            <p>
+              Bridging skills with opportunities. Learn smarter, grow faster,
+              and build a better future.
+            </p>
+
+            <div className="social-icons">
+              <FaFacebookF />
+              <FaTwitter />
+              <FaLinkedinIn />
+              <FaInstagram />
+            </div>
+          </div>
+
+          <div className="footer-box">
+            <h3>Quick Links</h3>
+            <ul>
+              <li>Home</li>
+              <li>Courses</li>
+              <li>Mentors</li>
+              <li>About Us</li>
+            </ul>
+          </div>
+
+          <div className="footer-box">
+            <h3>Resources</h3>
+            <ul>
+              <li>Blog</li>
+              <li>Help Center</li>
+              <li>Privacy Policy</li>
+              <li>Terms & Conditions</li>
+            </ul>
+          </div>
+
+          <div className="footer-box">
+            <h3>Contact</h3>
+            <p><FaEnvelope /> support@skillbridge.com</p>
+            <p><FaPhoneAlt /> +91 98765 43210</p>
+            <p><FaMapMarkerAlt /> India</p>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          © 2025 SkillBridge. All rights reserved.
+        </div>
+      </footer>
     </>
   );
 };

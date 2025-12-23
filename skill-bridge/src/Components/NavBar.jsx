@@ -1,36 +1,104 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import "./NavBar.css";
 
-const NavBar = () => {
+const NavBar = ({ user }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [showProfile, setShowProfile] = useState(false);
+  const profileRef = useRef(null);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("fullName");
-    navigate("/login"); // NO PAGE RELOAD
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
-    <nav style={{ padding: "1rem", background: "#eee" }}>
-      <Link to="/">Home</Link>
+    <nav className="nav">
+      <div className="nav-container">
+        <div className="logo">
+          <div className="logo-icon">SB</div>
+          <h2>SkillBridge</h2>
+        </div>
 
-      {!token && (
-        <>
-          {" | "} <Link to="/login">Login</Link>
-          {" | "} <Link to="/signup">Signup</Link>
-        </>
-      )}
+        {/* NAV LINKS */}
+        <ul className="nav-links">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
 
-      {token && (
-        <>
-          {" | "} <Link to="/dashboard">Dashboard</Link>
-          {" | "}
-          <button type="button" onClick={handleLogout}>
-            Logout
-          </button>
-        </>
-      )}
+          {/* ✅ FIXED View Opportunities */}
+          {token && (
+            <li>
+              <button
+                type="button"
+                onClick={() => navigate("/opportunities")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  font: "inherit",
+                  padding: 0
+                }}
+              >
+                Opportunities
+              </button>
+            </li>
+          )}
+
+          {token && (
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          )}
+        </ul>
+
+        {/* PROFILE SECTION */}
+        {token && (
+          <div className="nav-view-section">
+            <div className="profile-wrapper" ref={profileRef}>
+              <div
+                className="profile-icon"
+                onClick={() => setShowProfile(!showProfile)}
+              >
+                {user?.username?.charAt(0).toUpperCase() || "U"}
+              </div>
+
+              {showProfile && (
+                <div className="profile-dropdown">
+                  <div className="profile-header">
+                    <div className="profile-icon large">
+                      {user?.username?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                    <div>
+                      <h4>{user?.username || user?.fullName || "User"}</h4>
+                      <p>{user?.email}</p>
+                      <span className="role">
+                        {user?.role || user?.userType}
+                      </span>
+                    </div>
+                  </div>
+
+                  <hr />
+
+                  <button
+                    onClick={() => {
+                      setShowProfile(false);
+                      navigate("/account-settings");
+                    }}
+                  >
+                    Account Settings
+                  </button>
+
+                  <button className="logout-btn" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

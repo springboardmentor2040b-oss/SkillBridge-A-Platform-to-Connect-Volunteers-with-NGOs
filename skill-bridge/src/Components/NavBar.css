@@ -1,0 +1,219 @@
+/* ================= NAVBAR CONTAINER ================= */
+.nav {
+  width: 100%;
+  background: #f8f9fa;
+  padding: 12px 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1000;
+}
+
+.nav-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ================= LOGO ================= */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f7cff, #6c9bff);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================= NAV LINKS ================= */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  list-style: none;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #1f2c5c;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-links li a:hover {
+  color: #4f7cff;
+}
+
+/* ================= VIEW SECTION ================= */
+.nav-view-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-view-section a {
+  text-decoration: none;
+  color: #1f2c5c;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-view-section a:hover {
+  color: #4f7cff;
+}
+
+/* ================= PROFILE SECTION ================= */
+.profile-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Profile Circle */
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f7cff, #6c9bff);
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.05);
+}
+
+/* Large icon inside dropdown */
+.profile-icon.large {
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+}
+
+/* Dropdown container */
+.profile-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 280px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  z-index: 2000;
+  animation: fadeDown 0.25s ease;
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-header h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #1f2c5c;
+}
+
+.profile-header p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Role badge */
+.role {
+  display: inline-block;
+  font-size: 12px;
+  background: #eef2ff;
+  color: #4f7cff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+/* Dropdown buttons */
+.profile-dropdown button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Account settings */
+.profile-dropdown button:first-of-type {
+  background: #f4f6ff;
+  color: #1f2c5c;
+}
+
+.profile-dropdown button:first-of-type:hover {
+  background: #e0e7ff;
+}
+
+/* Logout */
+.logout-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff8787);
+  color: white;
+}
+
+.logout-btn:hover {
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.35);
+}
+
+/* Animation */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-links li a[href="/opportunities"] {
+  position: relative;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.nav-links li a[href="/opportunities"]::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background-color: #4f46e5; 
+  transition: width 0.3s ease;
+}
+
+.nav-links li a[href="/opportunities"]:hover::after {
+  width: 100%;
+}
+.nav-links li a[href="/opportunities"].active {
+  color: #4f46e5;
+}

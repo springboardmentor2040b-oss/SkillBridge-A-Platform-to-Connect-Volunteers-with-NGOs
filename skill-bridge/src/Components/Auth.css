@@ -1,149 +1,215 @@
-/* ==================== RESET ==================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-/* ==================== BODY ==================== */
-body {
-  background: #f4f7fc;
-}
-
-/* ==================== CONTAINER ==================== */
+/* ================= SHARED AUTH LAYOUT ================= */
 .auth-container {
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;   /* center horizontally */
-  align-items: flex-start;   /* align items at top */
-  padding: 80px 20px 20px 20px; /* push card down */
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7ff, #e4e8ff);
+  padding: 20px;
 }
 
-/* ==================== CARD ==================== */
 .auth-card {
-  width: 450px;            /* desktop width */
-  max-width: 95%;          /* responsive for smaller screens */
-  background: #ffffff;
-  padding: 50px;
-  border-radius: 18px;
-  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.15);
-  animation: fadeIn 0.4s ease;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  padding: 50px 40px;
+  border-radius: 25px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 550px;
+  animation: fadeIn 1s ease forwards;
 }
 
-/* Fade-in animation */
+/* ================= HEADINGS ================= */
+.auth-card h2 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1f2c5c;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.auth-card .subtitle {
+  font-size: 14px;
+  color: #5f6c9a;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* ================= FORM LAYOUT ================= */
+.auth-card form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Labels (used in signup only, login unaffected) */
+.auth-card label {
+  grid-column: span 2;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2c5c;
+  margin-bottom: -8px;
+}
+
+/* ================= INPUTS ================= */
+.auth-card form input,
+.auth-card form select,
+.auth-card form textarea {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #d0d5dd;
+  font-size: 15px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+/* Placeholder */
+.auth-card form input::placeholder,
+.auth-card form textarea::placeholder {
+  color: #9aa0b0;
+}
+
+/* Focus */
+.auth-card form input:focus,
+.auth-card form select:focus,
+.auth-card form textarea:focus {
+  border-color: #4f7cff;
+  box-shadow: 0 6px 20px rgba(79, 124, 255, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* Select arrow fix */
+.auth-card form select {
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Textarea */
+.auth-card form textarea {
+  resize: none;
+  min-height: 110px;
+}
+
+/* ================= FULL-WIDTH FIELDS ================= */
+/* NGO-specific & long fields */
+.auth-card form textarea,
+.auth-card form select,
+.auth-card form input[name="location"],
+.auth-card form input[name="organizationName"],
+.auth-card form input[name="websiteUrl"] {
+  grid-column: span 2;
+}
+
+/* ================= BUTTON ================= */
+.auth-card button {
+  grid-column: span 2;
+  padding: 14px 0;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #4f7cff, #6c9bff);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.auth-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(79, 124, 255, 0.35);
+}
+
+/* ================= ERROR MESSAGE ================= */
+.auth-card .error {
+  grid-column: span 2;
+  font-size: 14px;
+  color: #d92d20;
+  text-align: center;
+  margin-top: -5px;
+}
+
+/* ================= LOGIN / SIGNUP PROMPT ================= */
+.signup-prompt {
+  font-size: 14px;
+  text-align: center;
+  margin: 10px 0 0;
+  color: #1f2c5c;
+}
+
+.signup-link {
+  color: #4f7cff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link:hover {
+  color: #6c9bff;
+  text-decoration: underline;
+}
+
+/* ================= ANIMATION ================= */
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
     transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* ==================== TITLE ==================== */
-.auth-card h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 28px;
-  color: #333;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .auth-card form {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-card form textarea,
+  .auth-card form select,
+  .auth-card button,
+  .auth-card label {
+    grid-column: span 1;
+  }
 }
 
-/* ==================== INPUTS ==================== */
-.input-group {
-  margin-bottom: 20px;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #444;
-}
-
-.input-group input,
-.input-group select {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  outline: none;
-  transition: 0.2s;
-}
-
-.input-group input::placeholder {
-  color: #aaa;
-}
-
-.input-group input:focus,
-.input-group select:focus {
-  border-color: #4a78ff;
-  box-shadow: 0 0 8px rgba(74, 120, 255, 0.4);
-}
-
-/* ==================== BUTTONS ==================== */
-.auth-btn {
-  width: 100%;
-  padding: 14px;
-  background: #4a78ff;
-  border: none;
-  color: #fff;
-  border-radius: 12px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 15px;
-  transition: 0.2s;
-}
-
-.auth-btn:hover {
-  background: #3a63d6;
-}
-
-/* ==================== REDIRECT TEXT ==================== */
-.redirect-text {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 14px;
-}
-
-.switch-btn {
-  background: none;
-  border: none;
-  color: #4a78ff;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 5px;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.switch-btn:hover {
-  text-decoration: underline;
-}
-
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .auth-card {
-    width: 90%;
-    padding: 35px;
+    padding: 40px 25px;
   }
 
-  .input-group input,
-  .input-group select {
-    padding: 12px;
-    font-size: 15px;
+  .auth-card h2 {
+    font-size: 26px;
   }
 
-  .auth-btn {
-    padding: 12px;
-    font-size: 15px;
+  .auth-card .subtitle {
+    font-size: 13px;
   }
+
+  .auth-card form input,
+  .auth-card form select,
+  .auth-card form textarea {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .auth-card button {
+    font-size: 14px;
+  }
+}
+/* ================= LOGIN PAGE ONLY (VERTICAL LAYOUT) ================= */
+.login-form {
+  display: flex !important;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-form input,
+.login-form button,
+.login-form .signup-prompt {
+  width: 100%;
 }
