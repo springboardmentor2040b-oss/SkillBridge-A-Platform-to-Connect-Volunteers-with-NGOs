@@ -7,11 +7,11 @@ import About from "./components/About";
 import Login from "./components/Login";
 
 import NGOOpportunities from "./components/NGOOpportunities";
+import VolunteerOpportunities from "./components/VolunteerOpportunities";
 import CreateOpportunity from "./components/CreateOpportunity";
 import EditOpportunity from "./components/EditOpportunity";
 
 import Dashboard from "./components/Dashboard";
-import PostedOpportunities from "./components/postedopp";
 import Messages from "./components/Messages";
 import Applications from "./components/Application";
 import Profile from "./components/Profile";
@@ -30,9 +30,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
 
-        <Route path="/opportunities" element={<NGOOpportunities />} />
+        {/* Main opportunities page - shows VolunteerOpportunities */}
+        <Route path="/opportunities" element={<VolunteerOpportunities />} />
         
-      
+        {/* NGO-specific opportunities management */}
+        <Route path="/ngo-opportunities" element={<NGOOpportunities />} />
+        
         <Route
           path="/createOpportunity"
           element={<Navigate to="/create-opportunity" replace />}
@@ -41,7 +44,6 @@ function App() {
         <Route path="/edit-opportunity/:id" element={<EditOpportunity />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/postedopp" element={<PostedOpportunities />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/application" element={<Applications />} />
         <Route path="/profile" element={<Profile />} />

@@ -43,7 +43,7 @@ export default function EditOpportunity() {
       } catch (error) {
         console.error("Error fetching opportunity:", error);
         alert("Failed to load opportunity");
-        navigate('/opportunities');
+        navigate('/ngo-opportunities');
       }
     };
 
@@ -95,7 +95,7 @@ export default function EditOpportunity() {
 
       if (response.status === 200) {
         alert("Opportunity updated successfully!");
-        navigate("/opportunities");
+        navigate("/ngo-opportunities");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -104,7 +104,7 @@ export default function EditOpportunity() {
   };
 
   const handleBack = () => {
-    navigate('/opportunities');
+    navigate('/ngo-opportunities');
   };
 
   if (loading) {

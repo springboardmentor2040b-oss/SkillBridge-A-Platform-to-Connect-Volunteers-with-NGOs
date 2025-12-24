@@ -96,7 +96,7 @@ export default function CreateOpportunity() {
 
       if (response.ok) {
         alert("Opportunity created successfully!");
-        navigate("/opportunities"); // Using React Router navigate instead of window.location
+        navigate("/ngo-opportunities"); // Using React Router navigate instead of window.location
       } else {
         alert(data.message || "Failed to create opportunity");
       }
@@ -109,7 +109,7 @@ export default function CreateOpportunity() {
   };
 
   const handleBack = () => {
-    navigate('/opportunities');
+    navigate('/ngo-opportunities');
   };
 
   return (
