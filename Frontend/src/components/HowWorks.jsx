@@ -1,41 +1,58 @@
-import React from 'react'
+import React from "react";
 
 const HowWorks = () => {
   return (
-    <div className='w-full max-h-fit md:h-[500px] my-6  border-2 bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700  '>
-    {/* heading */}
-    <div className='pb-10'> 
-        <h1 className=' text-3xl lg:text-4xl font-serif font-bold text-center pt-10 text-white  '>How It Works</h1>
-        <p className='text-center text-gray-200 mt-2 mb-8'>
-         Get started in three simple steps  and begin your volunteering journey today
-        </p>
-    </div>
-    {/* content */}
-      <div className='w-full max-h-fit md:h-[300px] flex flex-col md:flex-row items-center justify-around  px-4 py-10 gap-x-2-2 gap-y-6 '>
-        {/* step 1 */}
-        <div className='flex flex-col shrink-0  hover:border-[2px] hover:bg-gray-200 justify-center w-[320px] border-[1px] border-cyan-300  rounded-xl h-full px-2 py-5 text-center bg-white '>
-         <h1 className='text-center font-extrabold text-orange-500 text-4xl pb-3 '>1</h1>
-         <h1 className='font-bold text-xl py-2 '>Create Profile</h1>
-         <p>sign up and tell us about your skills, <br/> interests and avilability  </p>
-        </div>
-        
-        {/* step 2 */}
-        <div className='flex flex-col shrink-0  hover:border-[2px] hover:bg-gray-200 justify-center w-[320px] border-[1px] border-cyan-300  rounded-xl h-full px-2 py-5 text-center bg-white '>
-         <h1 className='text-center font-extrabold text-orange-500 text-4xl pb-3 '>2</h1>
-         <h1 className='font-bold text-xl py-2 '>Explore Opportunities</h1>
-         <p>Browser verified NGO opportunities<br/> tailored to your profile.  </p>
-        </div>
+    <section className="w-full mt-6 py-20 px-6 bg-gradient-to-br from-purple-700 via-purple-600 to-indigo-700">
 
-        {/* step 3 */}
-        <div className='flex flex-col shrink-0  hover:border-[2px] hover:bg-gray-200 w-[320px] border-[1px] border-cyan-300  rounded-xl h-full px-2 py-5 justify-center text-center bg-white '>
-         <h1 className='text-center font-extrabold text-orange-500 text-4xl pb-3 '>3</h1>
-         <h1 className='font-bold text-xl py-2 '>Start Volunteering</h1>
-         <p>Connect with NGOs and begin making a <br/> meaningful impact </p>
-        </div>
+      {/* Heading */}
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold text-white">
+          How It Works
+        </h1>
+        <p className="text-lg md:text-xl text-purple-100 mt-4">
+          Get started in three simple steps and begin your volunteering journey today
+        </p>
       </div>
 
-    </div>
-  )
-}
+      {/* Steps */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
-export default HowWorks
+        {/* Step 1 */}
+        <div className="bg-white/15 backdrop-blur-xl border border-white/20 
+                        rounded-3xl p-8 text-white shadow-xl text-center
+                        hover:scale-[1.03] transition duration-300">
+          <h2 className="text-5xl font-extrabold text-orange-400 mb-4">1</h2>
+          <h3 className="text-xl font-bold mb-3">Create Profile</h3>
+          <p className="text-purple-100">
+            Sign up and tell us about your skills, interests, and availability.
+          </p>
+        </div>
+
+        {/* Step 2 */}
+        <div className="bg-white/15 backdrop-blur-xl border border-white/20 
+                        rounded-3xl p-8 text-white shadow-xl text-center
+                        hover:scale-[1.03] transition duration-300">
+          <h2 className="text-5xl font-extrabold text-orange-400 mb-4">2</h2>
+          <h3 className="text-xl font-bold mb-3">Explore Opportunities</h3>
+          <p className="text-purple-100">
+            Browse verified NGO opportunities tailored to your profile.
+          </p>
+        </div>
+
+        {/* Step 3 */}
+        <div className="bg-white/15 backdrop-blur-xl border border-white/20 
+                        rounded-3xl p-8 text-white shadow-xl text-center
+                        hover:scale-[1.03] transition duration-300">
+          <h2 className="text-5xl font-extrabold text-orange-400 mb-4">3</h2>
+          <h3 className="text-xl font-bold mb-3">Start Volunteering</h3>
+          <p className="text-purple-100">
+            Connect with NGOs and begin making a meaningful impact.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+export default HowWorks;
