@@ -46,17 +46,16 @@ export default function SkillBridgeLogin() {
 
       alert("Login successful!");
 
-    
+      const userRole = res.data.user.role;
 
-const userRole = res.data.user.role;
-
-if (userRole === 'volunteer') {
-  navigate('/opportunities'); // Volunteer opportunities page (VolunteerOpportunities)
-} else if (userRole === 'ngo') {
-  navigate('/ngo-opportunities'); // NGO opportunities management page (NGOOpportunities)
-} else {
-  navigate('/dashboard'); // Default fallback
-}
+      // Redirect based on user role
+      if (userRole === 'volunteer') {
+        navigate('/dashboard'); // Volunteer opportunities page
+      } else if (userRole === 'ngo') {
+        navigate('/dashboard'); // NGO opportunities management page - FIXED!
+      } else {
+        navigate('/dashboard'); // Default fallback
+      }
 
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
