@@ -7,6 +7,7 @@ export default function Profile() {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("details");
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   // Profile success message
@@ -73,26 +74,55 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* TOP NAV */}
+      
       <header className="bg-white border-b">
-        <div className="px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <Logo size={36} textColor="#2563eb" />
+        <div className="px-4 md:px-8 py-4 flex justify-between items-center">
 
-            <span
-              className="cursor-pointer text-gray-600 hover:text-blue-600"
-              onClick={() => navigate("/dashboard")}
+          {/* LEFT */}
+          <div className="flex items-center gap-4">
+            {/* ☰ Hamburger – mobile only */}
+            <button
+              className="md:hidden text-2xl"
+              onClick={() => setMenuOpen(!menuOpen)}
             >
-              Dashboard
-            </span>
+              ☰
+            </button>
 
-            <span
-              className="cursor-pointer text-gray-600 hover:text-blue-600"
-              onClick={() => navigate("/create-opportunity")}
-            >
-              Opportunities
-            </span>
+            <Logo size={36} textColor="text-blue-600" />
+
+            {/* Desktop links */}
+            <div className="hidden md:flex items-center gap-6 text-gray-600">
+              <span
+                className="cursor-pointer hover:text-blue-600"
+                onClick={() => navigate("/dashboard")}
+              >
+                Dashboard
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-600"
+                onClick={() => navigate("/create-opportunity")}
+              >
+                Opportunities
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-600"
+                onClick={() => navigate("/applications")}
+              >
+                Applications
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-600"
+                onClick={() => navigate("/messages")}
+              >
+                Messages
+              </span>
+            </div>
           </div>
 
+          {/* RIGHT */}
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
               {profile.name?.charAt(0) || "U"}
@@ -100,7 +130,54 @@ export default function Profile() {
             <span>{profile.name}</span>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="md:hidden border-t bg-white px-4 py-3 space-y-3 text-gray-600">
+            <div
+              className="cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                navigate("/dashboard");
+                setMenuOpen(false);
+              }}
+            >
+              Dashboard
+            </div>
+
+            <div
+              className="cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                navigate("/create-opportunity");
+                setMenuOpen(false);
+              }}
+            >
+              Opportunities
+            </div>
+
+            <div
+              className="cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                navigate("/applications");
+                setMenuOpen(false);
+              }}
+            >
+              Applications
+            </div>
+
+            <div
+              className="cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                navigate("/messages");
+                setMenuOpen(false);
+              }}
+            >
+              Messages
+            </div>
+          </div>
+        )}
+      
       </header>
+
 
       <main className="max-w-6xl mx-auto px-6 py-10">
         <h1 className="text-3xl font-bold mb-1">Account Settings</h1>

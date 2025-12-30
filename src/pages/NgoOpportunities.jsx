@@ -11,6 +11,8 @@ export default function NgoOpportunities() {
   const [opportunities, setOpportunities] = useState([]);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const [editForm, setEditForm] = useState({
   title: "",
   description: "",
@@ -67,21 +69,91 @@ export default function NgoOpportunities() {
       {/* TOP NAV */}
       <header className="bg-blue-600 text-white">
         <div className="px-8 py-4 flex justify-between items-center">
+          {/* LEFT */}
           <div className="flex items-center gap-6">
-            <Logo size={32} textColor="white" />
-            <span
-              className="cursor-pointer hover:text-blue-200"
-              onClick={() => navigate("/dashboard")}
+
+            {/* ☰ Hamburger – ONLY mobile */}
+            <button
+              className="md:hidden text-2xl"
+              onClick={() => setMenuOpen(!menuOpen)}
             >
-              Dashboard
-            </span>
+              ☰
+            </button>
+
+            <Logo size={32} textColor="white" />
+
+            {/* Desktop Nav – SAME STYLE AS BEFORE */}
+            <div className="hidden md:flex items-center gap-6">
+              <span
+                className="cursor-pointer hover:text-blue-200"
+                onClick={() => navigate("/dashboard")}
+              >
+                Dashboard
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-200 font-medium"
+                onClick={() => navigate("/ngo-opportunities")}
+              >
+                Opportunities
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-200"
+                onClick={() => navigate("/applications")}
+              >
+                Applications
+              </span>
+
+              <span
+                className="cursor-pointer hover:text-blue-200"
+                onClick={() => navigate("/messages")}
+              >
+                Messages
+              </span>
+            </div>
           </div>
 
+          {/* RIGHT – SAME BADGE */}
           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
             NGO
           </span>
         </div>
+
+        {/* MOBILE MENU – SAME COLORS */}
+        {menuOpen && (
+          <div className="md:hidden bg-blue-600 border-t border-blue-500 px-8 py-3 space-y-3">
+            <div
+              className="cursor-pointer hover:text-blue-200"
+              onClick={() => { navigate("/dashboard"); setMenuOpen(false); }}
+            >
+              Dashboard
+            </div>
+            <div
+              className="cursor-pointer hover:text-blue-200"
+              onClick={() => { navigate("/ngo-opportunities"); setMenuOpen(false); }}
+            >
+              Opportunities
+            </div>
+
+            <div
+              className="cursor-pointer hover:text-blue-200"
+              onClick={() => { navigate("/applications"); setMenuOpen(false); }}
+            >
+              Applications
+            </div>
+
+            <div
+              className="cursor-pointer hover:text-blue-200"
+              onClick={() => { navigate("/messages"); setMenuOpen(false); }}
+            >
+              Messages
+            </div>
+          </div>
+        )}
       </header>
+
+      
 
       {/* CONTENT */}
       <main className="max-w-6xl mx-auto px-6 py-10">

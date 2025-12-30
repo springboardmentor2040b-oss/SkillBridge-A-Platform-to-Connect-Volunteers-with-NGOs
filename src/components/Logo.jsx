@@ -21,7 +21,7 @@ export default function Logo({ size = 40, textColor = "white" }) {
         </svg>
       </div>
 
-      <span className={`text-2xl font-bold text-${textColor}`}>
+      <span className={`text-2xl font-bold ${textColor}`}>
         SkillBridge
       </span>
     </div>

@@ -109,7 +109,7 @@ export default function Signup() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
 
-      <div className="bg-gradient-to-b from-blue-600 to-blue-700 text-white p-10 overflow-y-auto">
+      <div className="hidden md:block bg-gradient-to-b from-blue-600 to-blue-700 text-white p-10 overflow-y-auto">
         <div className="flex items-center gap-3 mb-10">
           <Logo size={45} textColor="white" />
 
@@ -174,7 +174,7 @@ export default function Signup() {
         <h1 className="text-3xl font-bold">Create Account</h1>
         <p className="text-gray-600 mt-2">Select account type to continue</p>
 
-        <div className="flex mt-6 border rounded-lg overflow-hidden w-80">
+        <div className="flex mt-6 border rounded-lg overflow-hidden w-full max-w-sm">
           <button
             className={`flex-1 py-2 ${
               activeTab === "volunteer"

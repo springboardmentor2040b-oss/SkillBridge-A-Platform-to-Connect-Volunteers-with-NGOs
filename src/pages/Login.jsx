@@ -38,7 +38,8 @@ export default function Login() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
       {/* LEFT: Feature column */}
-      <div className="bg-gradient-to-b from-blue-600 to-blue-500 text-white p-10 overflow-y-auto">
+      <div className="hidden md:block bg-gradient-to-b from-blue-600 to-blue-500 text-white p-10 overflow-y-auto">
+
         <div className="flex items-center mb-8">
           <Logo size={40} />
         </div>

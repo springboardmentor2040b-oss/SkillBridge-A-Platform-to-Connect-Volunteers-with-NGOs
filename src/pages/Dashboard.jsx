@@ -9,6 +9,7 @@ export default function Dashboard() {
   // ✅ NEW: user state
   const [user, setUser] = useState({ name: "" });
   const [userRole, setUserRole] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // ✅ NEW: get user data from signup (localStorage)
   useEffect(() => {
@@ -26,10 +27,23 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r p-6 flex flex-col gap-6">
+      <aside 
+        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white border-r p-6 flex-col gap-6 transform
+          ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+          transition-transform duration-300
+          md:translate-x-0 md:flex`}
+      >
+
         <div className="flex items-center gap-3 mb-10">
           <Logo size={40} textColor="#2563eb" />
         </div>
+        <button
+          className="md:hidden mb-6 text-xl"
+          onClick={() => setMenuOpen(false)}
+        >
+          ✕
+        </button>
+
 
         <nav className="flex-1">
           <ul className="space-y-4 text-gray-700">
@@ -45,8 +59,8 @@ export default function Dashboard() {
                onClick={() => {
                  if (userRole === "ngo") {
                   navigate("/ngo-opportunities");
-                } else {
-                  navigate("/opportunities"); // volunteer (view only – later)
+                } else if(userRole ==="volunteer"){
+                  navigate("/volunteer-opportunities"); // volunteer (view only – later)
                 }
               }}
             >
@@ -55,14 +69,16 @@ export default function Dashboard() {
               </div>
               <span>Opportunities</span>
             </li>
-
-
-            <li className="flex items-center gap-3 text-gray-600">
+            <li
+              className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-600"
+              onClick={() => navigate("/applications")}
+            >
               <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
                 📄
               </div>
               <span>Applications</span>
             </li>
+
 
             <li className="flex items-center gap-3 text-gray-600">
               <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
@@ -89,10 +105,24 @@ export default function Dashboard() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         {/* Header */}
         <header className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">NGO</h2>
+          <div className="flex items-center gap-3">
+
+            {/* ☰ Hamburger menu – only small screens */}
+            <button
+              className="md:hidden text-2xl"
+              onClick={() => setMenuOpen(true)}
+            >
+              ☰
+            </button>
+
+            <h2 className="text-xl font-semibold capitalize">
+              {userRole || "Dashboard"}
+            </h2>
+          </div>
+
 
           {/* ✅ UPDATED: dynamic user name + clickable profile */}
           <div
