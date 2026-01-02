@@ -19,27 +19,37 @@ function Navbar() {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
     
-    console.log("Token:", token); // Debug
-    console.log("User data:", userData); // Debug
-    
     setIsLoggedIn(!!token);
     setUser(userData ? JSON.parse(userData) : {});
   }, [location]);
 
-  // Check if we're on dashboard-related pages
-  const isDashboardArea = location.pathname.includes('/dashboard') || 
-                          location.pathname.includes('/opportunities') ||
-                          location.pathname.includes('/create-opportunity') ||
-                          location.pathname.includes('/edit-opportunity') ||
-                          location.pathname.includes('/applications') ||
-                          location.pathname.includes('/messages');
+  // Get user role
+  const userRole = user?.role;
+  const isNGO = userRole === 'ngo';
+  const isVolunteer = userRole === 'volunteer';
+
+  const currentPath = location.pathname;
 
   // Check if we're on home page
-  const isHomePage = location.pathname === '/' || location.pathname === '/home';
+  const isHomePage = currentPath === '/' || currentPath === '/home';
 
   const handleLogout = () => {
     localStorage.clear();
+    setIsLoggedIn(false);
+    setUser({});
     navigate("/login");
+  };
+
+  // Helper function to get the correct opportunities link based on role
+  const getOpportunitiesLink = () => {
+    if (isNGO) return '/ngo-opportunities';
+    return '/opportunities';
+  };
+
+  // Helper function to get the correct applications link based on role
+  const getApplicationsLink = () => {
+    if (isNGO) return '/application'; // NGO sees applications received
+    return '/application'; // Volunteer sees their applications
   };
 
   return (
@@ -51,31 +61,31 @@ function Navbar() {
 
       {/* DESKTOP LINKS */}
       <div className="hidden lg:flex gap-12">
-        {/* Show only Home and About on home page */}
         {isHomePage ? (
+          /* Home Page Navigation */
           <>
             <Link to="/home" className="font-semibold hover:text-orange-500 transition">Home</Link>
             <Link to="/opportunities" className="font-semibold hover:text-orange-500 transition">Opportunities</Link>
             <Link to="/dashboard" className="font-semibold hover:text-orange-500 transition">Dashboard</Link>
             <Link to="/about" className="font-semibold hover:text-orange-500 transition">About</Link>
           </>
-        ) : isDashboardArea ? (
-          /* Show Dashboard navigation when in dashboard area */
+        ) : isLoggedIn ? (
+          /* Logged in user navigation - dynamically route based on role */
           <>
             <Link to="/dashboard" className="font-semibold hover:text-orange-500 transition">Dashboard</Link>
-            <Link to="/opportunities" className="font-semibold hover:text-orange-500 transition">Opportunities</Link>
-            <Link to="/applications" className="font-semibold hover:text-orange-500 transition">Applications</Link>
+            <Link to={getOpportunitiesLink()} className="font-semibold hover:text-orange-500 transition">
+              Opportunities
+            </Link>
+            <Link to={getApplicationsLink()} className="font-semibold hover:text-orange-500 transition">
+              Applications
+            </Link>
             <Link to="/messages" className="font-semibold hover:text-orange-500 transition">Messages</Link>
           </>
         ) : (
-          /* Default navigation for other pages */
+          /* Not logged in - show basic navigation */
           <>
             <Link to="/home" className="font-semibold hover:text-orange-500 transition">Home</Link>
             <Link to="/about" className="font-semibold hover:text-orange-500 transition">About</Link>
-            <Link to="/opportunities" className="font-semibold hover:text-orange-500 transition">Opportunities</Link>
-            {isLoggedIn && (
-              <Link to="/dashboard" className="font-semibold hover:text-orange-500 transition">Dashboard</Link>
-            )}
           </>
         )}
       </div>
@@ -157,21 +167,23 @@ function Navbar() {
               <Link to="/home" onClick={toggleMobile}>Home</Link>
               <Link to="/about" onClick={toggleMobile}>About</Link>
             </>
-          ) : isDashboardArea ? (
+          ) : isLoggedIn ? (
+            /* Logged in mobile navigation */
             <>
               <Link to="/dashboard" onClick={toggleMobile}>Dashboard</Link>
-              <Link to="/opportunities" onClick={toggleMobile}>Opportunities</Link>
-              <Link to="/applications" onClick={toggleMobile}>Applications</Link>
+              <Link to={getOpportunitiesLink()} onClick={toggleMobile}>
+                Opportunities
+              </Link>
+              <Link to={getApplicationsLink()} onClick={toggleMobile}>
+                Applications
+              </Link>
               <Link to="/messages" onClick={toggleMobile}>Messages</Link>
             </>
           ) : (
+            /* Not logged in mobile navigation */
             <>
               <Link to="/home" onClick={toggleMobile}>Home</Link>
               <Link to="/about" onClick={toggleMobile}>About</Link>
-              <Link to="/opportunities" onClick={toggleMobile}>Opportunities</Link>
-              {isLoggedIn && (
-                <Link to="/dashboard" onClick={toggleMobile}>Dashboard</Link>
-              )}
             </>
           )}
 
@@ -182,7 +194,10 @@ function Navbar() {
               <Link to="/help" onClick={toggleMobile}>Help</Link>
               <Link to="/community" onClick={toggleMobile}>Community</Link>
               <button
-                onClick={handleLogout}
+                onClick={() => {
+                  toggleMobile();
+                  handleLogout();
+                }}
                 className="text-left text-red-400"
               >
                 Logout

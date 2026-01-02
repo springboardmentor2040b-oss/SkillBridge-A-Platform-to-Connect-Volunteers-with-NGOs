@@ -10,6 +10,7 @@ import NGOOpportunities from "./components/NGOOpportunities";
 import VolunteerOpportunities from "./components/VolunteerOpportunities";
 import CreateOpportunity from "./components/CreateOpportunity";
 import EditOpportunity from "./components/EditOpportunity";
+import Apply from "./components/Apply"; // NEW
 
 import Dashboard from "./components/Dashboard";
 import Messages from "./components/Messages";
@@ -42,6 +43,9 @@ function App() {
         />
         <Route path="/create-opportunity" element={<CreateOpportunity />} />
         <Route path="/edit-opportunity/:id" element={<EditOpportunity />} />
+        
+        {/* Apply route - NEW */}
+        <Route path="/apply/:id" element={<Apply />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/messages" element={<Messages />} />

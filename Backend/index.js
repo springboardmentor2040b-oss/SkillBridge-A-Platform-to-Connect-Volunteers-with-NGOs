@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("./models/User");
 const opportunityRoutes = require("./routes/opportunityRoutes");
 const userRoutes = require("./routes/userRoutes");
+const applicationRoutes = require("./routes/applicationRoutes"); // ADD THIS LINE
 
 const app = express();
 
@@ -35,16 +36,13 @@ app.post("/api/signup", async (req, res) => {
       organizationUrl,
     } = req.body;
 
-    // Check existing user
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Prepare user data
     const userData = {
       username,
       email,
@@ -55,7 +53,6 @@ app.post("/api/signup", async (req, res) => {
       bio,
     };
 
-    // Add role-specific fields
     if (role === "volunteer" && skills) {
       userData.skills = Array.isArray(skills) ? skills : [];
     }
@@ -65,10 +62,8 @@ app.post("/api/signup", async (req, res) => {
       userData.organizationUrl = organizationUrl || "";
     }
 
-    // Create user
     const user = await UserModel.create(userData);
 
-    // Generate token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -86,7 +81,6 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-// Login
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -133,6 +127,7 @@ app.post("/api/login", async (req, res) => {
 
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/applications", applicationRoutes); // ADD THIS LINE
 
 
 const PORT = process.env.PORT || 4001;
