@@ -31,7 +31,7 @@ function App() {
         <Route path="/about" element={<About />} />
 
         {/* Main opportunities page - shows VolunteerOpportunities */}
-        <Route path="/opportunities" element={<VolunteerOpportunities />} />
+        <Route path="/opportunities" element={<NGOOpportunities/>} />
         
         {/* NGO-specific opportunities management */}
         <Route path="/ngo-opportunities" element={<NGOOpportunities />} />
