@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MessageSquare } from 'lucide-react';
 import axios from 'axios';
 import { Clock, MapPin, Calendar, FileText, Trash2, Eye, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
@@ -329,6 +330,16 @@ export default function Applications() {
                             </button>
                           </>
                         )}
+                        {/* CHAT BUTTON (for BOTH roles when accepted) */}
+                        {app.status === 'accepted' && (
+                          <button
+                          onClick={() => navigate(`/messages?applicationId=${app._id}`)}
+                            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition flex items-center gap-2"
+                          >
+                            <MessageSquare size={16} />
+                            Chat
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -424,7 +435,18 @@ export default function Applications() {
               >
                 Close
               </button>
-              
+              {selectedApplication.status === 'accepted' && (
+                <button
+                onClick={() => {
+                  setShowModal(false);
+                  navigate(`/messages?applicationId=${selectedApplication._id}`);
+                  }}
+                  className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition"
+                  >
+                  Open Chat
+                </button>
+              )}
+
               {userRole === 'ngo' && selectedApplication.status === 'pending' && (
                 <>
                   <button
