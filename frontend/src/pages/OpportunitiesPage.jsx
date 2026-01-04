@@ -94,7 +94,7 @@ const OpportunitiesPage = () => {
 
   return (
     <div className="min-h-screen bg-[#E9F5F8] p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -109,7 +109,7 @@ const OpportunitiesPage = () => {
 
           <Link
             to="/opportunities/create"
-            className="bg-[#1f3a5f] text-white px-5 py-2 rounded-md font-medium"
+            className="bg-[#1f3a5f]  text-white px-5 py-2 rounded-md font-medium"
           >
             + Create New Opportunity
           </Link>

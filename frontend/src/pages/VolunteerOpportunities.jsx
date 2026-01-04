@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import axios from "axios";
 import VolunteerOpportunityCard from "../components/VolunteerOpportunityCard";
 import VolunteerFilterBar from "../components/VolunteerFilterBar";
@@ -14,6 +14,8 @@ const VolunteerOpportunities = () => {
     status: "All",
     locations: [],
     skills: [],
+    skillSearch: "",
+    locationSearch: "",
   });
 
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
@@ -37,28 +39,37 @@ const VolunteerOpportunities = () => {
     fetchOpportunities();
   }, []);
 
-  /* APPLY FILTERS */
+
+  /* FILTER OPPORTUNITY CARDS WHEN FILTERS CHANGE */
   useEffect(() => {
-    let data = [...opportunities];
+    let data = [...(opportunities || [])];
+
+    if (filters.skillSearch.trim() !== "") {
+      data = data.filter((o) =>
+        o.skillsRequired?.toLowerCase().includes(filters.skillSearch.toLowerCase())
+      );
+    }
+
+    if (filters.locationSearch.trim() !== "") {
+      data = data.filter((o) =>
+        o.location?.toLowerCase().includes(filters.locationSearch.toLowerCase())
+      );
+    }
+
+    if (filters.skills?.length > 0) {
+      data = data.filter((o) =>
+        filters.skills.some((skill) =>
+          o.skillsRequired?.split(",").map((s) => s.trim()).includes(skill)
+        )
+      );
+    }
+
+    if (filters.locations?.length > 0) {
+      data = data.filter((o) => filters.locations.includes(o.location?.trim()));
+    }
 
     if (filters.status !== "All") {
       data = data.filter((o) => o.status === filters.status);
-    }
-
-    if (filters.locations.length > 0) {
-      data = data.filter((o) =>
-        filters.locations.includes(o.location)
-      );
-    }
-
-    if (filters.skills.length > 0) {
-      data = data.filter((o) =>
-        filters.skills.some((skill) =>
-          o.skillsRequired
-            ?.toLowerCase()
-            .includes(skill.toLowerCase())
-        )
-      );
     }
 
     setFiltered(data);
@@ -133,26 +144,9 @@ const VolunteerOpportunities = () => {
     }
   };
 
-  /* DYNAMIC SKILLS & LOCATIONS */
-  const availableSkills = [
-    ...new Set(
-      opportunities.flatMap((o) =>
-        o.skillsRequired
-          ? o.skillsRequired.split(",").map((s) => s.trim())
-          : []
-      )
-    ),
-  ];
-
-  const availableLocations = [
-    ...new Set(
-      opportunities.map((o) => o.location).filter(Boolean)
-    ),
-  ];
-
   return (
     <div className="min-h-screen bg-[#E9F5F8] p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full">
         <h1 className="text-2xl font-bold mb-1">
           Volunteering Opportunities
         </h1>
@@ -163,8 +157,7 @@ const VolunteerOpportunities = () => {
         <VolunteerFilterBar
           filters={filters}
           setFilters={setFilters}
-          skills={availableSkills}
-          locations={availableLocations}
+          opportunities={opportunities}
         />
 
         {loading ? (

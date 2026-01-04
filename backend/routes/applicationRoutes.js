@@ -6,7 +6,7 @@ import {
   getNGOApplications,
   updateApplicationStatus,
   getApplicationStats,
-  getApplicationById
+  getApplicationById,
 } from "../controllers/applicationController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import volunteerOnly from "../middleware/volunteerOnly.js";
@@ -30,7 +30,12 @@ router.get(
 /* =============================================== */
 
 /* GET VOLUNTEER'S APPLICATIONS */
-router.get("/my-applications", authMiddleware, volunteerOnly, getVolunteerApplications);
+router.get(
+  "/my-applications",
+  authMiddleware,
+  volunteerOnly,
+  getVolunteerApplications
+);
 
 /* GET NGO'S APPLICATIONS */
 router.get("/ngo-applications", authMiddleware, ngoOnly, getNGOApplications);

@@ -16,7 +16,7 @@ export const applyToOpportunity = async (req, res) => {
     }
 
     // Prevent applying to closed opportunities
-    if (opportunity.status !== "Open") {
+    if (opportunity.status !== "Open" && opportunity.status !== "In Progress") {
       return res
         .status(400)
         .json({ message: "Cannot apply to closed opportunities" });
@@ -107,7 +107,7 @@ export const getNGOApplications = async (req, res) => {
     })
       .populate({
         path: "opportunity_id",
-        select: "title description status",
+        select: "title description status createdAt skillsRequired",
       })
       .populate({
         path: "volunteer_id",
@@ -140,9 +140,7 @@ export const updateApplicationStatus = async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    const opportunity = await Opportunity.findById(
-      application.opportunity_id
-    );
+    const opportunity = await Opportunity.findById(application.opportunity_id);
 
     if (
       !opportunity ||
@@ -247,4 +245,3 @@ export const getApplicationById = async (req, res) => {
     res.status(500).json({ message: "Failed to load application" });
   }
 };
-

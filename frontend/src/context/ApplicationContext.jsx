@@ -232,4 +232,3 @@ export const ApplicationProvider = ({ children }) => {
 
 // Export the context itself for direct usage if needed
 export { ApplicationContext };
-

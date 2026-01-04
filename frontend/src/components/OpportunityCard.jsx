@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaClock, FaCalendarAlt } from "react-icons/fa";
 import React from "react";
 import { Link } from "react-router-dom";
 
-const truncateText = (text, wordLimit = 20) => {
+const truncateText = (text, wordLimit = 30) => {
   if (!text) return "";
   const words = text.split(" ");
   return words.length > wordLimit

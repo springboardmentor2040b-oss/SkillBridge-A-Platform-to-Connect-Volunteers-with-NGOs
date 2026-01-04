@@ -117,4 +117,3 @@ export const AuthProvider = ({ children }) => {
 
 // Export ONLY the context, NOT useAuth
 export { AuthContext };
-
