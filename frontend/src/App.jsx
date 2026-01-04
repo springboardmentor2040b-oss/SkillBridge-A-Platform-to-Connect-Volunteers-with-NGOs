@@ -12,12 +12,14 @@ import NgoDashboard from "./pages/NgoDashboard";
 /* Volunteer */
 import VolunteerProfile from "./pages/VolunteerProfile";
 import VolunteerOpportunities from "./pages/VolunteerOpportunities";
+import VolunteerApplications from "./pages/VolunteerApplications"; // ADD THIS IMPORT
 
 /* NGO */
 import NgoProfile from "./pages/NgoProfile";
 import CreateOpportunity from "./pages/createOpportunity";
 import EditOpportunity from "./pages/EditOpportunity";
 import OpportunitiesPage from "./pages/OpportunitiesPage";
+import NgoApplications from "./pages/NgoApplications"; // ADD THIS IMPORT
 
 /* Layouts */
 import VolunteerLayout from "./components/layout/VolunteerLayout";
@@ -59,7 +61,7 @@ function App() {
           <Route path="/volunteer/dashboard" element={<VolunteerDashboard />} />
           <Route path="/volunteer/opportunities" element={<VolunteerOpportunities />} />
           <Route path="/profile/volunteer" element={<VolunteerProfile />} />
-          <Route path="/volunteer/applications" element={<div className="p-8">Applications coming soon</div>} />
+          <Route path="/volunteer/applications" element={<VolunteerApplications />} /> {/* UPDATE THIS LINE */}
           <Route path="/volunteer/messages" element={<div className="p-8">Messages coming soon</div>} />
         </Route>
 
@@ -70,7 +72,7 @@ function App() {
           <Route path="/opportunities/create" element={<CreateOpportunity />} />
           <Route path="/opportunities/edit/:id" element={<EditOpportunity />} />
           <Route path="/profile/ngo" element={<NgoProfile />} />
-          <Route path="/ngo/applications" element={<div className="p-8 text-lg font-medium">Applications coming soon</div>} />
+          <Route path="/ngo/applications" element={<NgoApplications />} /> {/* UPDATE THIS LINE */}
           <Route path="/messages" element={<div className="p-8">Messages coming soon</div>} />
         </Route>
 
@@ -80,4 +82,3 @@ function App() {
 }
 
 export default App;
-

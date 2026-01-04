@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../hooks/useAuth.js";
+
 import logo from "../assets/logo.svg";
 import illustration from "../assets/illustration.png";
 import mailIcon from "../assets/mail.svg";
@@ -10,6 +12,8 @@ import eyeIcon from "../assets/eye.svg";
 
 const Login = () => {
   const navigate = useNavigate();
+  // ✅ GET loginUser function from AuthContext
+  const { loginUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +33,13 @@ const Login = () => {
       console.log("LOGIN RESPONSE:", response.data);
 
       const { token, user } = response.data;
+      
+      // ✅ SAVE TO LOCALSTORAGE (already doing)
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+      
+      // ✅ ADD THIS: Update AuthContext state
+      loginUser(user.email, token, user);
 
       // Navigate based on role
       if (user.role === "ngo") {

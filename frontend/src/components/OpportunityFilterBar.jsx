@@ -6,7 +6,7 @@ const OpportunityFilterBar = ({
   filterStatus,
   setFilterStatus,
 }) => {
-  const statuses = ["All", "Open", "Closed"];
+  const statuses = ["All", "Open", "In Progress", "Closed"];
 
   return (
     <div className="flex flex-wrap gap-4 mb-6 items-center">
@@ -41,7 +41,7 @@ const OpportunityFilterBar = ({
           <button
             key={status}
             onClick={() => setFilterStatus(status)}
-            className={`w-24 px-3 py-1.5 rounded-full text-sm font-medium transition-all
+            className={`w-28 px-3 py-1.5 rounded-full text-sm font-medium transition-all
             ${
               filterStatus === status
                 ? "bg-[#1f3a5f] text-white shadow"

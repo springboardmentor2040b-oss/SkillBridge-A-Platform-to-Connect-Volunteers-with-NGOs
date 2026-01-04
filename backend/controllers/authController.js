@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-/* ========================= SIGNUP ========================= */
+/* SIGNUP*/
 export const signup = async (req, res) => {
   try {
     const {
@@ -15,7 +15,7 @@ export const signup = async (req, res) => {
       organizationDescription,
     } = req.body;
 
-    // ✅ Role validation
+    //  Role validation
     if (!role || !["Volunteer", "NGO", "volunteer", "ngo"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
     }
@@ -48,7 +48,7 @@ export const signup = async (req, res) => {
   }
 };
 
-/* ========================= LOGIN ========================= */
+/*  LOGIN  */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -87,7 +87,7 @@ export const login = async (req, res) => {
   }
 };
 
-/* ========================= GET PROFILE ========================= */
+/* GET PROFILE  */
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -100,7 +100,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-/* ========================= UPDATE PROFILE ========================= */
+/*  UPDATE PROFILE  */
 export const updateProfile = async (req, res) => {
   try {
     const updates = req.body;
@@ -116,7 +116,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-/* ========================= CHANGE PASSWORD ========================= */
+/*  CHANGE PASSWORD  */
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;

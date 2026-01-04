@@ -25,6 +25,9 @@ export const getOpportunities = async (req, res) => {
   try {
     const opportunities = await Opportunity.find()
       .populate("createdBy", "fullName email role")
+      .select(
+        "title description status createdAt skillsRequired location duration ngoName"
+      ) // ✔ FIX
       .sort({ createdAt: -1 });
 
     res.status(200).json(opportunities);
@@ -36,10 +39,11 @@ export const getOpportunities = async (req, res) => {
 /* GET SINGLE OPPORTUNITY BY ID */
 export const getOpportunityById = async (req, res) => {
   try {
-    const opportunity = await Opportunity.findById(req.params.id).populate(
-      "createdBy",
-      "fullName email role"
-    );
+    const opportunity = await Opportunity.findById(req.params.id)
+      .populate("createdBy", "fullName email role")
+      .select(
+        "title description status createdAt skillsRequired location duration ngoName"
+      );
 
     if (!opportunity) {
       return res.status(404).json({ message: "Opportunity not found" });
