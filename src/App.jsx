@@ -13,6 +13,8 @@ import VolunteerOpportunities from "./pages/VolunteerOpportunities";
 import Opportunities from "./pages/Opportunities";
 import ApplyOpportunity from "./pages/ApplyOpportunity";
 import Applications from "./pages/Applications";
+import Messages from "./pages/Messages";
+
 
 export default function App() {
   return (
@@ -38,6 +40,8 @@ export default function App() {
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/apply" element={<ApplyOpportunity />} />
         <Route path="/applications" element={<Applications />} />
+        <Route path="/messages" element={<Messages />} />
+
 
 
       </Routes>

@@ -31,6 +31,21 @@ export default function Login() {
     setErrors(err);
     if (Object.keys(err).length === 0) {
       // For now we just navigate to dashboard (replace with real auth later)
+      const storedUser = localStorage.getItem("userProfile");
+
+      if (!storedUser) {
+        alert("No account found. Please sign up first.");
+        navigate("/signup");
+        return;
+      }
+      const user = JSON.parse(storedUser);
+
+    // OPTIONAL email check (recommended)
+      if (user.email !== form.email) {
+        alert("Email does not match any registered account");
+        return;
+      }
+
       navigate("/dashboard");
     }
   };

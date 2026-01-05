@@ -86,7 +86,7 @@ export default function Signup() {
           })
         );
         alert("Volunteer account created!");
-        navigate("/");
+        navigate("/dashboard");
       }
     } else {
       const nErr = validateNgo();
@@ -101,7 +101,7 @@ export default function Signup() {
          })
         );
         alert("NGO account created!");
-        navigate("/");
+        navigate("/dashboard");
       }
     }
   }

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Logo } from "../components";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import ProfileDropdown from "../components/ProfileDropdown";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -80,7 +82,9 @@ export default function Dashboard() {
             </li>
 
 
-            <li className="flex items-center gap-3 text-gray-600">
+            <li className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-600"
+                onClick={() => navigate("/messages")}
+            >
               <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
                 💬
               </div>
@@ -89,8 +93,8 @@ export default function Dashboard() {
 
             <li
               className="flex items-center gap-3 text-gray-600 cursor-pointer"
-              onClick={() => navigate("/profile")}
-            >
+            > 
+
               <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
                 ⚙️
               </div>
@@ -124,19 +128,10 @@ export default function Dashboard() {
           </div>
 
 
-          {/* ✅ UPDATED: dynamic user name + clickable profile */}
-          <div
-            className="flex items-center gap-4 cursor-pointer"
-            onClick={() => navigate("/profile")}
-          >
-            <span className="text-gray-700">
-              {user.name || "User"}
-            </span>
-
-            <div className="w-10 h-10 rounded-full border flex items-center justify-center bg-white">
-              <UserCircleIcon className="w-6 h-6 text-gray-600" />
-            </div>
+          <div className="flex items-center gap-4">
+            <ProfileDropdown user={user} />
           </div>
+
         </header>
 
         {/* Overview */}
