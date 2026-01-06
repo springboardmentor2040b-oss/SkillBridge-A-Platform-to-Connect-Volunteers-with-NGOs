@@ -80,7 +80,7 @@ function Messages() {
                 key={chat.id}
                 onClick={() => setActiveChat(chat)}
                 className={`p-3 rounded-md cursor-pointer ${
-                  activeChat.id === chat.id ? "bg-oran-100" : "hover:bg-gray-100"
+                  activeChat.id === chat.id ? "bg-orange-100" : "hover:bg-gray-100"
                 }`}
               >
                 <div className="flex justify-between">
@@ -112,7 +112,7 @@ function Messages() {
             {activeChat.messages.map((msg, index) => (
               <div
                 key={index}
-                className={`max-w-[70%] p-3 rounded-lg text-sm ${
+                className={`w-fit p-3 rounded-lg text-sm ${
                   msg.sender === "user"
                     ? "ml-auto bg-orange-600 text-white"
                     : "bg-gray-200 text-gray-800"
