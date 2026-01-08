@@ -1,26 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Opportunities.css";
 
 const DESCRIPTION_LIMIT = 120;
 
 const OpportunityCard = ({
   opportunity,
+  isOwner,
+  onDelete,
+  onEdit,
   onView,
   onApply,
-  onEdit,
-  onDelete,
-  isOwner, // ✅ This prop will control the visibility of Edit/Delete
 }) => {
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
+  const token = localStorage.getItem("token");
 
-  if (!opportunity || !opportunity.status) return null;
+  /* ================= CHECK IF USER HAS APPLIED ================= */
+  useEffect(() => {
+    const fetchMyApplications = async () => {
+      if (!token || !opportunity?._id) return;
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/api/applications/my",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res.data.includes(opportunity._id)) setHasApplied(true);
+      } catch (err) {
+        console.error("Failed to fetch applied opportunities:", err);
+      }
+    };
+    fetchMyApplications();
+  }, [opportunity?._id, token]);
+
+  if (!opportunity) return null;
 
   const description = opportunity.description || "";
   const isLongDesc = description.length > DESCRIPTION_LIMIT;
-
   const displayedDescription = showFullDesc
     ? description
     : description.slice(0, DESCRIPTION_LIMIT);
+
+  /* ================= CONFIRM DELETE ================= */
+  const confirmDelete = () => {
+    const ok = window.confirm(
+      "Are you sure you want to delete this opportunity?"
+    );
+    if (ok && onDelete) onDelete(opportunity._id);
+  };
 
   return (
     <div className="opportunity-card card-enhanced">
@@ -30,16 +57,29 @@ const OpportunityCard = ({
         }`}
       />
 
-      {/* Edit button on top */}
+      {/* OWNER ACTIONS */}
       {isOwner && (
-        <button className="btn-edit-top" onClick={() => onEdit(opportunity)}>
-          Edit
-        </button>
+        <div className="owner-actions">
+          <button
+            type="button"
+            className="btn-edit"
+            onClick={() => onEdit && onEdit(opportunity)}
+          >
+            Edit
+          </button>
+
+          <button
+            type="button"
+            className="btn-delete"
+            onClick={confirmDelete}
+          >
+            Delete
+          </button>
+        </div>
       )}
 
       <h3>{opportunity.title}</h3>
 
-      {/* 🔹 DESCRIPTION WITH SEE MORE */}
       <p className="opportunity-description">
         {displayedDescription}
         {!showFullDesc && isLongDesc && "... "}
@@ -59,14 +99,14 @@ const OpportunityCard = ({
 
       <p>
         <strong>NGO:</strong>{" "}
-        {opportunity.createdBy?.organizationName || opportunity.ngoName || "N/A"}
+        {opportunity.createdBy?.organizationName ||
+          opportunity.ngoName ||
+          "N/A"}
       </p>
 
-      {opportunity.duration && (
-        <p>
-          <strong>Duration:</strong> {opportunity.duration}
-        </p>
-      )}
+      <p>
+        <strong>Duration:</strong> {opportunity.duration || "N/A"}
+      </p>
 
       <span
         className={`status-badge ${
@@ -76,31 +116,20 @@ const OpportunityCard = ({
         {opportunity.status}
       </span>
 
-      {/* 🔹 ACTION ROW */}
       <div className="card-actions action-row">
-        <div className="left-actions">
-          <button className="btn-secondary" onClick={onView}>
-            View Details
-          </button>
+        <button type="button" className="btn-secondary" onClick={onView}>
+          View Details
+        </button>
 
-          {/* Delete button only for owner */}
-          {isOwner && (
-            <button
-              className="btn-danger"
-              onClick={() => onDelete(opportunity._id)}
-            >
-              Delete
-            </button>
-          )}
-        </div>
-
-        {/* Apply button only if not owner and opportunity is OPEN */}
         {!isOwner && opportunity.status === "OPEN" && (
           <button
+            type="button"
             className="btn-apply-green"
-            onClick={() => onApply(opportunity)}
+            onClick={() => onApply && onApply(opportunity)}
+            disabled={hasApplied}
+            title={hasApplied ? "You have already applied" : ""}
           >
-            Apply
+            {hasApplied ? "Already Applied" : "Apply"}
           </button>
         )}
       </div>

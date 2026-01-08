@@ -17,11 +17,9 @@ const Dashboard = ({ fullName }) => {
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-
-  // User role derived safely
   const userRole = user?.userType?.trim().toUpperCase();
 
-  // Fetch dashboard data
+  // Load dashboard stats
   useEffect(() => {
     if (!token || !user) {
       setDashboardError("Please login to access dashboard.");
@@ -60,7 +58,7 @@ const Dashboard = ({ fullName }) => {
     fetchDashboardData();
   }, [token, user]);
 
-  // Create Opportunity click
+  // NGO: Create Opportunity
   const handleCreateOpportunity = (e) => {
     e.preventDefault();
     setActionError("");
@@ -75,7 +73,6 @@ const Dashboard = ({ fullName }) => {
       return;
     }
 
-    // Optional: Validate token with backend before navigating
     fetch("http://localhost:5000/api/opportunities", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
@@ -85,8 +82,8 @@ const Dashboard = ({ fullName }) => {
         navigate("/create-opportunity");
       })
       .catch((err) => {
-        console.error("Token validation failed:", err);
-        setActionError("Failed to validate your session. Please login again.");
+        console.error(err);
+        setActionError("Session expired. Please login again.");
       });
   };
 
@@ -94,23 +91,38 @@ const Dashboard = ({ fullName }) => {
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="sidebar">
-        <h2 className="org-name">{user?.organizationName || "Organization"}</h2>
+        <h2 className="org-name">
+          {user?.organizationName || "Skill-Bridge"}
+        </h2>
         <p className="org-type">{userRole}</p>
 
         <nav className="menu">
           <button className="menu-item active">Dashboard</button>
+
           <button
             className="menu-item"
             onClick={() => navigate("/opportunities")}
           >
             Opportunities
           </button>
-          <button className="menu-item">Applications</button>
-          <button className="menu-item">Messages</button>
+
+          <button
+            className="menu-item"
+            onClick={() => navigate("/dashboard/applications")}
+          >
+            Applications
+          </button>
+
+          <button
+            className="menu-item"
+            onClick={() => navigate("/messages")}
+          >
+            Messages
+          </button>
         </nav>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Area */}
       <main className="main-content">
         <h1 className="welcome">
           Welcome {fullName || user?.fullName || "User"} 👋
@@ -119,20 +131,23 @@ const Dashboard = ({ fullName }) => {
         {dashboardError && <p className="error-msg">{dashboardError}</p>}
         {actionError && <p className="error-msg">{actionError}</p>}
 
-        {/* Overview Cards */}
+        {/* Stats */}
         <section className="overview">
           <div className="card blue">
             <h2>{stats.activeOpportunities}</h2>
             <p>Active Opportunities</p>
           </div>
+
           <div className="card green">
             <h2>{stats.applications}</h2>
             <p>Applications</p>
           </div>
+
           <div className="card purple">
             <h2>{stats.activeVolunteers}</h2>
             <p>Active Volunteers</p>
           </div>
+
           <div className="card yellow">
             <h2>{stats.pendingApplications}</h2>
             <p>Pending Applications</p>
@@ -143,9 +158,12 @@ const Dashboard = ({ fullName }) => {
         <section className="section">
           <h3>Quick Actions</h3>
           <div className="quick-actions">
-            <button className="action-btn" onClick={handleCreateOpportunity}>
-              ➕ Create New Opportunity
-            </button>
+            {userRole === "NGO" && (
+              <button className="action-btn" onClick={handleCreateOpportunity}>
+                ➕ Create New Opportunity
+              </button>
+            )}
+
             <button
               className="action-btn"
               onClick={() => navigate("/messages")}

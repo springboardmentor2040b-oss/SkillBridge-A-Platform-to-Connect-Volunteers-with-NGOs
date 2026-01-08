@@ -19,9 +19,9 @@ const Opportunities = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  const isValidToken = (token) => token && token !== "undefined" && token !== "null";
+  const isValidToken = (token) =>
+    token && token !== "undefined" && token !== "null";
 
-  // ✅ Wrapped in useCallback to satisfy ESLint
   const fetchOpportunities = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,20 +51,16 @@ const Opportunities = () => {
       setAllOpportunities(cleanData);
       setLoading(false);
     } catch (err) {
-      console.error("Fetch error:", err.response || err.message);
-
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
       }
-
       setError(err.response?.data?.message || "Failed to fetch opportunities.");
       setLoading(false);
     }
   }, [token, navigate]);
 
-  // ✅ useEffect now safely depends on fetchOpportunities
   useEffect(() => {
     fetchOpportunities();
   }, [fetchOpportunities]);
@@ -75,7 +71,8 @@ const Opportunities = () => {
     return opp.status === filter;
   });
 
-  const handleApply = async (opp) => {
+  /* ================= APPLY (FIXED ROUTE) ================= */
+  const handleApply = (opp) => {
     setApplyError("");
 
     const creatorId = opp.createdBy?._id || opp.createdBy;
@@ -90,17 +87,8 @@ const Opportunities = () => {
       return;
     }
 
-    try {
-      await axios.post(
-        "http://localhost:5000/api/applications/apply",
-        { opportunityId: opp._id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      navigate("/applications");
-    } catch (err) {
-      setApplyError(err.response?.data?.message || "Failed to apply for opportunity.");
-    }
+    // ✅ FIXED ROUTE (THIS WAS THE BUG)
+    navigate(`/apply-opportunity/${opp._id}`);
   };
 
   const handleDelete = async (id) => {
@@ -114,7 +102,9 @@ const Opportunities = () => {
       return;
     }
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this opportunity?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this opportunity?"
+    );
     if (!confirmDelete) return;
 
     try {
@@ -132,7 +122,9 @@ const Opportunities = () => {
       <div className="opportunities-header">
         <div>
           <h2>Opportunities</h2>
-          <p className="subtitle">Explore and manage volunteering opportunities</p>
+          <p className="subtitle">
+            Explore and manage volunteering opportunities
+          </p>
         </div>
 
         {user?.userType === "NGO" && (
@@ -156,7 +148,8 @@ const Opportunities = () => {
       {!loading &&
         filteredOpportunities.map((opp) => {
           const creatorId = opp.createdBy?._id || opp.createdBy;
-          const isOwner = user?.userType === "NGO" && user?._id === creatorId;
+          const isOwner =
+            user?.userType === "NGO" && user?._id === creatorId;
 
           return (
             <OpportunityCard
@@ -180,7 +173,12 @@ const Opportunities = () => {
       {selectedOpportunity && (
         <OpportunityModal
           opportunity={selectedOpportunity}
-          isOwner={user?.userType === "NGO" && user?._id === (selectedOpportunity.createdBy?._id || selectedOpportunity.createdBy)}
+          isOwner={
+            user?.userType === "NGO" &&
+            user?._id ===
+              (selectedOpportunity.createdBy?._id ||
+                selectedOpportunity.createdBy)
+          }
           isEditMode={isEditMode}
           onClose={() => {
             setSelectedOpportunity(null);

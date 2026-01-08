@@ -1,0 +1,145 @@
+/* =========================
+   PAGE WRAPPER
+   ========================= */
+.application-page {
+  min-height: 100vh;
+  background: #f2f5ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* =========================
+   FORM CONTAINER
+   ========================= */
+.application-container {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(79, 115, 255, 0.15);
+}
+
+/* =========================
+   HEADER
+   ========================= */
+.application-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2a60;
+  margin-bottom: 8px;
+}
+
+.application-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* =========================
+   FORM ELEMENTS
+   ========================= */
+.application-form label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2a60;
+  margin-bottom: 6px;
+  margin-top: 20px;
+}
+
+.application-form input,
+.application-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.application-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.application-form input:focus,
+.application-form textarea:focus {
+  border-color: #4f73ff;
+  box-shadow: 0 0 0 3px rgba(79, 115, 255, 0.15);
+}
+
+/* =========================
+   ERROR MESSAGE
+   ========================= */
+.application-error {
+  margin-top: 16px;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+.application-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btn-submit {
+  flex: 1;
+  background: #4f73ff;
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-submit:hover {
+  background: #3f63f5;
+}
+
+.btn-submit:disabled {
+  background: #9db1ff;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: transparent;
+  color: #4f73ff;
+  border: 1px solid #4f73ff;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: rgba(79, 115, 255, 0.08);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 600px) {
+  .application-container {
+    padding: 28px 20px;
+  }
+
+  .application-container h2 {
+    font-size: 24px;
+  }
+}

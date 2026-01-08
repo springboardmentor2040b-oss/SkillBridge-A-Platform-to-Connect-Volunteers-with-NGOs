@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 import NavBar from "./Components/NavBar";
 import Hero from "./Components/Hero";
 import Signup from "./Components/Signup";
@@ -8,7 +9,9 @@ import Dashboard from "./Components/Dashboard";
 import AccountSettings from "./Components/AccountSettings";
 import CreateOpportunity from "./Components/CreateOpportunity";
 import Opportunities from "./Components/Opportunities";
-import ApplyOpportunity from "./Components/ApplyOpportunity";
+import ApplicationForm from "./Components/ApplicationForm";
+import Applications from "./Components/Applications";
+import Chat from "./Components/Chat";   // ✅ Your Chat.jsx
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -24,7 +27,6 @@ function App() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Protected route wrapper
   const ProtectedRoute = ({ children }) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
@@ -36,12 +38,14 @@ function App() {
   return (
     <Router>
       <NavBar user={currentUser} />
+
       <Routes>
+        {/* Public */}
         <Route path="/" element={<Hero />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Route */}
+        {/* Dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -51,7 +55,27 @@ function App() {
           }
         />
 
-        {/* Create Opportunity Route – Standalone Page */}
+        {/* Applications */}
+        <Route
+          path="/dashboard/applications"
+          element={
+            <ProtectedRoute>
+              <Applications />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 💬 Messages (Chat UI) */}
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Opportunities */}
         <Route
           path="/create-opportunity"
           element={
@@ -61,7 +85,6 @@ function App() {
           }
         />
 
-        {/* Other Routes */}
         <Route
           path="/opportunities"
           element={
@@ -71,15 +94,17 @@ function App() {
           }
         />
 
+        {/* Apply */}
         <Route
-          path="/apply/:id"
+          path="/apply-opportunity/:id"
           element={
             <ProtectedRoute>
-              <ApplyOpportunity />
+              <ApplicationForm />
             </ProtectedRoute>
           }
         />
 
+        {/* Account Settings */}
         <Route
           path="/account-settings"
           element={
@@ -89,7 +114,7 @@ function App() {
           }
         />
 
-        {/* Catch-all */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

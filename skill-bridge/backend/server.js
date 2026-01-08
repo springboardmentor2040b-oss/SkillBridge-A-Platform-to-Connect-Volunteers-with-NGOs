@@ -4,12 +4,16 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cors from "cors";
-import opportunityRoutes from "./routes/OpportunityRoutes.js";
+import path from "path";
 
-console.log("🔥 THIS SERVER.JS IS RUNNING 🔥");
+import opportunityRoutes from "./routes/OpportunityRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
+import { authMiddleware, ngoOnly } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 const app = express();
+
+console.log("🔥 SERVER.JS IS RUNNING 🔥");
 
 /* ===================== CORS ===================== */
 app.use(
@@ -27,7 +31,7 @@ app.get("/test", (req, res) => {
   res.send("SERVER TEST OK");
 });
 
-/* ===================== DB ===================== */
+/* ===================== DB CONNECTION ===================== */
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected 🚀"))
@@ -38,7 +42,7 @@ const userSchema = new mongoose.Schema(
   {
     username: String,
     fullName: String,
-    email: { type: String, unique: true }, // 🔹 unique email
+    email: { type: String, unique: true },
     password: String,
     userType: { type: String, enum: ["NGO", "Volunteer"] },
     location: String,
@@ -51,73 +55,11 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-/* ===================== OPPORTUNITY MODEL ===================== */
-const opportunitySchema = new mongoose.Schema(
-  {
-    title: String,
-    description: String,
-    skills: [String],
-    duration: String,
-    location: String,
-    status: { type: String, enum: ["OPEN", "CLOSED"], default: "OPEN" },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  },
-  { timestamps: true }
-);
-
-const Opportunity =
-  mongoose.models.Opportunity ||
-  mongoose.model("Opportunity", opportunitySchema);
-
-/* ===================== APPLICATION MODEL ===================== */
-const applicationSchema = new mongoose.Schema(
-  {
-    opportunity: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Opportunity",
-      required: true,
-    },
-    volunteer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["PENDING", "ACCEPTED", "REJECTED"],
-      default: "PENDING",
-    },
-  },
-  { timestamps: true }
-);
-
-const Application =
-  mongoose.models.Application ||
-  mongoose.model("Application", applicationSchema);
-
-/* ===================== AUTH MIDDLEWARE ===================== */
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "No token provided" });
-
-  try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
-};
-
-/* ===================== ROLE MIDDLEWARE ===================== */
-const ngoOnly = (req, res, next) => {
-  if (req.user.role !== "NGO") return res.status(403).json({ message: "NGO access only" });
-  next();
-};
-
 /* ===================== AUTH ROUTES ===================== */
+
+// SIGNUP
 app.post("/api/auth/signup", async (req, res) => {
   try {
-    // 🔹 Check duplicate email
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
@@ -131,7 +73,10 @@ app.post("/api/auth/signup", async (req, res) => {
     });
 
     const token = jwt.sign(
-      { id: user._id, role: user.userType },
+      {
+        id: user._id,
+        userType: user.userType, // use consistent field
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -145,6 +90,7 @@ app.post("/api/auth/signup", async (req, res) => {
   }
 });
 
+// LOGIN
 app.post("/api/auth/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -154,7 +100,7 @@ app.post("/api/auth/login", async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user._id, role: user.userType },
+      { id: user._id, userType: user.userType },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -168,20 +114,21 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-/* ===================== OPPORTUNITY ROUTES ===================== */
-app.use(
-  "/api/opportunities",
-  opportunityRoutes(authMiddleware, ngoOnly)
-);
+/* ===================== API ROUTES ===================== */
+app.use("/api/opportunities", opportunityRoutes(authMiddleware, ngoOnly));
+app.use("/api/applications", applicationRoutes);
 
-/* ===================== FALLBACK 404 ===================== */
-app.use((req, res) => {
-  console.log("❌ UNMATCHED ROUTE:", req.method, req.url);
-  res.status(404).json({ message: "Route not found" });
+/* ===================== SERVE REACT FRONTEND ===================== */
+const __dirname = path.resolve();
+const frontendBuildPath = path.join(__dirname, "../frontend/build");
+
+app.use(express.static(frontendBuildPath));
+
+// SPA fallback (serve index.html for unknown routes)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, "index.html"));
 });
 
-/* ===================== SERVER ===================== */
+/* ===================== START SERVER ===================== */
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} 🚀`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT} 🚀`));

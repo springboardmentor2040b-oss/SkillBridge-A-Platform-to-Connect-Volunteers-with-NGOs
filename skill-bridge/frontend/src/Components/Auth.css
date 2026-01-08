@@ -213,3 +213,94 @@
 .login-form .signup-prompt {
   width: 100%;
 }
+
+
+
+/* Page background */
+.auth-container {
+  min-height: 100vh;
+  background: #f5f7fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Card */
+.auth-card {
+  width: 380px;
+  padding: 35px 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Heading */
+.auth-card h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #1f2937;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs */
+.login-form input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.login-form input:focus {
+  border-color: #2563eb;
+}
+
+/* Button */
+.auth-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.auth-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Signup text */
+.signup-prompt {
+  font-size: 13px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.signup-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+/* Error message */
+.login-form p {
+  text-align: center;
+  font-size: 13px;
+  color: #dc2626;
+}

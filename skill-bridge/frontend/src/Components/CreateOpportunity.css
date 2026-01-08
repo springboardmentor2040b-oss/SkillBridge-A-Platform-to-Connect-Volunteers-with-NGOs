@@ -140,36 +140,34 @@ textarea {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 25px;
+
 }
 
-/* Cancel Button – light blue */
 .cancel {
-  background: #e0e7ff;        /* light blue */
-  color: #1e3a8a;             /* dark blue text */
-  border: 1px solid #c7d2fe;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.cancel:hover {
-  background: #c7d2fe;
-}
-
-/* Create Button – primary blue */
-.create {
-  background: #2563eb;        /* primary blue */
-  color: #ffffff;
+  background: #f1f5f9;
   border: none;
   padding: 10px 18px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
+  
+}
+
+.cancel:hover {
+  background: #e2e8f0;
+
+}
+
+.create {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .create:hover {
-  background: #1e40af;        /* darker blue */
+  background: #1e40af;
 }
 
 /* ================== ERROR MESSAGE ================== */

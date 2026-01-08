@@ -1,44 +1,31 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import "./ApplyOpportunity.css";
+import "./ApplicationForm.css";
 
 const ApplyOpportunity = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
   const [opportunity, setOpportunity] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  const [application, setApplication] = useState({
+  const [form, setForm] = useState({
     motivation: "",
     availability: "",
+    skills: "",
   });
 
-  /* =========================
-     ACCESS CONTROL (EARLY)
-     ========================= */
-  if (!user || !token) {
-    return <p className="error-msg">Please log in to apply.</p>;
-  }
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  if (user.role !== "Volunteer") {
-    return <p className="error-msg">Access denied.</p>;
-  }
-
-  /* =========================
-     FETCH OPPORTUNITY DETAILS
-     ========================= */
   useEffect(() => {
     const fetchOpportunity = async () => {
       try {
-        const res = await axios.get(
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const res = await fetch(
           `http://localhost:5000/api/opportunities/${id}`,
           {
             headers: {
@@ -47,143 +34,103 @@ const ApplyOpportunity = () => {
           }
         );
 
-        const isOpen =
-          res.data.status &&
-          res.data.status.toUpperCase() === "OPEN";
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
 
-        if (!isOpen) {
-          setError("This opportunity is closed and cannot be applied to.");
-        }
-
-        setOpportunity(res.data);
+        setOpportunity(data);
       } catch (err) {
-        setError("Failed to load opportunity details.");
+        setError(err.message || "Failed to load opportunity.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchOpportunity();
-  }, [id, token]);
+  }, [id, token, navigate]);
 
-  /* =========================
-     HANDLE FORM CHANGE
-     ========================= */
-  const handleChange = (e) => {
-    setApplication({
-      ...application,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  /* =========================
-     SUBMIT APPLICATION
-     ========================= */
-  const handleApply = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      opportunity.status?.toUpperCase() !== "OPEN"
-    ) {
-      setError("You cannot apply to a closed opportunity.");
-      return;
-    }
-
-    setSubmitting(true);
     setError("");
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/applications",
+      setLoading(true);
+
+      const res = await fetch(
+        "http://localhost:5000/api/applications/apply",
         {
-          opportunityId: id,
-          motivation: application.motivation,
-          availability: application.availability,
-        },
-        {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify({
+            opportunityId: id,
+            ...form,
+          }),
         }
       );
 
-      setSuccess("Application submitted successfully!");
-      setTimeout(() => navigate("/opportunities"), 2000);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      alert("Application submitted successfully 🎉");
+      navigate("/opportunities");
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Application failed."
-      );
+      setError(err.message || "Submission failed");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
+  /* ================= SAFE RENDERING ================= */
   if (loading) return <p>Loading...</p>;
+  if (error) return <p className="application-error">{error}</p>;
+  if (!opportunity) return null;
 
   return (
-    <div className="apply-page">
-      <h2>Apply for Opportunity</h2>
+    <div className="application-page">
+      <div className="application-container">
+        <h2>Apply for {opportunity.title}</h2>
 
-      {error && <p className="error-msg">{error}</p>}
-      {success && <p className="success-msg">{success}</p>}
+        <form className="application-form" onSubmit={handleSubmit}>
+          <label>Why are you interested?</label>
+          <textarea
+            name="motivation"
+            required
+            onChange={handleChange}
+          />
 
-      {opportunity && (
-        <>
-          {/* ===== OPPORTUNITY DETAILS ===== */}
-          <div className="opportunity-summary">
-            <h3>{opportunity.title}</h3>
-            <p>
-              <strong>Location:</strong> {opportunity.location}
-            </p>
-            <p>
-              <strong>Status:</strong> {opportunity.status}
-            </p>
-            <p>
-              <strong>Required Skills:</strong>{" "}
-              {opportunity.skills?.join(", ") || "N/A"}
-            </p>
-            <p className="description">
-              {opportunity.description}
-            </p>
+          <label>Availability</label>
+          <input
+            name="availability"
+            required
+            onChange={handleChange}
+          />
+
+          <label>Relevant Skills</label>
+          <input
+            name="skills"
+            onChange={handleChange}
+          />
+
+          <div className="application-actions">
+            <button className="btn-submit" type="submit" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Application"}
+            </button>
+
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={() => navigate("/opportunities")}
+            >
+              Cancel
+            </button>
           </div>
-
-          {/* ===== APPLY FORM ===== */}
-          {opportunity.status?.toUpperCase() === "OPEN" ? (
-            <form className="apply-form" onSubmit={handleApply}>
-              <label>
-                Why are you interested?
-                <textarea
-                  name="motivation"
-                  required
-                  value={application.motivation}
-                  onChange={handleChange}
-                />
-              </label>
-
-              <label>
-                Availability
-                <input
-                  type="text"
-                  name="availability"
-                  required
-                  value={application.availability}
-                  onChange={handleChange}
-                />
-              </label>
-
-              <button type="submit" disabled={submitting}>
-                {submitting
-                  ? "Submitting..."
-                  : "Submit Application"}
-              </button>
-            </form>
-          ) : (
-            <p className="closed-msg">
-              Applications are closed for this opportunity.
-            </p>
-          )}
-        </>
-      )}
+        </form>
+      </div>
     </div>
   );
 };

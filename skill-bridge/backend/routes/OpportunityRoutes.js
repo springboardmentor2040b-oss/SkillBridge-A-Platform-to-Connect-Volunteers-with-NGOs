@@ -1,9 +1,9 @@
+// routes/OpportunityRoutes.js
 import express from "express";
-import mongoose from "mongoose";
+import Opportunity from "../models/Opportunity.js"; // better to export your model separately
 
 const opportunityRoutes = (authMiddleware, ngoOnly) => {
   const router = express.Router();
-  const Opportunity = mongoose.model("Opportunity");
 
   /* ================= CREATE OPPORTUNITY (NGO ONLY) ================= */
   router.post("/", authMiddleware, ngoOnly, async (req, res) => {
@@ -27,10 +27,27 @@ const opportunityRoutes = (authMiddleware, ngoOnly) => {
         .populate("createdBy", "organizationName userType")
         .sort({ createdAt: -1 });
 
-      res.json(opportunities);
+      res.status(200).json(opportunities);
     } catch (err) {
       console.error("Fetch opportunities error:", err);
       res.status(500).json({ message: "Failed to fetch opportunities" });
+    }
+  });
+
+  /* ================= GET SINGLE OPPORTUNITY ================= */
+  router.get("/:id", authMiddleware, async (req, res) => {
+    try {
+      const opportunity = await Opportunity.findById(req.params.id)
+        .populate("createdBy", "organizationName userType");
+
+      if (!opportunity) {
+        return res.status(404).json({ message: "Opportunity not found" });
+      }
+
+      res.status(200).json(opportunity);
+    } catch (err) {
+      console.error("Fetch single opportunity error:", err);
+      res.status(500).json({ message: "Failed to fetch opportunity" });
     }
   });
 
@@ -50,7 +67,7 @@ const opportunityRoutes = (authMiddleware, ngoOnly) => {
       Object.assign(opportunity, req.body);
       await opportunity.save();
 
-      res.json(opportunity);
+      res.status(200).json(opportunity);
     } catch (err) {
       console.error("Update opportunity error:", err);
       res.status(500).json({ message: "Failed to update opportunity" });
@@ -71,15 +88,12 @@ const opportunityRoutes = (authMiddleware, ngoOnly) => {
       }
 
       await opportunity.deleteOne();
-      res.json({ message: "Opportunity deleted successfully" });
+      res.status(200).json({ message: "Opportunity deleted successfully" });
     } catch (err) {
       console.error("Delete opportunity error:", err);
       res.status(500).json({ message: "Failed to delete opportunity" });
     }
   });
-
-  // ✅ No wildcard 404 inside this router
-  // Let server.js handle unmatched routes
 
   return router;
 };

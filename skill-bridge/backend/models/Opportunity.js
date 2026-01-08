@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const opportunitySchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
     skills: { type: [String], required: true },
-    duration: String,
-    location: String,
+    duration: { type: String, trim: true },
+    location: { type: String, trim: true },
     status: {
       type: String,
       enum: ["OPEN", "CLOSED"],
@@ -29,4 +29,4 @@ opportunitySchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.model("Opportunity", opportunitySchema);
+export default mongoose.models.Opportunity || mongoose.model("Opportunity", opportunitySchema);
