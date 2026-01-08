@@ -16,10 +16,11 @@ const Dashboard = ({ fullName }) => {
   });
 
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const userRaw = localStorage.getItem("user");
+  const user = userRaw ? JSON.parse(userRaw) : null;
   const userRole = user?.userType?.trim().toUpperCase();
 
-  // Load dashboard stats
+  /* ===================== LOAD DASHBOARD ===================== */
   useEffect(() => {
     if (!token || !user) {
       setDashboardError("Please login to access dashboard.");
@@ -31,7 +32,9 @@ const Dashboard = ({ fullName }) => {
         const response = await axios.get(
           "http://localhost:5000/api/opportunities",
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
@@ -50,16 +53,16 @@ const Dashboard = ({ fullName }) => {
           pendingApplications: 0,
         });
       } catch (err) {
-        console.error(err);
-        setDashboardError("Failed to load dashboard data.");
+        console.error("Dashboard fetch error:", err);
+        setDashboardError("Failed to load dashboard data. Please login again.");
       }
     };
 
     fetchDashboardData();
-  }, [token, user]);
+  }, [token]);
 
-  // NGO: Create Opportunity
-  const handleCreateOpportunity = (e) => {
+  /* ===================== NGO CREATE OPPORTUNITY ===================== */
+  const handleCreateOpportunity = async (e) => {
     e.preventDefault();
     setActionError("");
 
@@ -73,18 +76,18 @@ const Dashboard = ({ fullName }) => {
       return;
     }
 
-    fetch("http://localhost:5000/api/opportunities", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized or invalid token");
-        navigate("/create-opportunity");
-      })
-      .catch((err) => {
-        console.error(err);
-        setActionError("Session expired. Please login again.");
+    try {
+      await axios.get("http://localhost:5000/api/opportunities", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      navigate("/create-opportunity");
+    } catch (err) {
+      console.error("Auth check failed:", err);
+      setActionError("Session expired. Please login again.");
+    }
   };
 
   return (
@@ -113,10 +116,7 @@ const Dashboard = ({ fullName }) => {
             Applications
           </button>
 
-          <button
-            className="menu-item"
-            onClick={() => navigate("/messages")}
-          >
+          <button className="menu-item" onClick={() => navigate("/messages")}>
             Messages
           </button>
         </nav>

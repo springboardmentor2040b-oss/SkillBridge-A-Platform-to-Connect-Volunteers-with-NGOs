@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cors from "cors";
-import path from "path";
 
 import opportunityRoutes from "./routes/OpportunityRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
@@ -75,7 +74,7 @@ app.post("/api/auth/signup", async (req, res) => {
     const token = jwt.sign(
       {
         id: user._id,
-        userType: user.userType, // use consistent field
+        userType: user.userType,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -117,17 +116,6 @@ app.post("/api/auth/login", async (req, res) => {
 /* ===================== API ROUTES ===================== */
 app.use("/api/opportunities", opportunityRoutes(authMiddleware, ngoOnly));
 app.use("/api/applications", applicationRoutes);
-
-/* ===================== SERVE REACT FRONTEND ===================== */
-const __dirname = path.resolve();
-const frontendBuildPath = path.join(__dirname, "../frontend/build");
-
-app.use(express.static(frontendBuildPath));
-
-// SPA fallback (serve index.html for unknown routes)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendBuildPath, "index.html"));
-});
 
 /* ===================== START SERVER ===================== */
 const PORT = process.env.PORT || 5000;
