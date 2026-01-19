@@ -1,68 +1,55 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 export default function ProfileDropdown({ user }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // ✅ GUARD: user not loaded yet
+  if (!user) return null;
 
   const handleLogout = () => {
-    localStorage.removeItem("userProfile");
+    localStorage.removeItem("currentUser");
     navigate("/login");
   };
 
   return (
-    <div className="relative" ref={ref}>
-      {/* Profile trigger */}
-      <button
+    <div className="relative">
+      {/* Profile button */}
+      <div
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3"
+        className="flex items-center gap-2 cursor-pointer"
       >
-        <span className="text-gray-700 font-medium">{user.name}</span>
+        <span className="text-gray-700 font-medium">
+          {user.name}
+        </span>
 
         <div className="w-10 h-10 rounded-full border flex items-center justify-center bg-white">
           <UserCircleIcon className="w-6 h-6 text-gray-600" />
         </div>
-      </button>
+      </div>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-lg border z-50">
-          {/* Header */}
-          <div className="px-5 py-4 border-b">
-            <p className="font-semibold text-gray-900">{user.name}</p>
+        <div className="absolute right-0 mt-3 w-48 bg-white border rounded-lg shadow-lg z-50">
+          <div className="px-4 py-3 border-b">
+            <p className="font-medium">{user.name}</p>
             <p className="text-sm text-gray-500 capitalize">
               {user.role}
             </p>
           </div>
 
-          {/* Actions */}
           <button
-            onClick={() => {
-              setOpen(false);
-              navigate("/profile");
-            }}
-            className="w-full text-left px-5 py-3 hover:bg-gray-100 text-gray-700"
+            onClick={() => navigate("/profile")}
+            className="w-full text-left px-4 py-2 hover:bg-gray-100"
           >
             Account Settings
           </button>
 
           <button
             onClick={handleLogout}
-            className="w-full text-left px-5 py-3 hover:bg-red-50 text-red-600 font-semibold rounded-b-xl"
+            className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
           >
             Logout
           </button>

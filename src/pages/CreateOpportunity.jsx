@@ -22,13 +22,18 @@ export default function CreateOpportunity() {
 
   // ✅ Load username from localStorage
   useEffect(() => {
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      const profile = JSON.parse(storedProfile);
-      setUserName(profile.name || "User");
-      setUserRole(profile.role);
+    const storedUser = localStorage.getItem("currentUser");
+
+    if (!storedUser) {
+      navigate("/login");
+      return;
     }
-  }, []);
+
+    const user = JSON.parse(storedUser);
+    setUserName(user.name || "User");
+    setUserRole(user.role);
+  }, [navigate]);
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -37,10 +42,7 @@ export default function CreateOpportunity() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (userRole !== "ngo") {
-    setSuccessMessage("Only NGOs can create opportunities");
-    return;
-    }
+    
 
   // 📦 Create opportunity object
   const newOpportunity = {

@@ -27,28 +27,31 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const err = validate();
     setErrors(err);
-    if (Object.keys(err).length === 0) {
-      // For now we just navigate to dashboard (replace with real auth later)
-      const storedUser = localStorage.getItem("userProfile");
+    if (Object.keys(err).length !== 0) return;
 
-      if (!storedUser) {
-        alert("No account found. Please sign up first.");
-        navigate("/signup");
-        return;
-      }
-      const user = JSON.parse(storedUser);
+     // 1️⃣ Get all registered users (acts like DB)
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // OPTIONAL email check (recommended)
-      if (user.email !== form.email) {
-        alert("Email does not match any registered account");
-        return;
-      }
+      // 2️⃣ Find matching user
+    const user = users.find(
+      (u) => u.email === form.email && u.password === form.password
+    );
 
-      navigate("/dashboard");
+    if (!user) {
+      alert("Invalid email or password");
+      return;
     }
+
+    // 3️⃣ Store logged-in session
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    // 4️⃣ Navigate to dashboard
+    navigate("/dashboard");
   };
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">

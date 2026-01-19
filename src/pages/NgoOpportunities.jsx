@@ -19,7 +19,7 @@ export default function NgoOpportunities() {
   skills: [],
   duration: "",
   location: "",
-  status: "Open",
+  status: "open",
   });
 
   const [filter, setFilter] = useState("all");
@@ -28,17 +28,31 @@ export default function NgoOpportunities() {
 
   // 🔹 Load user + opportunities
   useEffect(() => {
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      const profile = JSON.parse(storedProfile);
-      setUserRole(profile.role);
-    }
+   const storedUser = localStorage.getItem("currentUser");
 
-    const storedOpps = localStorage.getItem("ngoOpportunities");
+   // ❌ Not logged in → go to login
+   if (!storedUser) {
+    navigate("/login");
+    return;
+   }
+
+   const user = JSON.parse(storedUser);
+
+   // ❌ Logged in but not NGO → go to dashboard
+   if (user.role !== "ngo") {
+    navigate("/dashboard");
+    return;
+   }
+
+   // ✅ NGO user → allow page
+   setUserRole(user.role);
+
+   const storedOpps = localStorage.getItem("ngoOpportunities");
     if (storedOpps) {
-      setOpportunities(JSON.parse(storedOpps));
+     setOpportunities(JSON.parse(storedOpps));
     }
-  }, []);
+  }, [navigate]);
+
 
   // 🔹 Delete opportunity (NGO only)
   const handleDelete = (id) => {

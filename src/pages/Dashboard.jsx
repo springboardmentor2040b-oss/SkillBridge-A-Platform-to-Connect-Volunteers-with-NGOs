@@ -9,21 +9,21 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   // ✅ NEW: user state
-  const [user, setUser] = useState({ name: "" });
-  const [userRole, setUserRole] = useState("");
+  
+  const [user, setUser] = useState(null);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   // ✅ NEW: get user data from signup (localStorage)
   useEffect(() => {
-  const storedUser = localStorage.getItem("userProfile");
+    const storedUser = localStorage.getItem("currentUser");
 
-  if (storedUser) {
-    const parsedUser = JSON.parse(storedUser);
-
-    setUser(parsedUser);          // 👈 existing line
-    setUserRole(parsedUser.role); // 👈 ADD THIS LINE (AFTER setUser)
-  }
-}, []);
+    if (!storedUser) {
+      navigate("/login");
+      return;
+    }
+    setUser(JSON.parse(storedUser));
+  }, [navigate]);
 
 
   return (
@@ -57,13 +57,13 @@ export default function Dashboard() {
             </li>
 
             <li
-               className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-600"
+              className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-600"
                onClick={() => {
-                 if (userRole === "ngo") {
-                  navigate("/ngo-opportunities");
-                } else if(userRole ==="volunteer"){
+                 if (user?.role === "ngo") {
+                    navigate("/ngo-opportunities");
+                  } else {
                   navigate("/volunteer-opportunities"); // volunteer (view only – later)
-                }
+                  }
               }}
             >
               <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
@@ -123,7 +123,7 @@ export default function Dashboard() {
             </button>
 
             <h2 className="text-xl font-semibold capitalize">
-              {userRole || "Dashboard"}
+              {user?.role || "Dashboard"}
             </h2>
           </div>
 
@@ -206,16 +206,16 @@ export default function Dashboard() {
         <section>
           <h4 className="text-lg font-medium mb-4">Quick Actions</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {userRole === "ngo" && (
+            {user?.role === "ngo" && (
               <div
                 onClick={() => navigate("/create-opportunity")}
                 className="bg-white rounded-xl p-8 shadow-sm text-center cursor-pointer hover:shadow-md"
               >
                 <div className="text-blue-600 text-3xl mb-3">+</div>
                 <div className="text-blue-600 font-medium">
-                Create New Opportunity
+                  Create New Opportunity
+                </div>
               </div>
-             </div>
             )}
 
             <div className="bg-white rounded-xl p-8 shadow-sm text-center">

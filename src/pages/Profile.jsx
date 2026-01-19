@@ -34,22 +34,50 @@ export default function Profile() {
 
   // Load profile
   useEffect(() => {
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      setProfile(JSON.parse(storedProfile));
+    const storedUser = localStorage.getItem("currentUser");
+
+    if (!storedUser) {
+      navigate("/login");
+      return;
     }
-  }, []);
+
+    const user = JSON.parse(storedUser);
+
+    setProfile({
+      name: user.name || "",
+      email: user.email || "",
+      skills: user.skills || [],
+      location: user.location || "",
+      role: user.role,
+    });
+  }, [navigate]);
+
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
   const saveProfile = () => {
-    localStorage.setItem("userProfile", JSON.stringify(profile));
+    const updatedUser = {
+      ...JSON.parse(localStorage.getItem("currentUser")),
+      ...profile,
+    };
+
+    // update current session
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+    // update users list (acts like DB)
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const updatedUsers = users.map((u) =>
+      u.email === updatedUser.email ? updatedUser : u
+    );
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
     setMessage("Profile updated successfully");
     setIsEditing(false);
     setTimeout(() => setMessage(""), 3000);
   };
+
 
   const updatePassword = () => {
     if (!currentPwd || !newPwd || !confirmPwd) {
@@ -202,7 +230,7 @@ export default function Profile() {
             <p className="text-sm text-gray-500">{profile.email}</p>
 
             <span className="inline-block mt-3 px-4 py-1 text-sm rounded-full bg-blue-100 text-blue-600">
-              Volunteer
+              {profile.role}
             </span>
           </div>
 

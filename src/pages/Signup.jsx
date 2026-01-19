@@ -73,38 +73,63 @@ export default function Signup() {
   function handleSubmit(e) {
     e.preventDefault();
 
+    // fetch existing users (acts like DB)
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
     if (activeTab === "volunteer") {
       const vErr = validateVolunteer();
       setErrors(vErr);
+
       if (Object.keys(vErr).length === 0) {
-        localStorage.setItem(
-          "userProfile",
-          JSON.stringify({
-           name: form.volName,
-           email: form.volEmail,
-           role: "volunteer",
-          })
-        );
+        const newUser = {
+          name: form.volName,
+          email: form.volEmail,
+          password: form.volPassword,
+          role: "volunteer",
+        };
+
+        // prevent duplicate signup
+        if (users.some((u) => u.email === newUser.email)) {
+          alert("Account already exists. Please login.");
+          return;
+        }
+
+        users.push(newUser);
+
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+
         alert("Volunteer account created!");
         navigate("/dashboard");
       }
     } else {
       const nErr = validateNgo();
       setErrors(nErr);
+
       if (Object.keys(nErr).length === 0) {
-        localStorage.setItem(
-          "userProfile",
-         JSON.stringify({
+        const newUser = { 
           name: form.ngoName,
           email: form.ngoEmail,
+          password: form.ngoPassword,
           role: "ngo",
-         })
-        );
+        };
+
+        if (users.some((u) => u.email === newUser.email)) {
+          alert("Account already exists. Please login.");
+          return;
+        }
+
+        users.push(newUser);
+
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+
         alert("NGO account created!");
         navigate("/dashboard");
       }
     }
   }
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
