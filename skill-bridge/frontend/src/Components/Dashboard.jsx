@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import socket from "../socket";     // ✅ use same socket as chat
 import "./Dashboard.css";
 
 const Dashboard = ({ fullName }) => {
@@ -8,11 +9,13 @@ const Dashboard = ({ fullName }) => {
 
   const [dashboardError, setDashboardError] = useState("");
   const [actionError, setActionError] = useState("");
+
   const [stats, setStats] = useState({
     activeOpportunities: 0,
     applications: 0,
     activeVolunteers: 0,
     pendingApplications: 0,
+    unreadMessages: 0,
   });
 
   const token = localStorage.getItem("token");
@@ -20,48 +23,125 @@ const Dashboard = ({ fullName }) => {
   const user = userRaw ? JSON.parse(userRaw) : null;
   const userRole = user?.userType?.trim().toUpperCase();
 
-  /* ===================== LOAD DASHBOARD ===================== */
+  /* ======================================================
+     LIVE FETCH FUNCTION (USED EVERY FEW SECONDS)
+  ====================================================== */
+  const loadDashboardLive = async () => {
+    if (!token || !user) return;
+
+    try {
+      /* ===== 1. OPPORTUNITIES ===== */
+      const oppRes = await axios.get(
+        "http://localhost:5000/api/opportunities",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const opportunities = Array.isArray(oppRes.data)
+        ? oppRes.data
+        : [];
+
+      const activeOpps = opportunities.filter(
+        (opp) => opp.status === "OPEN"
+      ).length;
+
+      /* ===== 2. APPLICATIONS ===== */
+      let applications = 0;
+      let pending = 0;
+
+      try {
+        const appRes = await axios.get(
+          "http://localhost:5000/api/applications",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const apps = appRes.data || [];
+
+        applications = apps.length;
+
+        pending = apps.filter(
+          (a) => a.status === "PENDING"
+        ).length;
+
+      } catch (e) {
+        console.log("Applications fetch failed");
+      }
+
+      /* ===== 3. UNREAD MESSAGES ===== */
+      let unread = 0;
+
+      try {
+        const chatRes = await axios.get(
+          `http://localhost:5000/api/chat/user/${user._id}`
+        );
+
+        const all = chatRes.data || [];
+
+        unread = all.filter(
+          (m) => m.seen === false && m.senderId !== user._id
+        ).length;
+
+      } catch (e) {
+        console.log("Chat count failed");
+      }
+
+      setStats({
+        activeOpportunities: activeOpps,
+        applications,
+        activeVolunteers: 0,       // you can connect later
+        pendingApplications: pending,
+        unreadMessages: unread,
+      });
+
+    } catch (err) {
+      setDashboardError("Failed to load dashboard data.");
+    }
+  };
+
+  /* ======================================================
+     INITIAL LOAD + AUTO REFRESH EVERY 5 SEC
+  ====================================================== */
   useEffect(() => {
     if (!token || !user) {
       setDashboardError("Please login to access dashboard.");
       return;
     }
 
-    const fetchDashboardData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/opportunities",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    // First load
+    loadDashboardLive();
 
-        const opportunities = Array.isArray(response.data)
-          ? response.data
-          : [];
+    // Auto refresh every 5 seconds
+    const interval = setInterval(() => {
+      loadDashboardLive();
+    }, 5000);
 
-        const activeOpps = opportunities.filter(
-          (opp) => opp.status === "OPEN"
-        ).length;
+    return () => clearInterval(interval);
 
-        setStats({
-          activeOpportunities: activeOpps,
-          applications: 0,
-          activeVolunteers: 0,
-          pendingApplications: 0,
-        });
-      } catch (err) {
-        console.error("Dashboard fetch error:", err);
-        setDashboardError("Failed to load dashboard data. Please login again.");
-      }
-    };
-
-    fetchDashboardData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  /* ===================== NGO CREATE OPPORTUNITY ===================== */
+  /* ======================================================
+     SOCKET LISTENERS FOR REAL TIME CHAT
+  ====================================================== */
+  useEffect(() => {
+
+    socket.on("receiveMessage", () => {
+      loadDashboardLive();     // refresh when new msg arrives
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ======================================================
+     NGO CREATE OPPORTUNITY
+  ====================================================== */
   const handleCreateOpportunity = async (e) => {
     e.preventDefault();
     setActionError("");
@@ -72,26 +152,16 @@ const Dashboard = ({ fullName }) => {
     }
 
     if (userRole !== "NGO") {
-      setActionError("Access denied: Only NGO users can create opportunities.");
+      setActionError("Access denied.");
       return;
     }
 
-    try {
-      await axios.get("http://localhost:5000/api/opportunities", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      navigate("/create-opportunity");
-    } catch (err) {
-      console.error("Auth check failed:", err);
-      setActionError("Session expired. Please login again.");
-    }
+    navigate("/create-opportunity");
   };
 
   return (
     <div className="dashboard-layout">
+
       {/* Sidebar */}
       <aside className="sidebar">
         <h2 className="org-name">
@@ -116,23 +186,37 @@ const Dashboard = ({ fullName }) => {
             Applications
           </button>
 
-          <button className="menu-item" onClick={() => navigate("/messages")}>
+          <button
+            className="menu-item"
+            onClick={() => navigate("/messages")}
+          >
             Messages
+            {stats.unreadMessages > 0 && (
+              <span className="badge">
+                {stats.unreadMessages}
+              </span>
+            )}
           </button>
         </nav>
       </aside>
 
-      {/* Main Area */}
+      {/* Main */}
       <main className="main-content">
+
         <h1 className="welcome">
           Welcome {fullName || user?.fullName || "User"} 👋
         </h1>
 
-        {dashboardError && <p className="error-msg">{dashboardError}</p>}
-        {actionError && <p className="error-msg">{actionError}</p>}
+        {dashboardError && (
+          <p className="error-msg">{dashboardError}</p>
+        )}
 
-        {/* Stats */}
+        {actionError && (
+          <p className="error-msg">{actionError}</p>
+        )}
+
         <section className="overview">
+
           <div className="card blue">
             <h2>{stats.activeOpportunities}</h2>
             <p>Active Opportunities</p>
@@ -152,14 +236,24 @@ const Dashboard = ({ fullName }) => {
             <h2>{stats.pendingApplications}</h2>
             <p>Pending Applications</p>
           </div>
+
+          <div className="card red">
+            <h2>{stats.unreadMessages}</h2>
+            <p>Unread Messages</p>
+          </div>
+
         </section>
 
-        {/* Quick Actions */}
         <section className="section">
           <h3>Quick Actions</h3>
+
           <div className="quick-actions">
+
             {userRole === "NGO" && (
-              <button className="action-btn" onClick={handleCreateOpportunity}>
+              <button
+                className="action-btn"
+                onClick={handleCreateOpportunity}
+              >
                 ➕ Create New Opportunity
               </button>
             )}
@@ -169,9 +263,16 @@ const Dashboard = ({ fullName }) => {
               onClick={() => navigate("/messages")}
             >
               💬 View Messages
+              {stats.unreadMessages > 0 && (
+                <span className="badge">
+                  {stats.unreadMessages}
+                </span>
+              )}
             </button>
+
           </div>
         </section>
+
       </main>
     </div>
   );

@@ -11,7 +11,7 @@ import CreateOpportunity from "./Components/CreateOpportunity";
 import Opportunities from "./Components/Opportunities";
 import ApplicationForm from "./Components/ApplicationForm";
 import Applications from "./Components/Applications";
-import Chat from "./Components/Chat";   // ✅ Your Chat.jsx
+import Chat from "./Components/Chat";   // ✅ Chat Component
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -23,6 +23,7 @@ function App() {
       const user = JSON.parse(localStorage.getItem("user"));
       setCurrentUser(user);
     };
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
@@ -40,7 +41,7 @@ function App() {
       <NavBar user={currentUser} />
 
       <Routes>
-        {/* Public */}
+        {/* Public Routes */}
         <Route path="/" element={<Hero />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
@@ -65,7 +66,7 @@ function App() {
           }
         />
 
-        {/* 💬 Messages (Chat UI) */}
+        {/* 💬 Chat / Messages */}
         <Route
           path="/messages"
           element={
@@ -94,7 +95,7 @@ function App() {
           }
         />
 
-        {/* Apply */}
+        {/* Apply for Opportunity */}
         <Route
           path="/apply-opportunity/:id"
           element={

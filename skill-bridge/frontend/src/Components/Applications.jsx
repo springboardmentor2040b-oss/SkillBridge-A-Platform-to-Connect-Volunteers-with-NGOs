@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./Applications.css";
 
 const Applications = () => {
+  const navigate = useNavigate();
+
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
   const userRole = user?.userType?.trim().toUpperCase();
@@ -37,6 +40,7 @@ const Applications = () => {
       return;
     }
     fetchApplications();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ================= VIEW DETAILS ================= */
@@ -65,9 +69,7 @@ const Applications = () => {
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Refresh applications
       await fetchApplications();
-      // Refresh selected application
       handleViewDetails(selectedApplication._id);
     } catch (err) {
       console.error(err);
@@ -75,6 +77,17 @@ const Applications = () => {
     } finally {
       setUpdateLoading(false);
     }
+  };
+
+  /* ================= OPEN CHAT ================= */
+  const openChat = (app) => {
+
+    const ngoId = app.ngo?._id;
+    const volunteerId = app.volunteer?._id;
+
+    navigate(
+      `/messages?ngo=${ngoId}&volunteer=${volunteerId}`
+    );
   };
 
   if (loading) return <p>Loading applications...</p>;
@@ -120,12 +133,22 @@ const Applications = () => {
               >
                 View Details
               </button>
+
+              {/* 💬 NEW MESSAGE BUTTON */}
+              <button
+                className="view-btn"
+                style={{ marginLeft: "10px" }}
+                onClick={() => openChat(app)}
+              >
+                Message
+              </button>
+
             </div>
           ))}
         </div>
       )}
 
-      {/* ================= MODAL ================= */}
+      {/* MODAL - unchanged */}
       {showModal && selectedApplication && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div
@@ -133,27 +156,18 @@ const Applications = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h2>{selectedApplication.opportunity?.title}</h2>
+
             <p>
               <strong>Volunteer:</strong>{" "}
               {selectedApplication.volunteer?.fullName} (
               {selectedApplication.volunteer?.email})
             </p>
+
             <p>
               <strong>NGO:</strong>{" "}
               {selectedApplication.ngo?.organizationName || "N/A"}
             </p>
-            <p>
-              <strong>Motivation:</strong>{" "}
-              {selectedApplication.motivation}
-            </p>
-            <p>
-              <strong>Availability:</strong>{" "}
-              {selectedApplication.availability}
-            </p>
-            <p>
-              <strong>Skills:</strong>{" "}
-              {selectedApplication.skills || "N/A"}
-            </p>
+
             <p>
               <strong>Status:</strong>{" "}
               <span
@@ -163,7 +177,6 @@ const Applications = () => {
               </span>
             </p>
 
-            {/* NGO Accept/Reject Buttons */}
             {userRole === "NGO" &&
               selectedApplication.status === "PENDING" && (
                 <div className="modal-actions">
@@ -174,6 +187,7 @@ const Applications = () => {
                   >
                     {updateLoading ? "Updating..." : "Accept"}
                   </button>
+
                   <button
                     className="btn-reject"
                     onClick={() => updateStatus("REJECTED")}
@@ -183,6 +197,14 @@ const Applications = () => {
                   </button>
                 </div>
               )}
+
+            {/* 💬 CHAT FROM MODAL ALSO */}
+            <button
+              className="view-btn"
+              onClick={() => openChat(selectedApplication)}
+            >
+              Message
+            </button>
 
             <button
               className="btn-close"

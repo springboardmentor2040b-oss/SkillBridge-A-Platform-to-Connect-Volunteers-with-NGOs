@@ -16,44 +16,77 @@ const NavBar = ({ user }) => {
   return (
     <nav className="nav">
       <div className="nav-container">
+
+        {/* LOGO */}
         <div className="logo">
           <div className="logo-icon">SB</div>
           <h2>SkillBridge</h2>
         </div>
 
-        {/* NAV LINKS */}
+        {/* ===== NAV LINKS (SAME AS DASHBOARD) ===== */}
         <ul className="nav-links">
           <li>
             <Link to="/">Home</Link>
           </li>
 
-          {/* ✅ FIXED View Opportunities */}
           {token && (
-            <li>
-              <button
-                type="button"
-                onClick={() => navigate("/opportunities")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  font: "inherit",
-                  padding: 0
-                }}
-              >
-                Opportunities
-              </button>
-            </li>
-          )}
+            <>
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
 
-          {token && (
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => navigate("/opportunities")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    font: "inherit",
+                    padding: 0,
+                  }}
+                >
+                  Opportunities
+                </button>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/applications")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    font: "inherit",
+                    padding: 0,
+                  }}
+                >
+                  Applications
+                </button>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  onClick={() => navigate("/messages")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    font: "inherit",
+                    padding: 0,
+                  }}
+                >
+                  Messages
+                </button>
+              </li>
+            </>
           )}
         </ul>
 
-        {/* PROFILE SECTION */}
+        {/* ===== PROFILE SECTION ===== */}
         {token && (
           <div className="nav-view-section">
             <div className="profile-wrapper" ref={profileRef}>
@@ -66,13 +99,16 @@ const NavBar = ({ user }) => {
 
               {showProfile && (
                 <div className="profile-dropdown">
+
                   <div className="profile-header">
                     <div className="profile-icon large">
                       {user?.username?.charAt(0).toUpperCase() || "U"}
                     </div>
+
                     <div>
                       <h4>{user?.username || user?.fullName || "User"}</h4>
                       <p>{user?.email}</p>
+
                       <span className="role">
                         {user?.role || user?.userType}
                       </span>
@@ -93,11 +129,13 @@ const NavBar = ({ user }) => {
                   <button className="logout-btn" onClick={handleLogout}>
                     Logout
                   </button>
+
                 </div>
               )}
             </div>
           </div>
         )}
+
       </div>
     </nav>
   );

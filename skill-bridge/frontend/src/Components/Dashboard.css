@@ -168,3 +168,11 @@
 .action-btn:hover {
   background: #f8fafc;
 }
+.badge {
+  background: red;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+  font-size: 12px;
+}
