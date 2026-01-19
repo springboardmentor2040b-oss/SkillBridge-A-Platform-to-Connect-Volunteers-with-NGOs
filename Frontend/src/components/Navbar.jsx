@@ -1,6 +1,8 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { IoMenu } from "react-icons/io5";
-import { useState, useEffect } from "react";
+import { IoMenu, IoNotifications, IoSettingsOutline } from "react-icons/io5";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import socket, { joinNotifications, leaveNotifications } from "../socket";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -8,13 +10,36 @@ function Navbar() {
 
   const [showMobile, setShowMobile] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
 
   const toggleMobile = () => setShowMobile(!showMobile);
   const toggleProfile = () => setShowProfile(!showProfile);
+  const toggleNotifications = () => setShowNotifications(!showNotifications);
 
-  // Update login status when component mounts or location changes
+  // Get 
+  const token = localStorage.getItem("token");
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userId = userData.id;
+
+  //unread notification count
+  const fetchUnreadCount = useCallback(async () => {
+    if (!token || !userId) return;
+
+    try {
+      const res = await axios.get("http://localhost:4001/api/messages/unread/count", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotificationCount(res.data.unreadCount || 0);
+    } catch (err) {
+      console.error("Error fetching unread count:", err);
+    }
+  }, [token, userId]);
+
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -23,14 +48,45 @@ function Navbar() {
     setUser(userData ? JSON.parse(userData) : {});
   }, [location]);
 
-  // Get user role
+  useEffect(() => {
+    if (!token || !userId) return;
+
+   
+    socket.connect();
+    joinNotifications(userId);
+
+    
+    const handleNewNotification = (data) => {
+      
+      if (data.recipientId === userId && data.senderId !== userId) {
+        setNotificationCount(prev => prev + 1);
+        setNotifications(prev => [{
+          id: Date.now(),
+          text: data.text,
+          senderName: data.senderName,
+          applicationId: data.applicationId,
+          createdAt: new Date()
+        }, ...prev.slice(0, 4)]); 
+      }
+    };
+
+    socket.on("new-notification", handleNewNotification);
+
+    fetchUnreadCount();
+
+    return () => {
+      leaveNotifications(userId);
+      socket.off("new-notification", handleNewNotification);
+      socket.disconnect();
+    };
+  }, [token, userId, fetchUnreadCount]);
+
   const userRole = user?.role;
   const isNGO = userRole === 'ngo';
   const isVolunteer = userRole === 'volunteer';
 
   const currentPath = location.pathname;
 
-  // Check if we're on home page
   const isHomePage = currentPath === '/' || currentPath === '/home';
 
   const handleLogout = () => {
@@ -40,16 +96,24 @@ function Navbar() {
     navigate("/login");
   };
 
-  // Helper function to get the correct opportunities link based on role
   const getOpportunitiesLink = () => {
     if (isNGO) return '/ngo-opportunities';
     return '/opportunities';
   };
 
-  // Helper function to get the correct applications link based on role
+  
   const getApplicationsLink = () => {
-    if (isNGO) return '/application'; // NGO sees applications received
-    return '/application'; // Volunteer sees their applications
+    if (isNGO) return '/application'; 
+    return '/application'; 
+  };
+
+  // notifications
+  const clearAllNotifications = async () => {
+    // Clear local state
+    setNotifications([]);
+    setNotificationCount(0);
+    
+    
   };
 
   return (
@@ -93,8 +157,85 @@ function Navbar() {
       {/* DESKTOP AUTH / PROFILE */}
       <div className="hidden lg:flex items-center gap-6 relative">
         {isLoggedIn ? (
-          /* Show Profile when logged in */
+          
           <>
+            {/* NOTIFICATION  */}
+            <div className="relative">
+              <button
+                onClick={toggleNotifications}
+                className="relative p-2 text-gray-600 hover:text-orange-500 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <IoNotifications className="text-xl" />
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+                    {notificationCount > 9 ? '9+' : notificationCount}
+                  </span>
+                )}
+              </button>
+
+              
+              {showNotifications && (
+                <div className="absolute top-12 right-0 w-80 bg-white border rounded-lg shadow-lg py-2 z-50 max-h-96 overflow-y-auto">
+                  <div className="px-4 py-2 border-b font-semibold text-gray-700 flex items-center justify-between">
+                    <span>Notifications</span>
+                    {notificationCount > 0 && (
+                      <button 
+                        onClick={clearAllNotifications}
+                        className="text-xs text-orange-500 hover:text-orange-600"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                  </div>
+                  
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                      <IoNotifications className="text-3xl mx-auto mb-2 opacity-50" />
+                      <p>No new notifications</p>
+                    </div>
+                  ) : (
+                    notifications.map((notif) => (
+                      <div
+                        key={notif.id}
+                        onClick={() => {
+                          navigate(`/messages/${notif.applicationId}`);
+                          setShowNotifications(false);
+                        }}
+                        className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                            {notif.senderName?.charAt(0).toUpperCase() || 'U'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-800">
+                              {notif.senderName || 'Someone'}
+                            </p>
+                            <p className="text-sm text-gray-600 truncate">
+                              {notif.text}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {new Date(notif.createdAt).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  
+                  {notifications.length > 0 && (
+                    <Link
+                      to="/messages"
+                      onClick={() => setShowNotifications(false)}
+                      className="block px-4 py-2 text-center text-sm text-orange-500 hover:bg-gray-50 border-t"
+                    >
+                      View all mes
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* PROFILE BUTTON */}
             <button
               onClick={toggleProfile}
@@ -110,7 +251,7 @@ function Navbar() {
               </span>
             </button>
 
-            {/* PROFILE DROPDOWN */}
+            
             {showProfile && (
               <div className="absolute top-12 right-0 w-56 bg-white border rounded-lg shadow-lg py-2 z-50">
                 <div className="px-4 py-2 text-sm text-gray-600">
@@ -140,7 +281,7 @@ function Navbar() {
             )}
           </>
         ) : (
-          /* Show Login/Signup when not logged in */
+          
           <>
             <Link to="/login" className="font-semibold hover:text-orange-500 transition">Login</Link>
             <Link
@@ -187,7 +328,7 @@ function Navbar() {
             </>
           )}
 
-          {/* Mobile Auth/Profile */}
+          
           {isLoggedIn ? (
             <>
               <Link to="/profile" onClick={toggleMobile}>My Profile</Link>

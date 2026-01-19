@@ -10,13 +10,15 @@ import NGOOpportunities from "./components/NGOOpportunities";
 import VolunteerOpportunities from "./components/VolunteerOpportunities";
 import CreateOpportunity from "./components/CreateOpportunity";
 import EditOpportunity from "./components/EditOpportunity";
-import Apply from "./components/Apply"; // NEW
+import Apply from "./components/Apply";
 
 import Dashboard from "./components/Dashboard";
-import Messages from "./components/Messages";
 import Applications from "./components/Application";
 import Profile from "./components/Profile";
 
+// CHAT COMPONENTS
+import MessagesLayout from "./components/MessagesLayout";
+import Messages from "./components/Messages";
 
 function App() {
   return (
@@ -24,31 +26,30 @@ function App() {
       <Navbar />
 
       <Routes>
+        {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-
         <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-        {/* Main opportunities page - shows VolunteerOpportunities */}
-        <Route path="/opportunities" element={<NGOOpportunities/>} />
-        
-        {/* NGO-specific opportunities management */}
+        {/* OPPORTUNITIES */}
+        <Route path="/opportunities" element={<NGOOpportunities />} />
         <Route path="/ngo-opportunities" element={<NGOOpportunities />} />
-        
-        <Route
-          path="/createOpportunity"
-          element={<Navigate to="/create-opportunity" replace />}
-        />
         <Route path="/create-opportunity" element={<CreateOpportunity />} />
         <Route path="/edit-opportunity/:id" element={<EditOpportunity />} />
-        
-        {/* Apply route - NEW */}
         <Route path="/apply/:id" element={<Apply />} />
 
+        {/* DASHBOARD */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/messages" element={<Messages />} />
         <Route path="/application" element={<Applications />} />
         <Route path="/profile" element={<Profile />} />
+
+        {/* message */}
+        <Route path="/messages" element={<MessagesLayout />}>
+          <Route index element={<Messages />} />
+          <Route path=":applicationId" element={<Messages />} />
+        </Route>
       </Routes>
     </>
   );

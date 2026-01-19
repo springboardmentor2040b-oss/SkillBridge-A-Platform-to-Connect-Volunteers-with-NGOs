@@ -29,7 +29,7 @@ const applicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Compound index to prevent duplicate applications
+// prevent duplicate applications
 applicationSchema.index({ opportunity: 1, volunteer: 1 }, { unique: true });
 
 module.exports = mongoose.model("Application", applicationSchema);

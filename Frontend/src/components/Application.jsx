@@ -333,7 +333,7 @@ export default function Applications() {
                         {/* CHAT BUTTON (for BOTH roles when accepted) */}
                         {app.status === 'accepted' && (
                           <button
-                          onClick={() => navigate(`/messages?applicationId=${app._id}`)}
+                          onClick={() => navigate(`/messages/${app._id}`)}
                             className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition flex items-center gap-2"
                           >
                             <MessageSquare size={16} />
@@ -439,7 +439,7 @@ export default function Applications() {
                 <button
                 onClick={() => {
                   setShowModal(false);
-                  navigate(`/messages?applicationId=${selectedApplication._id}`);
+                  navigate(`/messages/${selectedApplication._id}`);
                   }}
                   className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition"
                   >
