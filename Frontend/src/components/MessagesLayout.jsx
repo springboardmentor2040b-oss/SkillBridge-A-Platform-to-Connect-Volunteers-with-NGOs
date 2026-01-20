@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdChat, MdSearch } from "react-icons/md";
+import { MdChat, MdSearch, MdArrowBack } from "react-icons/md";
 
 function MessagesLayout() {
   const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showChatList, setShowChatList] = useState(true); // For mobile navigation
   const navigate = useNavigate();
 
   // Get auth data from localStorage
@@ -63,30 +64,46 @@ function MessagesLayout() {
     return name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  const handleChatSelect = (appId) => {
+    navigate(`/messages/${appId}`);
+    // On mobile, hide chat list and show chat window
+    if (window.innerWidth < 768) {
+      setShowChatList(false);
+    }
+  };
+
+  const handleBackToList = () => {
+    setShowChatList(true);
+    navigate("/messages");
+  };
+
   return (
-    <div className="h-[100dvh] flex bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="h-[100dvh] flex flex-col md:flex-row bg-slate-50 overflow-hidden">
 
       {/* LEFT PANEL - Chat List */}
-      <div className="w-[35%] min-w-[300px] bg-white border-r flex flex-col shadow-lg">
-        <div className="h-16 px-4 flex items-center border-b bg-white">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white shadow-md">
+      <div className={`${showChatList ? 'flex' : 'hidden'} md:flex flex-col w-full md:w-[320px] lg:w-[360px] bg-white border-r border-slate-200 shadow-sm flex-shrink-0`}>
+        <div className="h-16 px-4 flex items-center border-b border-slate-100 bg-white flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-md">
               <MdChat className="text-xl" />
             </div>
-            <h2 className="font-bold text-lg text-gray-800">Messages</h2>
+            <div>
+              <h2 className="font-bold text-lg text-slate-800">Messages</h2>
+              <p className="text-xs text-slate-500">{filteredChats.length} conversations</p>
+            </div>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="px-4 py-3 border-b">
+        <div className="px-4 py-3 border-b border-slate-100 flex-shrink-0">
           <div className="relative">
-            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search conversations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm outline-none focus:ring-2 focus:ring-orange-200 focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-orange-200 focus:bg-white transition-all"
             />
           </div>
         </div>
@@ -101,18 +118,18 @@ function MessagesLayout() {
 
           {isLoading ? (
             <div className="px-4 py-8 flex justify-center">
-              <div className="flex items-center gap-2 text-gray-500">
+              <div className="flex items-center gap-2 text-slate-500">
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
             </div>
           ) : filteredChats.length === 0 && !error ? (
-            <div className="px-4 py-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                <MdChat className="text-3xl text-gray-400" />
+            <div className="px-4 py-12 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center">
+                <MdChat className="text-3xl text-slate-400" />
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-slate-500 text-sm">
                 {searchTerm ? "No conversations found" : "No active chats yet"}
               </p>
             </div>
@@ -127,18 +144,16 @@ function MessagesLayout() {
               return (
                 <div
                   key={app._id}
-                  onClick={() =>
-                    navigate(`/messages/${app._id}`)
-                  }
-                  className="px-4 py-4 cursor-pointer hover:bg-orange-50 border-b border-gray-100 transition-colors group"
+                  onClick={() => handleChatSelect(app._id)}
+                  className="px-4 py-4 cursor-pointer hover:bg-orange-50 border-b border-slate-50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center font-bold shadow-md group-hover:shadow-lg transition-shadow">
+                    <div className="w-11 h-11 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold shadow-sm group-hover:shadow-md transition-shadow flex-shrink-0">
                       {avatarInitial}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-gray-800 truncate">{name}</p>
-                      <p className="text-xs text-gray-500 truncate group-hover:text-orange-600 transition-colors">
+                      <p className="font-semibold text-sm text-slate-800 truncate">{name}</p>
+                      <p className="text-xs text-slate-500 truncate group-hover:text-orange-600 transition-colors">
                         {app.opportunity?.title || "View conversation"}
                       </p>
                     </div>
@@ -151,7 +166,17 @@ function MessagesLayout() {
       </div>
 
       {/* RIGHT Chat Window */}
-      <div className="flex-1 flex flex-col min-w-0 shadow-xl">
+      <div className={`${!showChatList ? 'flex' : 'hidden'} md:flex flex-col flex-1 min-w-0 bg-slate-50`}>
+        {/* Mobile back button header */}
+        <div className="h-16 bg-white border-b border-slate-200 flex items-center px-4 md:hidden flex-shrink-0">
+          <button
+            onClick={handleBackToList}
+            className="p-2 hover:bg-slate-100 rounded-lg transition-colors -ml-2"
+          >
+            <MdArrowBack className="h-5 w-5 text-slate-600" />
+          </button>
+          <span className="ml-2 font-semibold text-slate-800">Back to messages</span>
+        </div>
         <Outlet />
       </div>
     </div>
@@ -159,3 +184,4 @@ function MessagesLayout() {
 }
 
 export default MessagesLayout;
+

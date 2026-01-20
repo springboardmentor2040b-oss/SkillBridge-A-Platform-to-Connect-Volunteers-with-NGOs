@@ -50,11 +50,11 @@ export default function SkillBridgeLogin() {
 
       // Redirect based on user role
       if (userRole === 'volunteer') {
-        navigate('/dashboard'); // Volunteer opportunities page
+        navigate('/dashboard');
       } else if (userRole === 'ngo') {
-        navigate('/dashboard'); // NGO opportunities management page - FIXED!
+        navigate('/dashboard');
       } else {
-        navigate('/dashboard'); // Default fallback
+        navigate('/dashboard');
       }
 
     } catch (err) {
@@ -64,85 +64,85 @@ export default function SkillBridgeLogin() {
 
   // -------- UI --------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4">
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
         {/* LEFT SECTION */}
         <div className="hidden lg:flex flex-col items-center justify-center">
-          <h1 className="text-6xl font-bold mb-12 text-white">SkillBridge</h1>
-          <div className="w-[28rem] h-[28rem] rounded-full overflow-hidden bg-white shadow-2xl">
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-3xl" />
+            <h1 className="text-5xl lg:text-6xl font-bold mb-8 text-white relative z-10">
+              Skill<span className="text-orange-500">Bridge</span>
+            </h1>
+          </div>
+          <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden bg-white shadow-2xl relative z-10">
             <img
               src="/Ellipse.jpg"
               alt="Illustration"
               className="w-full h-full object-cover"
             />
           </div>
+          <p className="mt-8 text-slate-400 text-center max-w-sm">
+            Connecting passionate volunteers with meaningful opportunities to create real social impact.
+          </p>
         </div>
 
         {/* RIGHT SECTION */}
         <div className="flex items-center justify-center">
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
-            <h2 className="text-3xl font-bold mb-3">Sign in</h2>
-            <p className="text-gray-600 mb-8">Enter your details</p>
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 lg:p-10">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">Welcome back</h2>
+              <p className="text-slate-600">Sign in to continue your impact journey</p>
+            </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email */}
-              <div className="mb-5">
-                <label className="block font-semibold mb-2 text-sm">
-                  Email
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Email Address
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-                    errors.email
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
+                  placeholder="you@example.com"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.email}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
                 )}
               </div>
 
               {/* Password */}
-              <div className="mb-6">
-                <label className="block font-semibold mb-2 text-sm">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
                   Password
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-                    errors.password
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
+                  placeholder="••••••••"
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.password}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
                 )}
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-purple-700 hover:bg-purple-600 text-white font-semibold py-3 rounded-xl transition"
+                className="w-full btn-primary py-3.5 text-lg"
               >
-                Login
+                Sign In
               </button>
             </form>
 
-            <p className="text-center text-sm mt-6">
-              Don&apos;t have an account?{" "}
+            <p className="text-center text-sm text-slate-600 mt-8">
+              Don't have an account?{" "}
               <button
                 onClick={() => navigate("/signup")}
-                className="text-purple-600 font-semibold"
+                className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
               >
                 Create one
               </button>

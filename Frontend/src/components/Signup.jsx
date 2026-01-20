@@ -125,45 +125,47 @@ export default function SkillBridgeSignup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
         {/* LEFT SECTION */}
         <div className="hidden lg:flex flex-col items-center justify-center">
-          <h1 className="text-6xl font-bold mb-12 text-white">
-            SkillBridge
-          </h1>
-          <div className="w-[28rem] h-[28rem] rounded-full overflow-hidden bg-white shadow-2xl">
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-3xl" />
+            <h1 className="text-5xl lg:text-6xl font-bold mb-8 text-white relative z-10">
+              Join <span className="text-orange-500">SkillBridge</span>
+            </h1>
+          </div>
+          <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden bg-white shadow-2xl relative z-10">
             <img
               src="/Ellipse.jpg"
               alt="SkillBridge"
               className="w-full h-full object-cover"
             />
           </div>
+          <p className="mt-8 text-slate-400 text-center max-w-sm">
+            Create an account to start making a difference in your community.
+          </p>
         </div>
 
         {/* RIGHT SECTION */}
         <div className="flex items-center justify-center">
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
-            <h2 className="text-3xl font-bold text-black mb-3">
-              Create an Account
-            </h2>
-            <p className="text-gray-600 mb-8">Enter your details</p>
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 lg:p-10">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
+              <p className="text-slate-600">Join our community of changemakers</p>
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
 
               {/* Full Name */}
               <div>
                 <input
                   name="fullName"
-                  placeholder="Full Name / NGO Name"
+                  placeholder="Full Name / Organization Name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.fullName
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.fullName ? 'border-red-500' : ''}`}
                 />
                 {errors.fullName && (
                   <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
@@ -177,11 +179,7 @@ export default function SkillBridgeSignup() {
                   placeholder="Username"
                   value={formData.username}
                   onChange={handleChange}
-                  className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.username
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.username ? 'border-red-500' : ''}`}
                 />
                 {errors.username && (
                   <p className="text-red-500 text-xs mt-1">{errors.username}</p>
@@ -193,14 +191,10 @@ export default function SkillBridgeSignup() {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.email
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.email ? 'border-red-500' : ''}`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -215,11 +209,7 @@ export default function SkillBridgeSignup() {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.password
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-input ${errors.password ? 'border-red-500' : ''}`}
                 />
                 {errors.password && (
                   <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -232,11 +222,7 @@ export default function SkillBridgeSignup() {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.role
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-purple-500"
-                  }`}
+                  className={`ui-select ${errors.role ? 'border-red-500' : ''}`}
                 >
                   <option value="">Select Role</option>
                   <option value="volunteer">Volunteer</option>
@@ -255,11 +241,7 @@ export default function SkillBridgeSignup() {
                     placeholder="Skills (e.g., Teaching, Coding, Event Management)"
                     value={formData.skills}
                     onChange={handleChange}
-                    className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                      errors.skills
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:ring-purple-500"
-                    }`}
+                    className={`ui-input ${errors.skills ? 'border-red-500' : ''}`}
                   />
                   {errors.skills && (
                     <p className="text-red-500 text-xs mt-1">{errors.skills}</p>
@@ -276,11 +258,7 @@ export default function SkillBridgeSignup() {
                       placeholder="Organization Name"
                       value={formData.organizationName}
                       onChange={handleChange}
-                      className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                        errors.organizationName
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-purple-500"
-                      }`}
+                      className={`ui-input ${errors.organizationName ? 'border-red-500' : ''}`}
                     />
                     {errors.organizationName && (
                       <p className="text-red-500 text-xs mt-1">{errors.organizationName}</p>
@@ -293,11 +271,7 @@ export default function SkillBridgeSignup() {
                       placeholder="Organization Website URL (optional)"
                       value={formData.organizationUrl}
                       onChange={handleChange}
-                      className={`w-full px-5 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 ${
-                        errors.organizationUrl
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-purple-500"
-                      }`}
+                      className={`ui-input ${errors.organizationUrl ? 'border-red-500' : ''}`}
                     />
                     {errors.organizationUrl && (
                       <p className="text-red-500 text-xs mt-1">{errors.organizationUrl}</p>
@@ -313,7 +287,7 @@ export default function SkillBridgeSignup() {
                   placeholder="Location (optional)"
                   value={formData.location}
                   onChange={handleChange}
-                  className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="ui-input"
                 />
               </div>
 
@@ -325,24 +299,24 @@ export default function SkillBridgeSignup() {
                   value={formData.bio}
                   onChange={handleChange}
                   rows="3"
-                  className="w-full px-5 py-4 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                  className="ui-input resize-none"
                 />
               </div>
 
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition"
+                className="w-full btn-primary py-3.5 text-lg"
               >
                 Create Account
               </button>
             </form>
 
-            <p className="text-center text-gray-600 mt-6">
+            <p className="text-center text-sm text-slate-600 mt-8">
               Already have an account?{" "}
               <button
                 onClick={() => navigate("/login")}
-                className="text-purple-600 font-semibold"
+                className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
               >
                 Sign In
               </button>

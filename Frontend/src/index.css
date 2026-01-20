@@ -1,3 +1,263 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom UI Improvements */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased;
+  }
+}
+
+@layer components {
+  /* Enhanced Cards */
+  .ui-card {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200 transition-all duration-300;
+  }
+  
+  .ui-card:hover {
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  /* Enhanced Buttons */
+  .btn-primary {
+    @apply px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 border-2 border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all duration-300;
+  }
+  
+  .btn-ghost {
+    @apply px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200;
+  }
+
+  /* Enhanced Inputs */
+  .ui-input {
+    @apply w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200;
+  }
+  
+  .ui-input:hover {
+    @apply border-slate-400;
+  }
+
+  /* Enhanced Select */
+  .ui-select {
+    @apply w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-white appearance-none cursor-pointer transition-all duration-200;
+  }
+
+  /* Enhanced Badges */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200;
+  }
+  
+  .badge-success {
+    @apply bg-teal-50 text-teal-700 border border-teal-200;
+  }
+  
+  .badge-warning {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+  
+  .badge-error {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+  
+  .badge-info {
+    @apply bg-slate-100 text-slate-700 border border-slate-200;
+  }
+
+  /* Enhanced Navigation Links */
+  .nav-link {
+    @apply font-medium text-slate-600 hover:text-orange-600 transition-all duration-200 relative;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute left-0 bottom-0 w-0 h-0.5 bg-orange-500 transition-all duration-300;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  /* Enhanced Section */
+  .ui-section {
+    @apply py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Enhanced Container */
+  .ui-container {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* Stat Cards */
+  .stat-card {
+    @apply bg-white rounded-2xl p-6 border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Tab Styles */
+  .ui-tab {
+    @apply pb-2 font-medium text-slate-500 hover:text-slate-700 transition-all duration-200 border-b-2 border-transparent;
+  }
+  
+  .ui-tab-active {
+    @apply text-orange-600 border-orange-500;
+  }
+
+  /* Modal Styles */
+  .ui-modal {
+    @apply bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto;
+  }
+
+  /* Message Bubbles */
+  .message-bubble {
+    @apply max-w-[75%] px-4 py-2.5 rounded-2xl shadow-sm transition-all duration-200;
+  }
+  
+  .message-sent {
+    @apply bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-md;
+  }
+  
+  .message-received {
+    @apply bg-white text-slate-800 border border-slate-200 rounded-bl-md;
+  }
+
+  /* Page Header */
+  .page-header {
+    @apply bg-white border-b border-slate-200;
+  }
+  
+  .page-title {
+    @apply text-3xl font-bold text-slate-900;
+  }
+  
+  .page-subtitle {
+    @apply text-slate-600 mt-1;
+  }
+
+  /* Sidebar */
+  .sidebar-item {
+    @apply w-full px-4 py-3 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 text-left;
+  }
+  
+  .sidebar-item-active {
+    @apply bg-orange-50 text-orange-700 font-medium;
+  }
+
+  /* Empty State */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    @apply animate-pulse bg-slate-200 rounded;
+  }
+}
+
+@layer utilities {
+  /* Custom Shadows */
+  .shadow-soft {
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  }
+  
+  .shadow-medium {
+    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Text Gradients */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500;
+  }
+
+  /* Focus Ring */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500;
+  }
+
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-amber-500;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+}
+
+/* Selection */
+::selection {
+  @apply bg-orange-500/20 text-orange-900;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+

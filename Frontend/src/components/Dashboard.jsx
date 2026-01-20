@@ -4,10 +4,11 @@ import axios from "axios";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState(null); // 'ngo' or 'volunteer'
+  const [userType, setUserType] = useState(null);
   const [stats, setStats] = useState({});
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -22,7 +23,6 @@ export default function Dashboard() {
         return;
       }
 
-      // Fetch user profile to determine user type
       const profileResponse = await axios.get(
         "http://localhost:4001/api/users/profile",
         {
@@ -31,14 +31,12 @@ export default function Dashboard() {
       );
 
       const profile = profileResponse.data;
-      const type = profile.role; // Using 'role' based on the backend
+      const type = profile.role;
       setUserType(type);
 
       if (type === 'ngo') {
-        // Fetch NGO-specific data
         setUserName(profile.organizationName || profile.fullName || "NGO User");
         
-        // Fetch all opportunities created by this NGO
         const opportunitiesResponse = await axios.get(
           "http://localhost:4001/api/opportunities",
           {
@@ -47,13 +45,11 @@ export default function Dashboard() {
         );
 
         const allOpportunities = opportunitiesResponse.data;
-        // Filter opportunities created by this NGO
         const myOpportunities = allOpportunities.filter(
           opp => opp.ngo && opp.ngo._id === profile._id
         );
         const activeOpps = myOpportunities.filter(opp => opp.status === "Open").length;
 
-        // Fetch applications for this NGO's opportunities
         const applicationsResponse = await axios.get(
           "http://localhost:4001/api/applications/ngo",
           {
@@ -64,9 +60,7 @@ export default function Dashboard() {
         const applications = applicationsResponse.data;
         const totalApplications = applications.length;
         const pendingApps = applications.filter(app => app.status === "pending").length;
-        const acceptedApps = applications.filter(app => app.status === "accepted").length;
-
-        // Get unique volunteers who have been accepted
+        
         const uniqueAcceptedVolunteers = new Set(
           applications
             .filter(app => app.status === "accepted")
@@ -80,10 +74,8 @@ export default function Dashboard() {
           pendingApplications: pendingApps
         });
       } else {
-        // Fetch Volunteer-specific data
         setUserName(profile.fullName || "Volunteer User");
 
-        // Fetch volunteer's applications
         const applicationsResponse = await axios.get(
           "http://localhost:4001/api/applications/volunteer",
           {
@@ -112,335 +104,245 @@ export default function Dashboard() {
 
   const handleNavigation = (path) => {
     navigate(path);
+    setIsSidebarOpen(false);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700 flex items-center justify-center">
-        <div className="text-white text-xl font-semibold">Loading...</div>
-      </div>
-    );
-  }
-
-  // NGO Dashboard
-  if (userType === 'ngo') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            {/* SIDEBAR */}
-            <div className="lg:col-span-3">
-              <div className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-2xl">
-                <h2 className="text-xl sm:text-2xl font-bold text-black">
-                  {userName}
-                </h2>
-                <p className="text-gray-600 text-sm mb-6">NGO</p>
-
-                <div className="space-y-2">
-                  <button 
-                    onClick={() => handleNavigation("/dashboard")}
-                    className="w-full px-4 py-3 rounded-xl font-medium bg-blue-100 text-left
-                    transition-all duration-300 hover:bg-blue-200 hover:shadow-md hover:-translate-y-0.5"
-                  >
-                    Dashboard
-                  </button>
-
-                  <button 
-                    onClick={() => handleNavigation("/opportunities")}
-                    className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                    transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                  >
-                    Opportunities
-                  </button>
-
-                  <button 
-                    onClick={() => handleNavigation("/applications")}
-                    className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                    transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                  >
-                    Applications
-                  </button>
-
-                  <button 
-                    onClick={() => handleNavigation("/messages")}
-                    className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                    transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                  >
-                    Messages
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* MAIN CONTENT */}
-            <div className="lg:col-span-9 space-y-6">
-
-              {/* OVERVIEW */}
-              <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-                transition-all duration-300 hover:shadow-2xl">
-                <h3 className="text-lg sm:text-xl font-bold mb-6">
-                  Overview
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
-                  {/* CARD - Active Opportunities */}
-                  <div className="bg-blue-50 rounded-2xl p-6 text-center
-                    transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                  >
-                    <div className="text-4xl font-bold text-black mb-2">
-                      {stats.activeOpportunities}
-                    </div>
-                    <div className="text-sm text-gray-600">Active Opportunities</div>
-                  </div>
-
-                  {/* CARD - Applications */}
-                  <div className="bg-green-50 rounded-2xl p-6 text-center
-                    transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                  >
-                    <div className="text-4xl font-bold text-black mb-2">
-                      {stats.applications}
-                    </div>
-                    <div className="text-sm text-gray-600">Applications</div>
-                  </div>
-
-                  {/* CARD - Active Volunteers */}
-                  <div className="bg-purple-50 rounded-2xl p-6 text-center
-                    transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                  >
-                    <div className="text-4xl font-bold text-black mb-2">
-                      {stats.activeVolunteers}
-                    </div>
-                    <div className="text-sm text-gray-600">Active Volunteers</div>
-                  </div>
-
-                  {/* CARD - Pending Applications */}
-                  <div className="bg-yellow-50 rounded-2xl p-6 text-center
-                    transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                  >
-                    <div className="text-4xl font-bold text-black mb-2">
-                      {stats.pendingApplications}
-                    </div>
-                    <div className="text-sm text-gray-600">Pending Applications</div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* RECENT APPLICATIONS */}
-              <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-                transition-all duration-300 hover:shadow-2xl">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                  <h3 className="text-lg sm:text-xl font-bold">
-                    Recent Applications
-                  </h3>
-
-                  <button 
-                    onClick={() => handleNavigation("/applications")}
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold
-                    px-6 py-2 rounded-xl transition-all duration-300
-                    hover:shadow-lg hover:shadow-orange-400/40 hover:-translate-y-0.5"
-                  >
-                    View All
-                  </button>
-                </div>
-
-                <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50">
-                  <p className="text-sm text-gray-700 text-center">
-                    No recent applications
-                  </p>
-                </div>
-              </div>
-
-              {/* BOTTOM ACTIONS */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-                  transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                  <h3 className="text-lg sm:text-xl font-bold mb-6">
-                    Quick Actions
-                  </h3>
-
-                  <button 
-                    onClick={() => handleNavigation("/create-opportunity")}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold
-                    py-4 rounded-2xl transition-all duration-300
-                    hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-1 active:scale-95"
-                  >
-                    Create New Opportunity
-                  </button>
-                </div>
-
-                <div 
-                  onClick={() => handleNavigation("/messages")}
-                  className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-                  transition-all duration-300 hover:shadow-2xl hover:-translate-y-1
-                  flex items-center justify-center cursor-pointer"
-                >
-                  <h3 className="text-lg sm:text-xl font-bold">
-                    View Messages
-                  </h3>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-slate-600 font-medium">Loading...</p>
         </div>
       </div>
     );
   }
 
-  // Volunteer Dashboard
+  const isNGO = userType === 'ngo';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-fuchsia-700">
+    <div className="min-h-screen bg-slate-50">
+      {/* Mobile Header */}
+      <div className="lg:hidden bg-white border-b border-slate-200 px-4 py-4 sticky top-16 z-40">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold text-slate-800">
+            {isNGO ? 'NGO Dashboard' : 'Volunteer Dashboard'}
+          </h1>
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+          >
+            <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
 
           {/* SIDEBAR */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-2xl">
-              <h2 className="text-xl sm:text-2xl font-bold text-black">
-                {userName}
-              </h2>
-              <p className="text-gray-600 text-sm mb-6">Volunteer</p>
+          <div className={`
+            fixed lg:static inset-y-0 left-0 z-50 lg:z-0
+            w-72 lg:w-64 bg-white
+            transform transition-transform duration-300 ease-in-out
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            lg:block flex-shrink-0
+          `}>
+            <div className="h-full lg:h-auto p-4 lg:p-0">
+              {/* Close button */}
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="lg:hidden absolute top-4 right-4 p-2"
+              >
+                <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
 
-              <div className="space-y-2">
-                <button 
-                  onClick={() => handleNavigation("/dashboard")}
-                  className="w-full px-4 py-3 rounded-xl font-medium bg-blue-100 text-left
-                  transition-all duration-300 hover:bg-blue-200 hover:shadow-md hover:-translate-y-0.5"
-                >
-                  Dashboard
-                </button>
+              {/* Profile Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-slate-800 truncate">{userName}</h2>
+                    <p className="text-sm text-slate-500 capitalize">{userType}</p>
+                  </div>
+                </div>
+              </div>
 
-                <button 
-                  onClick={() => handleNavigation("/opportunities")}
-                  className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                >
-                  Browse Opportunities
-                </button>
+              {/* Navigation - Mobile */}
+              <div className="lg:hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-2">
+                <nav className="space-y-1">
+                  <button 
+                    onClick={() => handleNavigation("/dashboard")}
+                    className="w-full px-4 py-3 rounded-xl text-left font-semibold bg-slate-800 text-white"
+                  >
+                    Dashboard
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation(isNGO ? "/ngo-opportunities" : "/opportunities")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    {isNGO ? 'Opportunities' : 'Browse Opportunities'}
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation("/application")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    Applications
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation("/messages")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    Messages
+                  </button>
+                </nav>
+              </div>
 
-                <button 
-                  onClick={() => handleNavigation("/my-applications")}
-                  className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                >
-                  My Applications
-                </button>
-
-                <button 
-                  onClick={() => handleNavigation("/messages")}
-                  className="w-full px-4 py-3 rounded-xl text-gray-700 text-left
-                  transition-all duration-300 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                >
-                  Messages
-                </button>
-
+              {/* Navigation - Desktop */}
+              <div className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm p-3">
+                <nav className="space-y-1">
+                  <button 
+                    onClick={() => handleNavigation("/dashboard")}
+                    className="w-full px-4 py-3 rounded-xl text-left font-semibold bg-slate-800 text-white"
+                  >
+                    Dashboard
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation(isNGO ? "/ngo-opportunities" : "/opportunities")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    {isNGO ? 'Opportunities' : 'Browse Opportunities'}
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation("/application")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    Applications
+                  </button>
+                  <button 
+                    onClick={() => handleNavigation("/messages")}
+                    className="w-full px-4 py-3 rounded-xl text-left text-slate-600 hover:bg-slate-100"
+                  >
+                    Messages
+                  </button>
+                </nav>
               </div>
             </div>
           </div>
 
           {/* MAIN CONTENT */}
-          <div className="lg:col-span-9 space-y-6">
+          <div className="flex-1 min-w-0">
+            
+            {/* Desktop Header */}
+            <div className="hidden lg:block mb-6">
+              <h1 className="text-2xl font-bold text-slate-800">
+                {isNGO ? 'NGO Dashboard' : 'Volunteer Dashboard'}
+              </h1>
+              <p className="text-slate-500 mt-1">Welcome back, {userName}</p>
+            </div>
 
-            {/* YOUR IMPACT */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-              transition-all duration-300 hover:shadow-2xl">
-              <h3 className="text-lg sm:text-xl font-bold mb-6">
-                Your Impact
-              </h3>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-
-                {/* CARD - Applications */}
-                <div className="bg-white rounded-2xl p-6 text-center border-2 border-gray-100
-                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                >
-                  <div className="text-4xl font-bold text-black mb-2">
-                    {stats.applications}
-                  </div>
-                  <div className="text-sm text-gray-600">Applications</div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
+              
+              {/* Card 1 */}
+              <div className="bg-white rounded-xl border border-slate-200 p-4 lg:p-5 text-center hover:shadow-md transition-shadow">
+                <div className="text-3xl lg:text-4xl font-bold text-slate-800 mb-1">
+                  {isNGO ? stats.activeOpportunities : stats.applications}
                 </div>
-
-                {/* CARD - Accepted */}
-                <div className="bg-green-50 rounded-2xl p-6 text-center
-                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                >
-                  <div className="text-4xl font-bold text-black mb-2">
-                    {stats.accepted}
-                  </div>
-                  <div className="text-sm text-gray-600">Accepted</div>
+                <div className="text-sm text-slate-500">
+                  {isNGO ? 'Active Opportunities' : 'Applications'}
                 </div>
+              </div>
 
-                {/* CARD - Pending */}
-                <div className="bg-yellow-50 rounded-2xl p-6 text-center
-                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                >
-                  <div className="text-4xl font-bold text-black mb-2">
-                    {stats.pending}
-                  </div>
-                  <div className="text-sm text-gray-600">Pending</div>
+              {/* Card 2 */}
+              <div className="bg-white rounded-xl border border-slate-200 p-4 lg:p-5 text-center hover:shadow-md transition-shadow">
+                <div className="text-3xl lg:text-4xl font-bold text-slate-800 mb-1">
+                  {isNGO ? stats.applications : stats.accepted}
                 </div>
-
-                {/* CARD - Skills */}
-                <div className="bg-purple-50 rounded-2xl p-6 text-center
-                  transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.03]"
-                >
-                  <div className="text-4xl font-bold text-blue-600 mb-2">
-                    {stats.skills}
-                  </div>
-                  <div className="text-sm text-gray-600">Skills</div>
+                <div className="text-sm text-slate-500">
+                  {isNGO ? 'Applications' : 'Accepted'}
                 </div>
+              </div>
 
+              {/* Card 3 */}
+              <div className="bg-white rounded-xl border border-slate-200 p-4 lg:p-5 text-center hover:shadow-md transition-shadow">
+                <div className="text-3xl lg:text-4xl font-bold text-slate-800 mb-1">
+                  {isNGO ? stats.activeVolunteers : stats.pending}
+                </div>
+                <div className="text-sm text-slate-500">
+                  {isNGO ? 'Volunteers' : 'Pending'}
+                </div>
+              </div>
+
+              {/* Card 4 */}
+              <div className="bg-white rounded-xl border border-slate-200 p-4 lg:p-5 text-center hover:shadow-md transition-shadow">
+                <div className="text-3xl lg:text-4xl font-bold text-slate-800 mb-1">
+                  {isNGO ? stats.pendingApplications : stats.skills}
+                </div>
+                <div className="text-sm text-slate-500">
+                  {isNGO ? 'Pending' : 'Skills'}
+                </div>
               </div>
             </div>
 
-            {/* RECENT MESSAGES */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-              transition-all duration-300 hover:shadow-2xl">
-              <h3 className="text-lg sm:text-xl font-bold mb-6">
-                Recent Messages
-              </h3>
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              
+              {/* Action 1 */}
+              <button 
+                onClick={() => handleNavigation(isNGO ? "/create-opportunity" : "/opportunities")}
+                className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer text-left"
+              >
+                <div className="w-12 h-12 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <span className="font-semibold text-slate-800">
+                  {isNGO ? 'Create Opportunity' : 'Browse Opportunities'}
+                </span>
+              </button>
 
-              <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50 mb-4">
-                <p className="text-sm text-gray-700 text-center">
-                  No recent messages
-                </p>
-              </div>
-
+              {/* Action 2 */}
               <button 
                 onClick={() => handleNavigation("/messages")}
-                className="w-full border-2 border-gray-300 text-gray-700 font-semibold
-                px-6 py-3 rounded-xl transition-all duration-300
-                hover:bg-gray-50 hover:shadow-md hover:-translate-y-0.5"
+                className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer text-left"
               >
-                View All Messages
+                <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <span className="font-semibold text-slate-800">View Messages</span>
               </button>
             </div>
 
-            {/* BOTTOM ACTIONS */}
-            <div>
-
-              <div className="bg-white rounded-3xl shadow-lg p-6 sm:p-8
-                transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                <h3 className="text-lg sm:text-xl font-bold mb-6">
-                  Explore Opportunities
-                </h3>
-
-                <button 
-                  onClick={() => handleNavigation("/opportunities")}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold
-                  py-4 rounded-2xl transition-all duration-300
-                  hover:shadow-xl hover:shadow-orange-400/50 hover:-translate-y-1 active:scale-95"
-                >
-                  Browse All Opportunities
-                </button>
+            {/* Recent Activity */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <h3 className="text-lg font-bold text-slate-800 mb-4">
+                {isNGO ? 'Recent Applications' : 'Recent Activity'}
+              </h3>
+              
+              <div className="border border-slate-200 rounded-xl p-8 bg-slate-50 text-center">
+                <p className="text-slate-600 font-medium mb-1">No recent activity</p>
+                <p className="text-sm text-slate-500">
+                  {isNGO ? 'Applications will appear here' : 'Your activity will appear here'}
+                </p>
               </div>
-
-
             </div>
 
           </div>
@@ -449,3 +351,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
