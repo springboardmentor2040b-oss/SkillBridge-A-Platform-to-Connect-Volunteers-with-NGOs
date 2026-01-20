@@ -14,4 +14,12 @@ SkillBridge is a platform designed to connect volunteers with NGOs, enabling mea
 - Database: MongoDB
 
 ## Setup
-See frontend and backend folders for installation steps.
+# Backend
+cd backend
+npm install
+npm start
+
+# Frontend
+cd frontend
+npm install
+npm start
