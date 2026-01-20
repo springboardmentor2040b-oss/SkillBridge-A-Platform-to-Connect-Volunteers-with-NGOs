@@ -1,0 +1,172 @@
+.page {
+  background: #f4f7fb;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* FILTER BAR */
+.filter-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+select,
+.skill-dropdown button,
+.reset-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d0d7e2;
+  background: white;
+  cursor: pointer;
+}
+
+.reset-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+}
+
+/* SKILLS DROPDOWN */
+.skill-dropdown {
+  position: relative;
+}
+
+.skill-menu {
+  position: absolute;
+  top: 45px;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  width: 180px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.skill-menu label {
+  display: flex;
+  gap: 8px;
+  padding: 5px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* STATUS BADGE */
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+.status.open {
+  background: #22c55e;
+}
+
+.status.closed {
+  background: #ef4444;
+}
+
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+/* SKILLS TAGS */
+.skills .skill-pill {
+  background: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+/* BUTTONS */
+.actions {
+  margin-top: 15px;
+}
+
+.actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.apply {
+  background: #2563eb;
+  color: white;
+}
+
+.apply:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  width: 500px;
+  border-radius: 12px;
+}
+
+.close-btn {
+  margin-top: 15px;
+  padding: 8px 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .filter-card {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .modal-box {
+    width: 90%;
+  }
+}
+
