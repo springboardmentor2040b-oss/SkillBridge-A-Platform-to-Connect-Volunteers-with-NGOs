@@ -14,7 +14,7 @@ export default function ApplyOpportunity() {
 
   useEffect(() => {
     const selected = localStorage.getItem("selectedOpportunity");
-    const profile = localStorage.getItem("userProfile");
+    const profile = localStorage.getItem("currentUser");
 
     if (!selected || !profile) {
       navigate("/volunteer-opportunities");
@@ -27,21 +27,40 @@ export default function ApplyOpportunity() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const existing =
+      JSON.parse(localStorage.getItem("applications")) || [];
+    if (
+      user.role === "ngo" &&
+      opportunity.ngoName === user.name
+    ) {
+      alert("You cannot apply to your own opportunity.");
+      return;
+    }
+  
+    const alreadyApplied = existing.some(
+      (app) =>
+        app.opportunityId === opportunity.id &&
+        app.applicantEmail === user.email
+    );
+     
+    if (alreadyApplied) {
+      alert("You have already applied for this opportunity.");
+      return;
+    }
 
     const application = {
       id: Date.now(),
       opportunityId: opportunity.id,
       opportunityTitle: opportunity.title,
       applicantName: user.name,
+      applicantEmail:user.email,
       applicantRole: user.role,
       ngoName: opportunity.ngoName,
-      message: form.note,
+      message: form.note.trim(),
       status: "Pending",
       appliedAt: new Date().toISOString(),
     };
-
-    const existing =
-      JSON.parse(localStorage.getItem("applications")) || [];
+    
 
     localStorage.setItem(
       "applications",

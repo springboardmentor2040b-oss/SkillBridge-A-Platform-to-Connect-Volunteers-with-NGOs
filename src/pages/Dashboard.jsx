@@ -11,6 +11,7 @@ export default function Dashboard() {
   // ✅ NEW: user state
   
   const [user, setUser] = useState(null);
+  const [applications, setApplications] = useState([]);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,9 +23,34 @@ export default function Dashboard() {
       navigate("/login");
       return;
     }
-    setUser(JSON.parse(storedUser));
-  }, [navigate]);
+    const parsedUser=JSON.parse(storedUser);
+    setUser(parsedUser);
+    const storedApplications =
+    JSON.parse(localStorage.getItem("applications")) || [];
 
+    setApplications(storedApplications);
+  }, [navigate]);
+  if (!user) return null; // safety
+    // 🔹 Filter applications based on role
+    const myApplications =
+      user.role === "volunteer"
+        ? applications.filter(app => app.applicantName === user.name)
+        : applications.filter(app => app.ngoName === user.name);
+
+    // 🔹 Status counts
+    const acceptedCount = myApplications.filter(
+      app => app.status === "Accepted"
+    ).length;
+
+    const pendingCount = myApplications.filter(
+      app => app.status === "Pending"
+    ).length;
+
+    // 🔹 Most recent application
+    const recentApplication =
+      myApplications.length > 0
+        ? myApplications[myApplications.length - 1]
+        : null;
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -139,30 +165,38 @@ export default function Dashboard() {
           <h3 className="text-lg font-medium mb-4">Overview</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-pink-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold">3</div>
+              <div className="text-3xl font-bold">
+                {user.role === "ngo" ? "—" : myApplications.length}
+              </div>
               <div className="text-sm text-gray-600 mt-2">
-                Active opportunities
+                {user.role === "ngo" ? "Active Opportunities" : "Applied Opportunities"}
               </div>
             </div>
 
             <div className="bg-gray-100 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold">1</div>
+              <div className="text-3xl font-bold">
+                {myApplications.length}
+              </div>
               <div className="text-sm text-gray-600 mt-2">
                 Applications
               </div>
             </div>
 
             <div className="bg-purple-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold">0</div>
+              <div className="text-3xl font-bold">
+                {acceptedCount}
+              </div>
               <div className="text-sm text-gray-600 mt-2">
-                Active Volunteers
+                Accepted Applications
               </div>
             </div>
 
             <div className="bg-yellow-50 rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold">1</div>
+              <div className="text-3xl font-bold">
+                {pendingCount}
+              </div>
               <div className="text-sm text-gray-600 mt-2">
-                Active Applications
+                Pending Applications
               </div>
             </div>
           </div>
@@ -173,34 +207,58 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-medium">Recent Applications</h4>
-              <div className="text-xs bg-gray-100 px-3 py-1 rounded-full">
-                Pending
-              </div>
+              {recentApplication && (
+                <div className="text-xs bg-gray-100 px-3 py-1 rounded-full">
+                  {recentApplication.status}
+                </div>
+              )}
             </div>
 
-            <div className="mt-2 border rounded-xl p-4">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                  👤
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">John Doe</div>
-                  <div className="text-xs text-gray-500">
-                    Applied for website redesign work
+            {!recentApplication ? (
+              <p className="text-gray-500 text-sm">
+                No applications yet.
+              </p>
+            ) : (
+              <div className="mt-2 border rounded-xl p-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                    👤
                   </div>
-                  <p className="mt-2 text-gray-700">
-                    I have 5 years of experience in web development and design.
-                    I have worked with several non-profits before and would love
-                    to improve your online presence.
-                  </p>
-                </div>
-                <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                  Pending
+
+                  <div className="flex-1">
+                    <div className="font-semibold">
+                      {user.role === "ngo"
+                        ? recentApplication.applicantName
+                        : recentApplication.ngoName}
+                    </div>
+
+                    <div className="text-xs text-gray-500">
+                      Applied for {recentApplication.opportunityTitle}
+                    </div>
+
+                    <p className="mt-2 text-gray-700">
+                      {recentApplication.message}
+                    </p>
+                  </div>
+
+                  <div
+                    className={`text-sm px-3 py-1 rounded-full ${
+                      recentApplication.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : recentApplication.status === "Accepted"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {recentApplication.status}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
+
+          
 
         {/* Quick actions */}
         <section>

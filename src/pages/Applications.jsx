@@ -5,7 +5,7 @@ import { Logo } from "../components";
 export default function Applications() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("userProfile"));
+  const user = JSON.parse(localStorage.getItem("currentUser"));
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
