@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section
       id="home"
@@ -61,6 +63,7 @@ const Hero = () => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-6">
           <button
+          onClick={() => navigate("/login")}
             className="px-10 py-4 text-white font-body font-semibold rounded-lg text-lg shadow-md"
             style={{ backgroundColor: "#FF7A30" }}
           >
@@ -68,6 +71,7 @@ const Hero = () => {
           </button>
 
           <button
+          onClick={() => navigate("/login")}
             className="px-10 py-4 font-body font-semibold rounded-lg text-lg border-2 shadow-md"
             style={{ borderColor: "#FF7A30", color: "#183B56", backgroundColor: "white" }}
           >

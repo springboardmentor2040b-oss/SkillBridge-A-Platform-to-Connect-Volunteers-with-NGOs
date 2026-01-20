@@ -68,7 +68,7 @@ const CreateOpportunity = () => {
     }
   };
 
-  const handleCancel = () => navigate("/opportunities");
+  const handleCancel = () => navigate("/ngo/opportunities");
 
   return (
     /* 🔑 FIX: make page scrollable */

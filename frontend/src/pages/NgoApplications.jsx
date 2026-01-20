@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useApplications } from "../hooks/useApplications.js";
 
 const NgoApplications = () => {
+  const navigate = useNavigate();
   const { applications, stats, loading, error, updateApplicationStatus } =
     useApplications();
 
@@ -66,7 +68,7 @@ const NgoApplications = () => {
 
       {/* ---------- FILTER ---------- */}
       <div className="flex gap-2 mb-6">
-        {["all", "pending", "accepted", "rejected"].map((tab) => (
+        {["all", "pending", "accepted", "rejected" ].map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
@@ -254,9 +256,22 @@ const NgoApplications = () => {
                                   </button>
                                 </>
                               )}
-                              <button className="px-3 py-1 bg-[#1f3a5f] text-white rounded text-sm hover:bg-[#14253c]">
-                                Message
-                              </button>
+                              <button
+  onClick={() => {
+    navigate("/ngo/messages", {
+      state: {
+        type: "application",
+        applicationId: app._id,
+        receiverId: app.volunteer_id._id,
+        receiverName: app.volunteer_id.fullName,
+      },
+    });
+  }}
+  className="px-3 py-1 bg-[#1f3a5f] text-white rounded text-sm hover:bg-[#14253c]"
+>
+  Message
+</button>
+ 
                             </div>
                           </div>
                         </div>

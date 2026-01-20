@@ -27,12 +27,17 @@ export const ApplicationProvider = ({ children }) => {
     return userStr ? JSON.parse(userStr) : null;
   };
 
-  const calculateStats = (apps = []) => ({
-    total: apps.length,
-    pending: apps.filter(app => app.status === 'pending').length,
-    accepted: apps.filter(app => app.status === 'accepted').length,
-    rejected: apps.filter(app => app.status === 'rejected').length
-  });
+  const calculateStats = (apps = []) => {
+  const activeApps = apps.filter(app => app.status !== 'withdrawn');
+
+  return {
+    total: activeApps.length,
+    pending: activeApps.filter(app => app.status === 'pending').length,
+    accepted: activeApps.filter(app => app.status === 'accepted').length,
+    rejected: activeApps.filter(app => app.status === 'rejected').length
+  };
+};
+
 
   // ================= LOAD APPLICATIONS =================
   const loadApplications = useCallback(async () => {

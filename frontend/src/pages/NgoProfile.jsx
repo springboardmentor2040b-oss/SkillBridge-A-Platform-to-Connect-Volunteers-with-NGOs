@@ -141,7 +141,7 @@ const NgoProfile = () => {
         {/* HEADER */}
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[340px_1fr] gap-4 items-start mb-4">
           <Link
-            to="/dashboard"
+            to="/ngo/dashboard"
             className="flex items-center gap-2 text-gray-600 text-sm"
           >
             ← Back

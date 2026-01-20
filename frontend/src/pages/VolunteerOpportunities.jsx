@@ -107,42 +107,42 @@ const VolunteerOpportunities = () => {
     checkAppliedStatus();
   }, [opportunities]);
 
-  /* APPLY LOGIC */
-  const handleApply = async (opportunityId) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please login to apply");
-        return;
-      }
+  // /* APPLY LOGIC */
+  // const handleApply = async (opportunityId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       alert("Please login to apply");
+  //       return;
+  //     }
 
-      await axios.post(
-        "http://localhost:8000/api/applications/apply",
-        { opportunityId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  //     await axios.post(
+  //       "http://localhost:8000/api/applications/apply",
+  //       { opportunityId },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      // ✅ Update UI instead of showing popup
-      setAppliedMap((prev) => ({
-        ...prev,
-        [opportunityId]: true,
-      }));
-    } catch (error) {
-      // If already applied, just update UI
-      if (error.response?.data?.message === "You have already applied") {
-        setAppliedMap((prev) => ({
-          ...prev,
-          [opportunityId]: true,
-        }));
-      } else {
-        alert("Application failed");
-      }
-    }
-  };
+  //     // ✅ Update UI instead of showing popup
+  //     setAppliedMap((prev) => ({
+  //       ...prev,
+  //       [opportunityId]: true,
+  //     }));
+  //   } catch (error) {
+  //     // If already applied, just update UI
+  //     if (error.response?.data?.message === "You have already applied") {
+  //       setAppliedMap((prev) => ({
+  //         ...prev,
+  //         [opportunityId]: true,
+  //       }));
+  //     } else {
+  //       alert("Application failed");
+  //     }
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-[#E9F5F8] p-6">
@@ -171,7 +171,7 @@ const VolunteerOpportunities = () => {
                 key={opp._id}
                 opportunity={opp}
                 onViewDetails={setSelectedOpportunity}
-                onApply={handleApply}
+                // onApply={handleApply}
                 hasApplied={appliedMap[opp._id]}
               />
             ))}

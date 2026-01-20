@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 import { useApplications } from "../hooks/useApplications.js";
 import VolunteerOpportunityCard from "../components/VolunteerOpportunityCard.jsx";
 import VolunteerOpportunityModal from "../components/VolunteerOpportunityModal.jsx";
@@ -12,9 +14,14 @@ const trimText = (text, limit = 30) => {
 const VolunteerApplications = () => {
   const { applications, stats, loading, error } = useApplications();
   const [filter, setFilter] = useState("all");
-
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [localApplications, setLocalApplications] = useState([]);
+  // Sync localApplications with applications from the hook
+  useEffect(() => {
+  setLocalApplications(applications);
+}, [applications]);
+
 
   const openDetails = (opp) => {
     setSelectedOpportunity(opp);
@@ -26,10 +33,51 @@ const VolunteerApplications = () => {
     setSelectedOpportunity(null);
   };
 
-  const filteredApplications = applications.filter((app) => {
+  const filteredApplications = localApplications.filter((app) => {
     if (filter === "all") return true;
     return app.status === filter;
   });
+  
+
+// Withdraw application function
+const withdrawApplication = async (applicationId) => {
+  const confirmWithdraw = window.confirm(
+    "Are you sure you want to withdraw this application?\n\nThe NGO will no longer be able to view it."
+  );
+
+  if (!confirmWithdraw) return;
+
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:8000/api/applications/${applicationId}/withdraw`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // 🔵 Update local UI safely
+    setLocalApplications((prev) =>
+      prev.map((app) =>
+        app._id === applicationId
+          ? { ...app, status: "withdrawn" }
+          : app
+      )
+    );
+  } catch (error) {
+    console.error("Withdraw failed:", error);
+    alert(
+      error.response?.data?.message ||
+        "Failed to withdraw application. Please try again."
+    );
+  }
+};
+
+
 
   if (loading) {
     return <div className="p-8 text-center">Loading applications...</div>;
@@ -58,7 +106,7 @@ const VolunteerApplications = () => {
 
       {/* Filter Tabs */}
       <div className="flex gap-2 mb-6">
-        {["all", "pending", "accepted", "rejected"].map((tab) => (
+        {["all", "pending", "accepted", "rejected", "withdrawn"].map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
@@ -101,12 +149,21 @@ const VolunteerApplications = () => {
               
             };
 
+            // const badgeStyle =
+            //   opp.status === "pending"
+            //     ? "bg-yellow-100 text-yellow-800"
+            //     : opp.status === "accepted"
+            //     ? "bg-green-100 text-green-800"
+            //     : "bg-red-100 text-red-800";
             const badgeStyle =
-              opp.status === "pending"
-                ? "bg-yellow-100 text-yellow-800"
-                : opp.status === "accepted"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800";
+  opp.status === "pending"
+    ? "bg-yellow-100 text-yellow-800"
+    : opp.status === "accepted"
+    ? "bg-green-100 text-green-800"
+    : opp.status === "rejected"
+    ? "bg-red-100 text-red-800"
+    : "bg-gray-200 text-gray-700"; // withdrawn
+
 
             return (
               <div key={app._id}>
@@ -121,7 +178,7 @@ const VolunteerApplications = () => {
                   <h3 className="text-xl font-bold text-gray-900">{opp.title}</h3>
 
                   {/* NGO Name */}
-                  <p className="text-sm font-semibold text-[#1f3a5f] mt-1">NGO: {opp.ngoName}</p>
+                  <p className="text-sm font-semibold text-[#1f3a5f] mt-1">NGO: {app.opportunity_id?.ngoName || app.opportunity_id?.createdBy?.fullName}</p>
 
                   {/* Trimmed description */}
                   <p className="text-sm text-gray-600 mt-2">{opp.shortDescription}</p>
@@ -147,7 +204,15 @@ const VolunteerApplications = () => {
                   >
                     View Details
                   </button>
-
+                  {/*  Withdraw button – only for pending applications */}
+{app.status === "pending" && (
+  <button
+    onClick={() => withdrawApplication(app._id)}
+    className="mt-3 ml-3 px-4 py-2 border font-medium border-red-600 text-red-600 rounded-md text-sm hover:bg-red-600 hover:text-white"
+  >
+    Withdraw
+  </button>
+)}
                   {/* Applied on inside the card */}
                   <p className="text-xs text-gray-500 mt-3">Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
                 </div>

@@ -76,12 +76,13 @@ export const getVolunteerApplications = async (req, res) => {
       .populate({
         path: "opportunity_id",
         select:
-          "title description location duration skillsRequired ngoName status createdAt",
+          "title description location duration skillsRequired ngo_id status createdAt",
         populate: {
           path: "createdBy",
-          select: "fullName email",
+          select: "fullName username role",
         },
       })
+
       .sort({ createdAt: -1 });
 
     res.json(applications);
@@ -104,6 +105,7 @@ export const getNGOApplications = async (req, res) => {
 
     const applications = await Application.find({
       opportunity_id: { $in: opportunityIds },
+      status: { $ne: "withdrawn" },
     })
       .populate({
         path: "opportunity_id",
@@ -161,6 +163,48 @@ export const updateApplicationStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update status" });
   }
 };
+/* ===================================== */
+/* WITHDRAW APPLICATION (VOLUNTEER)       */
+/* ===================================== */
+export const withdrawApplication = async (req, res) => {
+  try {
+    const applicationId = req.params.id;
+    const volunteerId = req.user.id; // set by authMiddleware
+
+    const application = await Application.findById(applicationId);
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // 🔒 Ensure this application belongs to the volunteer
+    if (application.volunteer_id.toString() !== volunteerId) {
+      return res.status(403).json({
+        message: "You are not allowed to withdraw this application",
+      });
+    }
+
+    // 🔒 Only pending applications can be withdrawn
+    if (application.status !== "pending") {
+      return res.status(400).json({
+        message: "Only pending applications can be withdrawn",
+      });
+    }
+
+    application.status = "withdrawn";
+    await application.save();
+
+    return res.status(200).json({
+      message: "Application withdrawn successfully",
+      application,
+    });
+  } catch (error) {
+    console.error("Withdraw Application Error:", error);
+    return res.status(500).json({
+      message: "Failed to withdraw application",
+    });
+  }
+};
 
 /* ===================================== */
 /* GET APPLICATION STATISTICS             */
@@ -175,6 +219,7 @@ export const getApplicationStats = async (req, res) => {
     if (userRole === "volunteer") {
       stats.total = await Application.countDocuments({
         volunteer_id: userId,
+        status: { $ne: "withdrawn" },
       });
       stats.pending = await Application.countDocuments({
         volunteer_id: userId,
@@ -196,6 +241,7 @@ export const getApplicationStats = async (req, res) => {
 
       stats.total = await Application.countDocuments({
         opportunity_id: { $in: opportunityIds },
+        status: { $ne: "withdrawn" },
       });
       stats.pending = await Application.countDocuments({
         opportunity_id: { $in: opportunityIds },
@@ -243,5 +289,27 @@ export const getApplicationById = async (req, res) => {
   } catch (error) {
     console.error("Get application error:", error);
     res.status(500).json({ message: "Failed to load application" });
+  }
+};
+export const getNgoApplicants = async (req, res) => {
+  try {
+    const ngoId = req.user._id;
+
+    // 1️⃣ Find opportunities created by this NGO
+    const opportunities = await Opportunity.find({ createdBy: ngoId }, "_id");
+
+    const opportunityIds = opportunities.map((opp) => opp._id);
+
+    // 2️⃣ Find applications ONLY for those opportunities
+    const applications = await Application.find({
+      opportunity_id: { $in: opportunityIds },
+    })
+      .populate("volunteer_id", " fullName username")
+      .populate("opportunity_id", "title");
+
+    res.json(applications);
+  } catch (err) {
+    console.error("NGO applicants error:", err);
+    res.status(500).json({ message: "Failed to fetch applicants" });
   }
 };

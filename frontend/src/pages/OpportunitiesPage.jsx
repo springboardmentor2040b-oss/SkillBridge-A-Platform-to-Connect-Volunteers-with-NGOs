@@ -108,7 +108,7 @@ const OpportunitiesPage = () => {
           </div>
 
           <Link
-            to="/opportunities/create"
+            to="/ngo/opportunities/create"
             className="bg-[#1f3a5f]  text-white px-5 py-2 rounded-md font-medium"
           >
             + Create New Opportunity

@@ -55,12 +55,14 @@ export const AuthProvider = ({ children }) => {
   // ✅ LOGIN FUNCTION - IMPROVED
   const loginUser = useCallback((email, token, userData = null) => {
     // Update all state at once
-    setAuthState({
-      email,
-      token,
-      user: userData,
-      isInitialized: true
-    });
+setAuthState(prev => ({
+  ...prev,
+  email,
+  token,
+  user: userData,
+  isInitialized: true
+}));
+
 
     // Save to localStorage
     if (userData) {
@@ -68,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     }
     localStorage.setItem("email", email);
     localStorage.setItem("token", token);
-    
+   
     // ✅ Set axios header immediately
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, []);

@@ -107,3 +107,19 @@ export const deleteOpportunity = async (req, res) => {
     res.status(500).json({ message: "Failed to delete opportunity" });
   }
 };
+/* GET ACTIVE OPPORTUNITIES COUNT FOR LOGGED-IN NGO */
+export const getActiveOpportunitiesCount = async (req, res) => {
+  try {
+    const ngoId = req.user._id;
+
+    const count = await Opportunity.countDocuments({
+      createdBy: ngoId,
+      status: { $in: ["Open", "In Progress"] },
+    });
+
+    res.json({ activeOpportunities: count });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch active opportunities" });
+  }
+};
+

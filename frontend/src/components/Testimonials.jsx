@@ -1,6 +1,7 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const Testimonials = () => {
+  const navigate = useNavigate();
   return (
     <section
       id="testimonials"
@@ -33,6 +34,7 @@ const Testimonials = () => {
           {/* CTA Button */}
           <a
             href="#register"
+            onClick={() => navigate("/signup")}  
             className="inline-flex items-center justify-center px-8 py-4 
                        bg-[#FF7A30] text-white font-semibold rounded-lg
                        hover:bg-[#E86820] transition duration-300 

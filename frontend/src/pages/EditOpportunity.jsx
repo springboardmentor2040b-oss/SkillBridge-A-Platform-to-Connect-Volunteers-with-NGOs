@@ -119,7 +119,7 @@ const EditOpportunity = () => {
   };
 
   /* CANCEL */
-  const handleCancel = () => navigate("/opportunities");
+  const handleCancel = () => navigate("/ngo/opportunities");
 
   /* UNAUTHORIZED VIEW */
   if (!authorized) {

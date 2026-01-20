@@ -15,6 +15,18 @@ const userSchema = new mongoose.Schema({
 
   skills: [String],
   organizationDescription: String,
+   location: {
+    type: String,
+    default: ""
+  },
+  bio: {
+    type: String,
+    default: ""
+  },
+  website: {
+    type: String,
+    default: ""
+  }
 });
 
 export default mongoose.model("User", userSchema);

@@ -157,7 +157,7 @@ const VolunteerProfile = () => {
         {/* BACK BUTTON */}
         <div className="mt-2 sm:mt-4 mb-4">
           <Link
-            to="/dashboard"
+            to="/volunteer/dashboard"
             className="text-gray-600 hover:text-gray-800 flex items-center gap-2 text-sm sm:text-base"
           >
             ← Back

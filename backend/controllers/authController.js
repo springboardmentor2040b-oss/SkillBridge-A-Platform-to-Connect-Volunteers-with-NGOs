@@ -71,11 +71,11 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-
     res.json({
       message: "Login Successful",
       token,
       user: {
+        _id: user._id,
         email: user.email,
         username: user.username,
         role: user.role,

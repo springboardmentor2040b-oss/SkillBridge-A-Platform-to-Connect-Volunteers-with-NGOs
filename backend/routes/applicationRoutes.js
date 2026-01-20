@@ -10,7 +10,9 @@ import {
 } from "../controllers/applicationController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import volunteerOnly from "../middleware/volunteerOnly.js";
-import ngoOnly from "../middleware/ngoOnly.js"; // ADD THIS IMPORT
+import { withdrawApplication } from "../controllers/applicationController.js";
+import ngoOnly from "../middleware/ngoOnly.js"; 
+import { getNgoApplicants } from "../controllers/applicationController.js";
 
 const router = express.Router();
 
@@ -39,14 +41,27 @@ router.get(
 
 /* GET NGO'S APPLICATIONS */
 router.get("/ngo-applications", authMiddleware, ngoOnly, getNGOApplications);
-
+/* GET APPLICATION STATISTICS */
+router.get("/stats", authMiddleware, getApplicationStats);
+router.get("/ngo-applicants", authMiddleware, getNgoApplicants);
+router.get(
+  "/volunteer-applications",
+  authMiddleware,
+  getVolunteerApplications
+);
 /* UPDATE APPLICATION STATUS (Accept/Reject) */
 router.put("/:id/status", authMiddleware, ngoOnly, updateApplicationStatus);
 
-/* GET APPLICATION STATISTICS */
-router.get("/stats", authMiddleware, getApplicationStats);
+/* VOLUNTEER WITHDRAW APPLICATION */
+router.put(
+  "/:id/withdraw",
+  authMiddleware,
+  volunteerOnly,
+  withdrawApplication
+);
 
 /* GET SINGLE APPLICATION BY ID */
-router.get("/:id", authMiddleware, getApplicationById);
+router.get("/by-id/:id", authMiddleware, getApplicationById);
+
 
 export default router;

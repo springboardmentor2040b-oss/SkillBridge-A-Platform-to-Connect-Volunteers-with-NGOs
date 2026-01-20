@@ -11,7 +11,7 @@ const truncateText = (text, limit = 30) => {
 const VolunteerOpportunityCard = ({
   opportunity,
   onViewDetails,
-  onApply,
+  // onApply,
   hasApplied,
 }) => {
   const { applyForOpportunity } = useApplications();
@@ -28,7 +28,7 @@ const VolunteerOpportunityCard = ({
       alert('Application submitted successfully!');
       setShowModal(false);
       setCoverLetter('');
-      if (onApply) onApply(opportunity._id);
+      // if (onApply) onApply(opportunity._id);
     } else {
       alert('Error: ' + result.error);
     }

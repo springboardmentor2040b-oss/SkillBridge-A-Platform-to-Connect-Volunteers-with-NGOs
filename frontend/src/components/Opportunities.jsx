@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 
 const Opportunities = () => {
+  const navigate = useNavigate();
   const opportunities = [
     {
       title: "Web Developer for Education Portal",
@@ -117,6 +119,7 @@ const Opportunities = () => {
 
                   {/* Apply Button */}
                   <button
+                    onClick={() => navigate("/login")}   
                     className="px-6 py-3 bg-[#FF7A30] text-white font-medium rounded-lg 
                                hover:bg-[#E86820] transition duration-300 shadow-md hover:shadow-xl"
                   >
@@ -131,6 +134,7 @@ const Opportunities = () => {
         {/* View All Button */}
         <div className="text-center mt-14 pt-8 border-t border-gray-300">
           <button
+            onClick={() => navigate("/login")}
             className="px-10 py-3 bg-[#FF7A30] text-white font-semibold rounded-lg 
                        hover:bg-[#E86820] transition duration-300 shadow-md hover:shadow-xl"
           >

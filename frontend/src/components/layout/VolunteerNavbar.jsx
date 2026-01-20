@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
+import useChat from "../../context/useChat";
 import logo from "../../assets/logo.svg";
 import bellIcon from "../../assets/bell.svg";
+
 
 const VolunteerNavbar = () => {
   const navigate = useNavigate();
@@ -21,12 +23,22 @@ const VolunteerNavbar = () => {
     ? user.username[0].toUpperCase()
     : "V";
 
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const { conversations } = useChat();
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const currentUserId = currentUser?._id;
+
+  const totalUnread = conversations.reduce(
+    (sum, conv) => sum + (conv.unreadCounts?.[currentUserId] || 0),
+    0
+  );
+
   return (
     <header className="fixed top-0 w-full z-50 bg-[#7cc9d6] shadow-sm">
       <div className="relative w-full h-14 flex items-center px-6">
-
         {/* LEFT — Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-[220px]">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden flex flex-col gap-1"
@@ -40,28 +52,87 @@ const VolunteerNavbar = () => {
         </div>
 
         {/* CENTER — Navigation */}
-        <nav className="hidden md:flex items-center gap-12 text-[#0f172a] font-medium absolute left-1/2 -translate-x-1/2">
-          <button onClick={() => navigate("/volunteer/dashboard")}>
+        <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-8 font-semibold">
+          {/* Dashboard */}
+          <Link
+            to="/volunteer/dashboard"
+            className={`px-4 py-1.5 text-sm rounded-full transition ${
+              currentPath === "/volunteer/dashboard"
+                ? "bg-[#1f3a5f] text-white shadow-sm"
+                : "text-[#0f172a] hover:bg-white/30"
+            }`}
+          >
             Dashboard
-          </button>
-          <button onClick={() => navigate("/volunteer/opportunities")}>
+          </Link>
+
+          {/* Opportunities */}
+          <Link
+            to="/volunteer/opportunities"
+            className={`px-4 py-1.5 text-sm rounded-full transition ${
+              currentPath === "/volunteer/opportunities"
+                ? "bg-[#1f3a5f] text-white shadow-sm"
+                : "text-[#0f172a] hover:bg-white/30"
+            }`}
+          >
             Opportunities
-          </button>
-          <button onClick={() => navigate("/volunteer/applications")}>
+          </Link>
+
+          {/* Applications */}
+          <Link
+            to="/volunteer/applications"
+            className={`px-4 py-1.5 text-sm rounded-full transition ${
+              currentPath === "/volunteer/applications"
+                ? "bg-[#1f3a5f] text-white shadow-sm"
+                : "text-[#0f172a] hover:bg-white/30"
+            }`}
+          >
             Applications
-          </button>
-          <button onClick={() => navigate("/volunteer/messages")}>
+          </Link>
+
+          {/* Messages */}
+          <Link
+            to="/volunteer/messages"
+            className={`px-4 py-1.5 text-sm rounded-full transition ${
+              currentPath === "/volunteer/messages"
+                ? "bg-[#1f3a5f] text-white shadow-sm"
+                : "text-[#0f172a] hover:bg-white/30"
+            }`}
+          >
             Messages
-          </button>
+          </Link>
         </nav>
 
         {/* RIGHT — Notifications & Profile */}
         <div className="ml-auto flex items-center gap-5 relative">
-          <img
-            src={bellIcon}
-            alt="Notifications"
-            className="h-6 w-6 cursor-pointer"
-          />
+          <div style={{ position: "relative", cursor: "pointer" }}
+          onClick={() => navigate("/volunteer/messages")}>
+            <img
+              src={bellIcon}
+              alt="Notifications"
+              className="h-6 w-6 cursor-pointer"
+            />
+            {totalUnread > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-6px",
+                  right: "-6px",
+                  backgroundColor: "#facc15", // yellow
+                  color: "#000",
+                  borderRadius: "50%",
+                  fontSize: "10px",
+                  minWidth: "18px",
+                  height: "18px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "600",
+                }}
+              >
+                {totalUnread}
+              </span>
+            )}
+          </div>
 
           <div
             onClick={() => setOpen(!open)}

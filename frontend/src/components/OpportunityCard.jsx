@@ -118,7 +118,7 @@ const OpportunityCard = ({
         {opportunity.createdBy?._id === loggedInNgoId && (
           <div className="flex gap-2 mt-3">
             <Link
-              to={`/opportunities/edit/${opportunity._id}`}
+              to={`/ngo/opportunities/edit/${opportunity._id}`}
               className="px-3 py-1.5 border rounded-md text-sm
               hover:bg-gray-100 transition"
             >

@@ -22,6 +22,7 @@ import OpportunitiesPage from "./pages/OpportunitiesPage";
 import NgoApplications from "./pages/NgoApplications"; // ADD THIS IMPORT
 
 /* Layouts */
+import MsgLayout from "./components/layout/MsgLayout";
 import VolunteerLayout from "./components/layout/VolunteerLayout";
 import NgoLayout from "./components/layout/NgoLayout";
 
@@ -33,6 +34,8 @@ import Opportunities from "./components/Opportunities";
 import Testimonials from "./components/Testimonials";
 import Features from "./components/Features";
 import Footer from "./components/Footer";
+/* Messages */
+import Messages from "./pages/Messages";
 
 const LandingPage = () => (
   <>
@@ -50,32 +53,37 @@ function App() {
   return (
     <Router>
       <Routes>
-
         {/* 🌍 PUBLIC */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        {/* 📨 MESSAGES */}
+          <Route element={<MsgLayout />}>
+            <Route path="/ngo/messages" element={<Messages />} />
+            <Route path="/volunteer/messages" element={<Messages />} />
+          </Route>
 
         {/* 🧑‍🤝‍🧑 VOLUNTEER */}
         <Route element={<VolunteerLayout />}>
           <Route path="/volunteer/dashboard" element={<VolunteerDashboard />} />
           <Route path="/volunteer/opportunities" element={<VolunteerOpportunities />} />
           <Route path="/profile/volunteer" element={<VolunteerProfile />} />
-          <Route path="/volunteer/applications" element={<VolunteerApplications />} /> {/* UPDATE THIS LINE */}
-          <Route path="/volunteer/messages" element={<div className="p-8">Messages coming soon</div>} />
+          <Route path="/volunteer/applications" element={<VolunteerApplications />} />
+          {/* <Route path="/volunteer/messages" element={<Messages />} /> */}
         </Route>
 
         {/* 🏢 NGO */}
         <Route element={<NgoLayout />}>
           <Route path="/ngo/dashboard" element={<NgoDashboard />} />
-          <Route path="/opportunities" element={<OpportunitiesPage />} />
-          <Route path="/opportunities/create" element={<CreateOpportunity />} />
-          <Route path="/opportunities/edit/:id" element={<EditOpportunity />} />
+          <Route path="/ngo/opportunities" element={<OpportunitiesPage />} />
+          <Route path="/ngo/opportunities/create" element={<CreateOpportunity />} />        
+          <Route path="/ngo/opportunities/edit/:id" element={<EditOpportunity />} />
           <Route path="/profile/ngo" element={<NgoProfile />} />
-          <Route path="/ngo/applications" element={<NgoApplications />} /> {/* UPDATE THIS LINE */}
-          <Route path="/messages" element={<div className="p-8">Messages coming soon</div>} />
+          <Route path="/ngo/applications" element={<NgoApplications />} />{" "}
+          
+          
         </Route>
-
       </Routes>
     </Router>
   );
