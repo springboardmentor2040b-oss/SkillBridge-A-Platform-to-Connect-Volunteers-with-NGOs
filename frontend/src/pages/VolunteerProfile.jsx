@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { FiArrowLeft } from "react-icons/fi";
 
 // ICONS FROM ASSETS
 
@@ -157,11 +158,13 @@ const VolunteerProfile = () => {
         {/* BACK BUTTON */}
         <div className="mt-2 sm:mt-4 mb-4">
           <Link
-            to="/volunteer/dashboard"
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2 text-sm sm:text-base"
-          >
-            ← Back
-          </Link>
+                      to="/volunteer/dashboard"
+                      className="flex items-center gap-2 text-sm-[#183B56]
+                                hover:text-[#245a84] transition"
+                    >
+                      <FiArrowLeft className="text-base" />
+                      <span>Back</span>
+                    </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] xl:grid-cols-[360px_1fr] gap-6 lg:gap-12 items-start">
@@ -186,7 +189,7 @@ const VolunteerProfile = () => {
           </div>
 
           {/* RIGHT CARD */}
-          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 lg:h-[610px] flex flex-col">
+          <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 lg:h-[610px] flex flex-col overflow-hidden">
             {/* TABS */}
             <div className="border-b flex gap-6 sm:gap-10 text-gray-700 font-medium">
               <span
@@ -216,13 +219,17 @@ const VolunteerProfile = () => {
 
             {/* ACCOUNT DETAILS (UNCHANGED) */}
             {activeTab === "account" && (
-              <>
+              <><div
+                    className={`flex-1 pr-2 ${
+                      isEditing ? "overflow-y-auto" : "overflow-hidden"
+                    }`}
+                  >
                 {/* HEADER */}
                 <div className="flex justify-between items-center mt-4">
                   <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                     Your Information
                   </h2>
-
+                
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
@@ -231,13 +238,13 @@ const VolunteerProfile = () => {
                       <img src={editIcon} className="w-4 h-4" />
                       Edit
                     </button>
-                  )}
+                  )} 
                 </div>
 
                 {/* FORM */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 flex-1">
                   <div>
-                    <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                    <label className="block mb-1 text-gray-600">
                       Full Name
                     </label>
                     <div className="relative">
@@ -257,7 +264,7 @@ const VolunteerProfile = () => {
                   </div>
 
                   <div>
-                    <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                    <label className="block mb-1 text-gray-600">
                       Email Address
                     </label>
                     <div className="relative">
@@ -274,7 +281,7 @@ const VolunteerProfile = () => {
                   </div>
 
                   <div>
-                    <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                    <label className="block mb-1 text-gray-600">
                       Location
                     </label>
                     <div className="relative">
@@ -294,7 +301,7 @@ const VolunteerProfile = () => {
                   </div>
 
                   <div>
-                    <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                    <label className="block mb-1 text-gray-600">
                       Role
                     </label>
                     <div className="relative">
@@ -312,7 +319,7 @@ const VolunteerProfile = () => {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                    <label className="block mb-1 text-gray-600">
                       Skills
                     </label>
 
@@ -364,10 +371,11 @@ const VolunteerProfile = () => {
                   </div>
                 </div>
                 {/* BIO */}
-                <div className="md:col-span-2">
-                  <label className="block mb-0.5 text-gray-600 text-xs sm:text-sm">
+                <div className="md:col-span-2 mt-3">
+                  <label className="block mb-1 text-gray-600">
                     Bio
                   </label>
+                  
                   <div className="relative">
                     <img
                       src={infoIcon}
@@ -379,13 +387,20 @@ const VolunteerProfile = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, bio: e.target.value })
                       }
-                      className="w-full pl-10 pr-4 py-3 border rounded-xl resize-none h-[60px] disabled:bg-gray-100 text-sm sm:text-base"
+                      className={`w-full pl-10 pr-4 py-3 border rounded-xl resize-none
+                        text-sm sm:text-base disabled:bg-gray-100
+                        overflow-y-auto
+                        ${isEditing
+                          ? "h-[90px]"
+                          : "h-[70px] scrollbar-hidden"
+                        }
+                        disabled:bg-gray-100`}
                     />
                   </div>
                 </div>
-
+              </div>
                 {isEditing && (
-                  <div className="flex justify-end gap-4 mt-4 sm:mt-6">
+                  <div className="pt-4 mt-4 border-t flex justify-end gap-4">
                     <button
                       onClick={handleCancel}
                       className="px-4 sm:px-6 py-2 sm:py-3 border rounded-xl"

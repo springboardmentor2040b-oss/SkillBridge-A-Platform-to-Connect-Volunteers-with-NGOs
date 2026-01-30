@@ -11,6 +11,14 @@ const truncateText = (text, wordLimit = 30) => {
     : text;
 };
 
+const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const OpportunityCard = ({
   opportunity,
   loggedInNgoId,
@@ -18,34 +26,45 @@ const OpportunityCard = ({
   onDelete,
 }) => {
   return (
-    <div className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-md transition flex justify-between gap-6">
+    <div
+  className="bg-white/90 backdrop-blur rounded-2xl p-6
+  border border-slate-100
+  shadow-[0_6px_18px_rgba(0,0,0,0.08)]
+  hover:shadow-[0_18px_40px_rgba(0,0,0,0.14)]
+  hover:-translate-y-[2px]
+  transition-all duration-300
+  flex flex-col md:flex-row justify-between gap-6"
+>
+
 
       {/* LEFT */}
       <div className="flex-1">
-        <h3 className="text-xl font-bold text-gray-900">
-          {opportunity.title}
+       <h3 className="text-[18px] font-semibold text-[#000000] leading-snug">
+        {opportunity.title}
         </h3>
 
-        {/* NGO NAME */}
-        <p className="text-sm font-medium text-[#1f3a5f]">
+        <p className="text-sm font-semibold text-[#1f3a5f] mt-0.5 tracking-tight">
           NGO: {opportunity.createdBy?.fullName || opportunity.ngoName}
         </p>
+
 
         {/* DESCRIPTION */}
         <p className="text-sm text-gray-600 mt-3">
           {truncateText(opportunity.description)}
         </p>
         {/* SKILLS */}
-{opportunity.skillsRequired && (
-  <div className="flex flex-wrap gap-2 mt-3">
-    {opportunity.skillsRequired
-      .split(",")
-      .slice(0, 3)
-      .map((skill, index) => (
-        <span
-          key={index}
-          className="bg-[#E3F5F9] text-[#183B56] px-3 py-1 
-                     rounded-full text-xs font-medium"
+        {opportunity.skillsRequired && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {opportunity.skillsRequired
+              .split(",")
+              .slice(0, 3)
+              .map((skill, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium
+                  bg-[#E6F4F7] text-[#1f3a5f]
+                  shadow-[0_1px_4px_rgba(0,0,0,0.12)]"
+
         >
           {skill.trim()}
         </span>
@@ -60,8 +79,7 @@ const OpportunityCard = ({
 )}
 
         {/* META INFO: Location | Duration | Posted Date */}
-<div className="flex flex-wrap items-center gap-6 text-sm text-[#2D4A60] mt-4">
-
+      <div className="flex flex-wrap gap-5 text-sm font-medium text-slate-600 mt-4">
   {/* Location */}
   <div className="flex items-center gap-2">
     <FaMapMarkerAlt className="text-[#6EC0CE]" />
@@ -82,7 +100,7 @@ const OpportunityCard = ({
   <div className="flex items-center gap-2">
     <FaCalendarAlt className="text-[#6EC0CE]" />
     <span className="font-medium">
-      {new Date(opportunity.createdAt).toLocaleDateString()}
+      {formatDate(opportunity.createdAt)}
     </span>
   </div>
 
@@ -102,7 +120,7 @@ const OpportunityCard = ({
       <div className="flex flex-col items-end justify-between">
         {/* STATUS */}
         <span
-          className={`text-xs px-3 py-1 rounded-full font-medium
+          className={`px-4 py-1.5 rounded-full text-xs font-semibold 
           ${
             opportunity.status === "Open"
               ? "bg-green-100 text-green-700"
@@ -117,21 +135,21 @@ const OpportunityCard = ({
         {/* ACTIONS */}
         {opportunity.createdBy?._id === loggedInNgoId && (
           <div className="flex gap-2 mt-3">
-            <Link
-              to={`/ngo/opportunities/edit/${opportunity._id}`}
-              className="px-3 py-1.5 border rounded-md text-sm
-              hover:bg-gray-100 transition"
-            >
-              Edit
-            </Link>
+              <Link
+                to={`/ngo/opportunities/edit/${opportunity._id}`}
+                className="px-3 py-1.5 border rounded-md text-sm border-[#1f3a5f]
+                hover:text-white hover:bg-[#1f3a5f] transition"
+              >
+                Edit
+              </Link>
 
-            <button
-              onClick={() => onDelete(opportunity._id)}
-              className="px-3 py-1.5 border rounded-md text-sm text-red-600
-              hover:bg-red-50 transition"
-            >
-              Delete
-            </button>
+              <button
+                onClick={() => onDelete(opportunity._id)}
+                className="px-3 py-1.5 border rounded-md text-sm text-red-600 border-red-500
+                hover:text-white hover:bg-red-500 transition"
+              >
+                Delete
+              </button>
           </div>
         )}
       </div>

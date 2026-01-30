@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 import useChat from "../../context/useChat";
@@ -33,6 +33,22 @@ const VolunteerNavbar = () => {
     (sum, conv) => sum + (conv.unreadCounts?.[currentUserId] || 0),
     0
   );
+
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      setOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-[#7cc9d6] shadow-sm">
@@ -134,71 +150,97 @@ const VolunteerNavbar = () => {
             )}
           </div>
 
-          <div
-            onClick={() => setOpen(!open)}
-            className="h-9 w-9 rounded-full bg-[#1f3a5f] text-white flex items-center justify-center font-semibold cursor-pointer"
-          >
-            {initials}
-          </div>
-
-          {open && (
-            <div className="absolute right-0 top-12 w-40 bg-white rounded-xl shadow-lg overflow-hidden">
-              <button
-                onClick={() => {
-                  navigate("/profile/volunteer");
-                  setOpen(false);
-                }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-100 text-sm"
-              >
-                Profile
-              </button>
-
-              <button
-                onClick={() => {
-                  localStorage.clear();
-                  navigate("/");
-                }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-100 text-red-600 text-sm"
-              >
-                Logout
-              </button>
+            <div className="relative" ref={dropdownRef}>
+            {/* Avatar */}
+            <div
+              onClick={() => setOpen((prev) => !prev)}
+              className="h-9 w-9 rounded-full bg-[#1f3a5f] text-white
+                        flex items-center justify-center font-semibold cursor-pointer"
+            >
+              {initials}
             </div>
-          )}
+
+            {/* Dropdown */}
+            {open && (
+              <div className="absolute right-0 top-12 w-40 bg-white rounded-xl shadow-lg overflow-hidden">
+                <button
+                  onClick={() => {
+                    navigate("/profile/volunteer");
+                    setOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-100 text-sm"
+                >
+                  Profile
+                </button>
+
+                <button
+                  onClick={() => {
+                    localStorage.clear();
+                    navigate("/");
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-100 text-red-600 text-sm"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+            </div>
         </div>
       </div>
 
       {/* MOBILE MENU */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-[#7cc9d6] border-t">
-          <nav className="flex flex-col">
-            <button
-              onClick={() => navigate("/volunteer/dashboard")}
-              className="px-6 py-3 text-left hover:bg-[#6ab8c5]"
-            >
-              Dashboard
-            </button>
+{mobileMenuOpen && (
+  <div
+    className="fixed top-14 left-0 right-0 bottom-0 z-40 md:hidden"
+    onClick={() => setMobileMenuOpen(false)} // 👈 outside click
+  >
+          {/* MENU PANEL */}
+          <div
+            className="absolute top-0 left-0 w-full bg-[#7cc9d6] border-t"
+            onClick={(e) => e.stopPropagation()} // 👈 prevent inside click
+          >
+            <nav className="flex flex-col">
+              <button
+                onClick={() => {
+                  navigate("/volunteer/dashboard");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-6 py-3 text-left text-[#172b47] font-semibold text-base hover:bg-[#6ab8c5]"
+              >
+                Dashboard
+              </button>
 
-            <button
-              onClick={() => navigate("/volunteer/opportunities")}
-              className="px-6 py-3 text-left hover:bg-[#6ab8c5]"
-            >
-              Opportunities
-            </button>
+              <button
+                onClick={() => {
+                  navigate("/volunteer/opportunities");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-6 py-3 text-left text-[#172b47] font-semibold text-base hover:bg-[#6ab8c5] "
+              >
+                Opportunities
+              </button>
 
-            <button
-              onClick={() => navigate("/volunteer/applications")}
-              className="px-6 py-3 text-left hover:bg-[#6ab8c5]"
-            >
-              Applications
-            </button>
+              <button
+                onClick={() => {
+                  navigate("/volunteer/applications");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-6 py-3 text-left text-[#172b47] font-semibold text-base hover:bg-[#6ab8c5]"
+              >
+                Applications
+              </button>
 
-            <button
-              onClick={() => navigate("/volunteer/messages")}
-              className="px-6 py-3 text-left hover:bg-[#6ab8c5]"
-            >
-              Messages
-            </button>
-          </nav>
+              <button
+                onClick={() => {
+                  navigate("/volunteer/messages");
+                  setMobileMenuOpen(false);
+                }}
+                className="px-6 py-3 text-left text-[#172b47] font-semibold text-base hover:bg-[#6ab8c5]"
+              >
+                Messages
+              </button>
+            </nav>
+          </div>
         </div>
       )}
     </header>

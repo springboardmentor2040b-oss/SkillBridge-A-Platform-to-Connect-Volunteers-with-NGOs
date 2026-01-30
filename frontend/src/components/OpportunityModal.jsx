@@ -3,6 +3,14 @@ import React from "react";
 const OpportunityModal = ({ opportunity, onClose }) => {
   if (!opportunity) return null;
 
+  const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
   const getStatusStyle = (status) => {
     if (status === "Open") return "bg-green-100 text-green-700";
     if (status === "In Progress") return "bg-yellow-100 text-yellow-700";
@@ -66,7 +74,7 @@ const OpportunityModal = ({ opportunity, onClose }) => {
           <p><b>Location:</b> {opportunity.location || "Remote"}</p>
           <p><b>Duration:</b> {opportunity.duration || "Flexible"}</p>
           <p><b>Status:</b> {opportunity.status}</p>
-          <p><b>Posted On:</b> {new Date(opportunity.createdAt).toLocaleDateString("en-GB")}</p>
+          <p><b>Posted On:</b> {formatDate(opportunity.createdAt)}</p>
         </div>
 
         {/* CLOSE BUTTON (restored, bigger spacing from status badge) */}

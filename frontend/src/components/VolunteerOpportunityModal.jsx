@@ -3,6 +3,14 @@ import React from "react";
 const VolunteerOpportunityModal = ({ opportunity, onClose }) => {
   if (!opportunity) return null;
 
+const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
   const getStatusStyle = (status) => {
     if (status === "pending") return "bg-yellow-100 text-yellow-800";
     if (status === "accepted") return "bg-green-100 text-green-800";
@@ -84,7 +92,7 @@ const VolunteerOpportunityModal = ({ opportunity, onClose }) => {
           </div>
           <div>
             <span className="font-semibold">Posted On:</span>{" "}
-            {new Date(opportunity.createdAt).toLocaleDateString()}
+            {formatDate(opportunity.createdAt)}
           </div>
           <div>
             <span className="font-semibold">Status:</span>{" "}

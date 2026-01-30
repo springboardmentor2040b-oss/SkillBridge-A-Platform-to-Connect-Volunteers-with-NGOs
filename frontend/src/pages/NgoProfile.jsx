@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { FiArrowLeft } from "react-icons/fi";
 
 // asset icons
 import userIcon from "../assets/user.svg";
@@ -142,18 +143,22 @@ const NgoProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[340px_1fr] gap-4 items-start mb-4">
           <Link
             to="/ngo/dashboard"
-            className="flex items-center gap-2 text-gray-600 text-sm"
+            className="flex items-center gap-2 text-sm-[#183B56]
+                      hover:text-[#245a84] transition"
           >
-            ← Back
+            <FiArrowLeft className="text-base" />
+            <span>Back</span>
           </Link>
-          <div className="lg:ml-10 xl:ml-12">
+
+          
+          {/* <div className="lg:ml-10 xl:ml-12">
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
               Account Settings
             </h1>
             <p className="text-xs sm:text-sm text-gray-500">
               Manage your account details
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[340px_1fr] gap-6 lg:gap-10 items-start">
@@ -326,16 +331,20 @@ const NgoProfile = () => {
                         className="absolute left-3 top-3.5 w-4"
                       />
                       <textarea
-                        disabled={!isEditing}
-                        value={tempData.organizationDescription || ""}
-                        onChange={(e) =>
-                          setTempData({
-                            ...tempData,
-                            organizationDescription: e.target.value,
-                          })
+                      disabled={!isEditing}
+                      value={tempData.organizationDescription || ""}
+                      onChange={(e) =>
+                        setTempData({ ...tempData, organizationDescription: e.target.value })
+                      }
+                      className={`w-full pl-10 pr-4 py-3 border rounded-xl resize-none
+                        text-sm sm:text-base disabled:bg-gray-100
+                        overflow-y-auto
+                        ${isEditing
+                          ? "h-[70px]"
+                          : "h-[70px] scrollbar-hidden"
                         }
-                        className="w-full pl-10 pr-4 py-2 border rounded-xl resize-none h-[70px] disabled:bg-gray-100"
-                      />
+                        disabled:bg-gray-100`}
+                    />
                     </div>
                   </div>
                 </div>

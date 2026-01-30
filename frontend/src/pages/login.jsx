@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
- 
 import { useAuth } from "../hooks/useAuth.js";
  
 import logo from "../assets/logo.svg";
@@ -63,7 +63,17 @@ const Login = () => {
       <div className="absolute top-4 right-4 sm:top-6 sm:right-10 flex items-center gap-3">
         <img src={logo} alt="SkillBridge" className="h-12 sm:h-14 w-auto" />
       </div>
- 
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-4 left-4 sm:top-10 sm:left-10
+                  flex items-center gap-2 text-sm font-medium
+                  text-[#183B56] hover:text-[#0f2d44] transition"
+      >
+        <FiArrowLeft className="text-base" />
+        <span>Back to Home</span>
+      </button>
+
+
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-10 lg:gap-16 items-center">
  
         {/* Login Card */}

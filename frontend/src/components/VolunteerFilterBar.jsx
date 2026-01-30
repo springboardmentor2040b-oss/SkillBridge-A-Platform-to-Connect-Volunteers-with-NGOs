@@ -83,18 +83,31 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
   };
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow-sm mb-6">
+    <div className="bg-white/90 backdrop-blur rounded-2xl p-6 
+      shadow-[0_10px_30px_rgba(0,0,0,0.08)] mb-6">
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-[#1f3a5f]">
+            Volunteering Opportunities
+          </h2>
+          <p className="text-sm text-slate-600 mt-1">
+            Discover opportunities that match your skills and interests
+          </p>
+        </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
+      
         {/* SKILLS */}
         <div>
-          <p className="text-sm font-semibold mb-2">Skills</p>
+          <h3 className="text-sm font-semibold text-[#1f3a5f] mb-2">Skills</h3>
           <input
             type="text"
             placeholder="Search skills..."
             value={skillSearch}
             onChange={handleSkillSearch}
-            className="w-full mb-2 px-3 py-2 border rounded-md text-sm"
+            className="w-full mb-2 px-3 py-2 rounded-lg text-sm
+            border border-slate-200
+            focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
+
           />
           <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
             {frequentSkills
@@ -105,10 +118,12 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
                 <button
                   key={skill}
                   onClick={() => toggleSkill(skill)}
-                  className={`px-3 py-1 rounded-full text-xs border ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium
+                  transition
+                  ${
                     filters.skills.includes(skill)
-                      ? "bg-[#E6F4F7] border-[#6EC0CE]"
-                      : "border-gray-300"
+                      ? "bg-[#E6F4F7] text-[#1f3a5f] shadow-sm border border-[#6EC0CE]"
+                      : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
                   {skill}
@@ -119,13 +134,15 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
 
         {/* LOCATIONS */}
         <div>
-          <p className="text-sm font-semibold mb-2">Location</p>
+          <h3 className="text-sm font-semibold text-[#1f3a5f] mb-2">Location</h3>
           <input
             type="text"
             placeholder="Search locations..."
             value={locationSearch}
             onChange={handleLocationSearch}
-            className="w-full mb-2 px-3 py-2 border rounded-md text-sm"
+            className="w-full mb-2 px-3 py-2 rounded-lg text-sm
+            border border-slate-200
+            focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
           />
           <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
             {frequentLocations
@@ -136,11 +153,14 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
                 <button
                   key={loc}
                   onClick={() => toggleLocation(loc)}
-                  className={`px-3 py-1 rounded-full text-xs border ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium
+                  transition
+                  ${
                     filters.locations.includes(loc)
-                      ? "bg-[#E6F4F7] border-[#6EC0CE]"
-                      : "border-gray-300"
+                      ? "bg-[#E6F4F7] text-[#1f3a5f] shadow-sm border border-[#6EC0CE]"
+                      : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
+
                 >
                   {loc}
                 </button>
@@ -150,11 +170,14 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
 
         {/* STATUS */}
         <div>
-          <p className="text-sm font-semibold mb-2">Status</p>
+          <h3 className="text-sm font-semibold text-[#1f3a5f] mb-2">Status</h3>
           <select
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value, apply: false })}
-            className="w-full px-3 py-2 border rounded-md text-sm"
+            className="w-full mb-2 px-3 py-2 rounded-lg text-sm
+            border border-slate-200
+            focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
+
           >
             <option value="All">All</option>
             <option value="Open">Open</option>
@@ -168,7 +191,10 @@ const VolunteerFilterBar = ({ filters, setFilters, opportunities }) => {
       <div className="flex justify-end mt-4">
         <button
           onClick={resetFilters}
-          className="px-4 py-2  text-sm border rounded-md hover:bg-gray-100"
+          className="px-4 py-2 text-sm font-medium
+          text-[#1f3a5f]
+          border border-[#1f3a5f] rounded-lg
+          hover:bg-[#1f3a5f] hover:text-white"
         >
           Reset Filters
         </button>

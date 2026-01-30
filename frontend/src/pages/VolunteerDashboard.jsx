@@ -6,12 +6,12 @@ import { io } from "socket.io-client";
 
 
 import {
-  FiGrid,
-  FiBriefcase,
-  FiUsers,
-  FiMessageSquare,
   FiSearch,
   FiFileText,
+  FiLayers,
+  FiClock,
+  FiCheckCircle,
+  FiXCircle,
 } from "react-icons/fi";
 
 const VolunteerDashboard = () => {
@@ -104,106 +104,188 @@ const VolunteerDashboard = () => {
 
   }, []);
 
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
-    <div className="flex bg-[#E9F5F8] min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-[#E9F5F8] to-[#F7FBFC]">
+      <main className="p-6 space-y-10 w-full">
 
-
-      {/* Main Content */}
-      <main className="flex-1 p-6 space-y-8">
         {/* Overview */}
-        <section className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-          <div className="rounded-lg p-4 bg-[#CDECEF] text-center">
-            <h3 className="text-2xl font-bold">{stats.total}</h3>
-            <p className="text-sm">Total Applications</p>
-          </div>
+        {/* Dashboard Header */}
+        <section className="bg-white/90 backdrop-blur rounded-2xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
+          <h2 className="text-2xl font-bold text-[#1f3a5f]">
+            Dashboard
+          </h2>
+          <p className="text-sm text-slate-500 mt-1 mb-6">
+            Monitor your applications and recent activity
+          </p>
 
-          <div className="rounded-lg p-4 bg-[#F6E1CC] text-center">
-            <h3 className="text-2xl font-bold">{stats.pending}</h3>
-            <p className="text-sm">Pending</p>
-          </div>
 
-          <div className="rounded-lg p-4 bg-[#E1F2E1] text-center">
-            <h3 className="text-2xl font-bold">{stats.accepted}</h3>
-            <p className="text-sm">Accepted</p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+            {[
+              {
+                label: "Total Applications",
+                value: stats.total,
+                bg: "from-[#E6F6F9] to-[#F2FBFD]",
+                icon: <FiLayers />,
+                color: "#1f3a5f",
+              },
+              {
+                label: "Pending",
+                value: stats.pending,
+                bg: "from-[#FFF1E8] to-[#FFF7F2]",
+                icon: <FiClock />,
+                color: "#FF7A30",
+              },
+              {
+                label: "Accepted",
+                value: stats.accepted,
+                bg: "from-[#EAF7F1] to-[#F4FBF7]",
+                icon: <FiCheckCircle />,
+                color: "#2F8F7A",
+              },
+              {
+                label: "Rejected",
+                value: stats.rejected,
+                bg: "from-[#F6EAF2] to-[#FBF4F8]",
+                icon: <FiXCircle />,
+                color: "#9B4F7A",
+              },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className={`relative rounded-xl p-5 bg-gradient-to-br ${card.bg}
+                shadow-[0_6px_16px_rgba(0,0,0,0.08)]
+                hover:shadow-[0_20px_40px_rgba(0,0,0,0.14)]
+                hover:-translate-y-1 transition-all duration-300`}
+              >
+                <div
+                  className="absolute top-4 right-4 text-xl opacity-80"
+                  style={{ color: card.color }}
+                >
+                  {card.icon}
+                </div>
 
-          <div className="rounded-lg p-4 bg-[#E6CFEA] text-center">
-            <h3 className="text-2xl font-bold">{stats.rejected}</h3>
-            <p className="text-sm">Rejected</p>
+                <h3
+                  className="text-3xl font-semibold"
+                  style={{ color: card.color }}
+                >
+                  {card.value}
+                </h3>
+                <p className="text-sm font-semibold text-slate-600 mt-1">
+                  {card.label}
+                </p>
+              </div>
+            ))}
           </div>
-        </div>
-       </section>
+        </section>
+
         {/* Recent Applications */}
-        <section className="bg-white rounded-xl shadow-md p-6 ">
-          <h2 className="text-xl font-semibold mb-4">Recent Applications</h2>
+        <section className="bg-white rounded-2xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-[#1f3a5f]">
+            Recent Applications
+          </h2>
 
-          {recentApplications.length === 0 ? (
-            <p className="text-gray-500 text-sm">
-              You haven’t applied to any opportunities yet.
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {recentApplications.map((app) => {
-                const statusStyle =
-                  app.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : app.status === "accepted"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800";
+        <button
+          onClick={() => navigate("/volunteer/applications")}
+          className="text-sm font-semibold text-[#1f3a5f]
+          hover:text-slate-500 transition-colors mr-4"
+        >
+          View all
+        </button>
+        </div>
 
-                return (
-                  <div
-                    key={app._id}
-                    className="border rounded-lg p-4 flex justify-between items-start"
-                  >
-                    <div>
-                      <p className="font-medium">{app.opportunity_id?.title}</p>
-                      <p className="text-sm text-gray-500">
-                        NGO: {app.opportunity_id?.ngoName || app.opportunity_id?.createdBy?.fullName}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Applied on{" "}
-                        {new Date(app.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
+          <div className="space-y-4">
+            {recentApplications.map((app) => {
+              const statusStyle =
+                app.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : app.status === "accepted"
+                  ? "bg-green-100 text-green-800"
+                  : app.status === "withdrawn"
+                  ? "bg-slate-200 text-slate-700"
+                  : "bg-red-100 text-red-800";
 
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full capitalize ${statusStyle}`}
-                    >
-                      {app.status}
-                    </span>
+              return (
+                <div
+                  key={app._id}
+                  className="flex justify-between items-start p-4 rounded-xl
+                  border border-slate-100 bg-white
+                  hover:shadow-md hover:-translate-y-[2px]
+                  transition-all duration-200"
+                >
+                 <div>
+                    {/* Opportunity Title */}
+                    <h2 className="text-[18px] font-semibold text-[#000000] leading-snug">
+                      {app.opportunity_id?.title}
+                    </h2>
+
+                    {/* NGO Line (single color, calm) */}
+                    <p className="text-sm font-semibold text-[#1f3a5f] mt-0.5 tracking-tight">
+
+                      NGO:{" "}
+                      {app.opportunity_id?.ngoName ||
+                        app.opportunity_id?.createdBy?.fullName}
+                    </p>
+
+                    {/* Applied Date (de-emphasized) */}
+                    <p className="text-xs text-slate-500 mt-1">
+                      Applied on {formatDate(app.createdAt)}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          )}
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full capitalize font-semibold ${statusStyle}`}
+                  >
+                    {app.status}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* Quick Actions */}
-        <section className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-6">Quick Actions</h2>
+        <section className="bg-white rounded-2xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
+          <h2 className="text-xl font-bold mb-6 text-[#1f3a5f]">
+            Quick Actions
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Browse Opportunities */}
-            <button
-              onClick={() => navigate("/volunteer/opportunities")}
-              className="border rounded-xl p-8 flex flex-col items-center justify-center hover:shadow-md transition"
-            >
-              <FiSearch className="text-3xl mb-2 text-[#1f3a5f]" />
-              <p>Browse Opportunities</p>
-            </button>
+        {/* Browse Opportunities */}
+        <button
+          onClick={() => navigate("/volunteer/opportunities")}
+          className="group rounded-xl p-8
+          bg-gradient-to-br from-[#E6F6F9] to-[#F2FBFD]
+          shadow-md hover:shadow-xl hover:-translate-y-1
+          transition-all flex flex-col items-center justify-center text-center"
+        >
+          <FiSearch className="text-4xl text-[#1f3a5f] mb-3 group-hover:scale-110 transition" />
+          <p className="font-semibold text-slate-800">
+            Browse Opportunities
+          </p>
+        </button>
 
-            {/* My Applications */}
-            <button
-              onClick={() => navigate("/volunteer/applications")}
-              className="border rounded-xl p-8 flex flex-col items-center justify-center hover:shadow-md transition"
-            >
-              <FiFileText className="text-3xl mb-2 text-[#1f3a5f]" />
-              <p>My Applications</p>
-            </button>
-          </div>
+        {/* My Applications */}
+        <button
+          onClick={() => navigate("/volunteer/applications")}
+          className="group rounded-xl p-8
+          bg-gradient-to-br from-[#FFF1E8] to-[#FFF7F2]
+          shadow-md hover:shadow-xl hover:-translate-y-1
+          transition-all flex flex-col items-center justify-center text-center"
+        >
+          <FiFileText className="text-4xl text-[#FF7A30] mb-3 group-hover:scale-110 transition" />
+          <p className="font-semibold text-slate-800">
+            My Applications
+          </p>
+        </button>
+      </div>
         </section>
       </main>
     </div>

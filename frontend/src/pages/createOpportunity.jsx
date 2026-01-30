@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CustomDropdown from "../components/CustomDropdown";
+import { FiChevronDown } from "react-icons/fi";
 
 const CreateOpportunity = () => {
   const [title, setTitle] = useState("");
@@ -69,16 +70,77 @@ const CreateOpportunity = () => {
   };
 
   const handleCancel = () => navigate("/ngo/opportunities");
+  const SoftDropdown = ({ value, onChange, options, placeholder }) => {
+  const [open, setOpen] = useState(false);
+
+    return (
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="w-full px-4 py-2.5 text-sm text-left
+          bg-white border border-slate-300 rounded-lg
+          flex items-center justify-between
+          focus:outline-none focus:border-[#6EC0CE]
+          focus:ring-2 focus:ring-[#6EC0CE]/30"
+        >
+          <span className={value ? "text-slate-800" : "text-slate-400"}>
+            {value || placeholder}
+          </span>
+          <FiChevronDown className="text-slate-400" />
+        </button>
+
+        {open && (
+          <div className="absolute z-20 mt-2 w-full bg-white
+          border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  onChange(opt);
+                  setOpen(false);
+                }}
+                className="w-full px-4 py-2 text-sm text-left
+                hover:bg-[#E6F4F7] hover:text-[#1f3a5f]"
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     /* 🔑 FIX: make page scrollable */
     <div className="min-h-screen overflow-y-auto bg-[#E9F5F8] py-4 px-4 sm:px-6 lg:px-8 pb-10">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow rounded-lg">
+        <div
+          className="relative bg-white/90 backdrop-blur-xl rounded-3xl
+          border border-slate-100
+          shadow-[0_12px_40px_rgba(31,58,95,0.12)]"
+        >
+
           <div className="px-6 py-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            <h1 className="text-2xl font-bold text-[#1f3a5f] tracking-tight">
               Create New Opportunity
             </h1>
+
+            <p className="text-sm text-slate-600 mt-1 mb-4">
+              Provide details to publish a new volunteering opportunity
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate("/ngo/opportunities")}
+              className="absolute top-6 right-6
+              text-slate-400 hover:text-slate-600
+              transition text-lg"
+            >
+              ✕
+            </button>
+
 
             <form onSubmit={handleSubmit}>
               {/* Title */}
@@ -91,7 +153,7 @@ const CreateOpportunity = () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Website Redesign"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm"
+                  className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
                   required
                 />
               </div>
@@ -106,7 +168,11 @@ const CreateOpportunity = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Provide details about the opportunity"
                   rows="3"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm"
+                  className="w-full px-4 py-2.5 text-sm
+                  border border-slate-300 rounded-lg
+                  bg-white
+                  focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40
+                  resize-none"
                   required
                 />
               </div>
@@ -119,20 +185,22 @@ const CreateOpportunity = () => {
 
                 <div className="border rounded-xl bg-white px-4 py-3 min-h-[52px]">
                   {/* Custom Dropdown */}
-                  <CustomDropdown
-                    options={PREDEFINED_SKILLS}
-                    selectedValues={skills}
-                    onSelect={(skill) => setSkills([...skills, skill])}
-                    placeholder="Select or type required skills"
-                  />
-
+                  <SoftDropdown
+                  value=""
+                  onChange={(skill) =>
+                    !skills.includes(skill) && setSkills([...skills, skill])
+                  }
+                  options={PREDEFINED_SKILLS}
+                  placeholder="Select or type required skills"
+                />
+                
                   {/* Selected skills chips */}
                   <div className="flex flex-wrap gap-2 mt-3">
                     {skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="flex items-center gap-2 px-3 py-2
-                     rounded-full bg-[#A7DDE3] text-[#2F4858] text-xs"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E6F4F7] text-[#1f3a5f] text-xs font-medium shadow-[0_1px_4px_rgba(0,0,0,0.12)]"
+
                       >
                         {skill}
                         <button
@@ -161,7 +229,8 @@ const CreateOpportunity = () => {
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
                     placeholder="e.g., 2 - 3 weeks, Ongoing"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm"
+                    className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
+
                   />
                 </div>
 
@@ -174,7 +243,8 @@ const CreateOpportunity = () => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="e.g., Mumbai, IND, Remote"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm"
+                    className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6EC0CE]/40"
+
                   />
                 </div>
               </div>
@@ -184,38 +254,47 @@ const CreateOpportunity = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <span className="font-bold">Status:</span>
                 </label>
-                <select
+                <div className="relative">
+                <SoftDropdown
                   value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm"
-                >
-                  <option value="Open">Open</option>
-                  <option value="Closed">Closed</option>
-                  <option value="In Progress">In Progress</option>
-                </select>
+                  onChange={setStatus}
+                  options={["Open", "In Progress", "Closed"]}
+                  placeholder="Select status"
+                />
+
+              </div>
+
               </div>
               {successMessage && (
-                <p className="text-green-600 font-medium text-sm mb-4">
+                <p className="text-green-600 font-medium text-sm mb-2">
                   {successMessage}
                 </p>
               )}
 
               {/* Action Buttons */}
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-end pt-5 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5  bg-[#FF7A30] text-white font-medium rounded-md text-sm"
-                >
-                  Create
-                </button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-5 py-2.5 rounded-lg
+                border border-slate-300 text-slate-700
+                hover:bg-slate-100 transition
+                text-sm font-medium"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-lg
+                bg-[#FF7A30] text-white font-medium
+                shadow-[0_6px_18px_rgba(255,122,48,0.35)]
+                hover:shadow-[0_10px_26px_rgba(255,122,48,0.45)]
+                transition text-sm"
+              >
+                Create
+              </button>
               </div>
             </form>
           </div>

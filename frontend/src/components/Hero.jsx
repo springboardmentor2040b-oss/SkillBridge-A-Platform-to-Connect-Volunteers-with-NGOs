@@ -13,16 +13,22 @@ const Hero = () => {
 
         {/* Small Tagline */}
         <h2 className="text-xl font-body tracking-wider uppercase"
-            style={{ color: "#4A6670" }}>
+            style={{ color: "#4A6670" ,lineHeight: "2.75"  }}>
           CONNECTING SKILLS TO CAUSE
         </h2>
 
         {/* Main Heading */}
-        <h1 className="text-5xl md:text-7xl font-heading font-extrabold mb-8 leading-tight"
-            style={{ color: "#183B56" }}>
+        <h1
+          className="text-5xl md:text-7xl font-heading font-extrabold mb-8"
+          style={{ color: "#183B56", lineHeight: "0.85" }}
+        >
           SkillBridge:
-          <br />
-          <span style={{ color: "#2AA7B3" }}>Connect Skills to Causes</span>
+          <span
+            className="block mt-4 md:mt-6"
+            style={{ color: "#2AA7B3" }}
+          >
+            Connect Skills to Causes
+          </span>
         </h1>
 
         {/* Description */}

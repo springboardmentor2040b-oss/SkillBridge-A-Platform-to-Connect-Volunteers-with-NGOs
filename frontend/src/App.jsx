@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 
 /* Public */
 import Login from "./pages/login";
@@ -52,6 +53,7 @@ const LandingPage = () => (
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* 🌍 PUBLIC */}
         <Route path="/" element={<LandingPage />} />

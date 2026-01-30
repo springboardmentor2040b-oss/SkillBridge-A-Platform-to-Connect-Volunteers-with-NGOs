@@ -13,24 +13,27 @@ const OpportunityFilterBar = ({
       {/* VIEW TOGGLES */}
       <button
         onClick={() => setShowMine(false)}
-        className={`px-5 py-2 rounded-md font-medium transition-all
-        ${
-          !showMine
-            ? "bg-[#FF7A30] text-white shadow"
-            : "bg-white border hover:bg-gray-50"
-        }`}
+        className={`px-5 py-2.5 rounded-lg font-medium transition-all
+          shadow-sm hover:shadow-md hover:-translate-y-[1px]
+          ${
+            !showMine
+              ? "bg-[#FF7A30] text-white"
+              : "bg-[#F5F9FC] text-[#1f3a5f] ring-1 ring-slate-200"
+          }`}
       >
         View All Opportunities
       </button>
 
       <button
         onClick={() => setShowMine(true)}
-        className={`px-5 py-2 rounded-md font-medium transition-all
-        ${
-          showMine
-            ? "bg-[#FF7A30] text-white shadow"
-            : "bg-white border hover:bg-gray-50"
-        }`}
+          className={`px-5 py-2.5 rounded-lg font-medium transition-all
+          shadow-sm hover:shadow-md hover:-translate-y-[1px]
+          ${
+            showMine
+              ? "bg-[#FF7A30] text-white"
+              : "bg-[#F5F9FC] text-[#1f3a5f] ring-1 ring-slate-200"
+          }`}
+
       >
         View Your Opportunities
       </button>
@@ -41,11 +44,12 @@ const OpportunityFilterBar = ({
           <button
             key={status}
             onClick={() => setFilterStatus(status)}
-            className={`w-28 px-3 py-1.5 rounded-full text-sm font-medium transition-all
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all
+            shadow-sm hover:shadow-md hover:-translate-y-[1px]
             ${
               filterStatus === status
-                ? "bg-[#1f3a5f] text-white shadow"
-                : "bg-white border text-gray-600 hover:bg-blue-50 hover:text-[#1f3a5f]"
+                ? "bg-[#1f3a5f] text-white"
+                : "bg-[#F8FBFD] text-slate-600 ring-1 ring-slate-200 hover:text-[#1f3a5f]"
             }`}
           >
             {status}
